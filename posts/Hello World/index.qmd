@@ -1,0 +1,15 @@
+---
+title: "Hello World"
+author: "Pham Nguyen Hung"
+date: "2022-10-22"
+categories: [new, code]
+format:
+    html:
+        code-fold: true
+jupyter: python3 
+---
+## Up and running with Quarto!
+```{python}
+#| label: Hello-World
+print("Hello World!")
+```
