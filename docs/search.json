@@ -2,7 +2,7 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Yuu’s Playground",
+    "title": "Hung’s Playground",
     "section": "",
     "text": "new\n\n\ncode\n\n\n\n\n\n\n\n\n\n\n\nOct 22, 2022\n\n\nPham Nguyen Hung\n\n\n\n\n\n\nNo matching items"
   },
@@ -33,5 +33,19 @@
     "title": "Welcome To My Blog",
     "section": "",
     "text": "Since this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "now.html",
+    "href": "now.html",
+    "title": "Now",
+    "section": "",
+    "text": "I want to go into MLOps. One general assumption, reflected by the curriculum is that you need to know a lot about creating a machine learning first before going into MLOps. That is also the normal trajectory of “normal” MLOps. I also believe that you should have knowledge in the model before building one. Alas, I want to dive head first and see what I exactly need to deploy a model, which I believe involve a lot less than my impression. The experience from a recent hackathon also shows that you can easily find a person who can train a model well, but it is hard to find a person who can deploy the model and do all the fancy demo.\n\n\n\nFinding joy in the adventures of Feynman’s again. I loved his humor and his irresponsibility. His story is something to balance with all the depressing meta stories that I expose myself to, and probably continue to."
+  },
+  {
+    "objectID": "posts/hello_world/index.html",
+    "href": "posts/hello_world/index.html",
+    "title": "Hello World",
+    "section": "",
+    "text": "Code\nprint(\"Hello World!\")\n\n\nHello World!"
   }
 ]

@@ -1,5 +1,5 @@
 ---
-title: "Yuu's Playground"
+title: "Hung's Playground"
 listing:
   contents: posts
   sort: "date desc"

@@ -13,5 +13,11 @@
   },
   "posts/Hello World/index.qmd": {
     "index.html": "b9c21a15"
+  },
+  "now.qmd": {
+    "now.html": "591115d0"
+  },
+  "posts/hello_world/index.qmd": {
+    "index.html": "ca2fd8af"
   }
 }
