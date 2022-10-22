@@ -14,6 +14,13 @@
     "text": "About this blog"
   },
   {
+    "objectID": "posts/Hello World/index.html",
+    "href": "posts/Hello World/index.html",
+    "title": "Hello World",
+    "section": "",
+    "text": "Code\nprint(\"Hello World!\")\n\n\nHello World!"
+  },
+  {
     "objectID": "posts/post-with-code/index.html",
     "href": "posts/post-with-code/index.html",
     "title": "Post With Code",
@@ -26,12 +33,5 @@
     "title": "Welcome To My Blog",
     "section": "",
     "text": "Since this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
-  },
-  {
-    "objectID": "posts/Hello World/index.html",
-    "href": "posts/Hello World/index.html",
-    "title": "Hello World",
-    "section": "",
-    "text": "Code\nprint(\"Hello World!\")\n\n\nHello World!"
   }
 ]
