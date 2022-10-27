@@ -2,6 +2,7 @@
 title: "Hung's Playground"
 listing:
   contents: posts
+  fields: [image, date, title, subtitle, categories, author, reading-time]
   sort: "date desc"
   type: default
   categories: true

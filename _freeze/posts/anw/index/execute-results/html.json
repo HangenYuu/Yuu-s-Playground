@@ -1,0 +1,11 @@
+{
+  "hash": "b6d6a30bfcad6c3ce23d839f23d948f5",
+  "result": {
+    "markdown": "---\ntitle: Show me your portfolio\nsubtitle: Not just about stock\nauthor: Pham Nguyen Hung\ndate: '2022-10-22'\ncategories:\n  - thought\nformat:\n  html:\n    code-fold: true\n---\n\nNassim Nicholas Taleb told me this when he talked about listening to pundits in *The Black Swan* (or was it *Antifragile*?). Derek Sivers shared the same idea about [talking versus doing](https://sive.rs/arv). The idea reminds me to pick my words carefully, when I give advice, and when I state my priority. It also reminds to tailor my daily schedule so that the priority is always at the top. (It is a nice idea, by the way, to speak and act on priority as *singular* rather than *plural*). The next time you say something, act on it to see if you really believe your words. And the next time you do something, stating clearly how you like doing that.\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

@@ -19,5 +19,11 @@
   },
   "posts/hello_world/index.qmd": {
     "index.html": "ca2fd8af"
+  },
+  "posts/anw/index.qmd": {
+    "index.html": "6f954230"
+  },
+  "posts/journal/index.qmd": {
+    "index.html": "e6b4cc2e"
   }
 }
