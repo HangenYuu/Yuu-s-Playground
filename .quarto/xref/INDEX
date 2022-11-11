@@ -28,5 +28,11 @@
   },
   "posts/dlm/index.qmd": {
     "index.html": "4550a514"
+  },
+  "posts/anpr/index.qmd": {
+    "index.html": "f1bdaf10"
+  },
+  "posts/ftf/index.qmd": {
+    "index.html": "b05fe143"
   }
 }

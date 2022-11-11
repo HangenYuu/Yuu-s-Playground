@@ -1,0 +1,22 @@
+---
+title: "First thing first: what is the name of the job again?"
+subtitle: "Data Analyst, Data Engineer, Data Scientist, Machine Learning Engineer, MLOps - what's the difference?"
+author: "Pham Nguyen Hung"
+draft: true
+date: "2022-11-11"
+categories: [basic]
+format:
+    html:
+        code-fold: true
+jupyter: python3 
+---
+It was just confusing.
+
+It was 10pm and I was staring at the laptop screen. LinkedIn was opened, showing me all the possible internships in "Machine Learning Engineer", "Data Analyst", "Data Scientist", and "Data Engineer". The funny thing was, many openings were included in all of them. I had explored all of these openings for the last 2 hours, and I had come the worst conclusion: I did not know what I wanted.
+
+I believe the experience is shared by many learners who set out to break into the "data field" - the summation of all the industries that rely on data to create values, or more practically for us, the companies that offer jobs including "Data" or "Machine Learning". We simply do not know what we want, and indeed the jobs' descriptions are vague. This post is my attempt to know comprehensively about the field, and help me (and hopefully you, too) to know exactly what I (we) want.
+
+Let's dive straight in
+# Criteria
+> "The first principle is to know what are the principles"
+For comparison, first we need to define the criteria. The most important aspect is *responsibilities*, specifically, "what is the job that each role does on a daily basis?"

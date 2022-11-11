@@ -1,0 +1,11 @@
+{
+  "hash": "29ee47d55bd59a6c6f74cffb5d9b2add",
+  "result": {
+    "markdown": "---\ntitle: 'First thing first: what is the name of the job again?'\nsubtitle: 'Data Analyst, Data Engineer, Data Scientist, Machine Learning Engineer, MLOps - what''s the difference?'\nauthor: Pham Nguyen Hung\ndraft: true\ndate: '2022-11-11'\ncategories:\n  - basic\nformat:\n  html:\n    code-fold: true\n---\n\nIt was just confusing.\n\nIt was 10pm and I was staring at the laptop screen. LinkedIn was opened, showing me all the possible internships in \"Machine Learning Engineer\", \"Data Analyst\", \"Data Scientist\", and \"Data Engineer\". The funny thing was, many openings were included in all of them. I had explored all of these openings for the last 2 hours, and I had come the worst conclusion: I did not know what I wanted.\n\nI believe the experience is shared by many learners who set out to break into the \"data field\" - the summation of all the industries that rely on data to create values, or more practically for us, the companies that offer jobs including \"Data\" or \"Machine Learning\". We simply do not know what we want, and indeed the jobs' descriptions are vague. This post is my attempt to know comprehensively about the field, and help me (and hopefully you, too) to know exactly what I (we) want.\n\nLet's dive straight in\n# Criteria\n> \"The first principle is to know what are the principles\"\nFor comparison, first we need to define the criteria. The most important aspect is *responsibilities*, specifically, \"what is the job that each role does on a daily basis?\"\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

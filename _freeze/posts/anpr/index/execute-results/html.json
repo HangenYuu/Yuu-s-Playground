@@ -1,0 +1,11 @@
+{
+  "hash": "41803153e66303e70c1b2199aa1e7984",
+  "result": {
+    "markdown": "---\ntitle: Analyzing the Google Play App Market\nsubtitle: A tutorial on common tasks that a data analyst may encounter in a working day\nauthor: Pham Nguyen Hung\ndraft: true\ndate: '2022-11-11'\ncategories:\n  - project\n  - code\nformat:\n  html:\n    code-fold: true\n---\n\nHello readers, this is Hung, a machine learning engineer-to-be. This blog was created to document my learning process, and this post was the first technically heavy one I wanted to create.\n\nFor the first blog post, I picked data analysis, because that is the first thing that an MLE needs to do when receiving the data (assuming that) \n\nThe original datasets were taken from [Kaggle](https://www.kaggle.com/datasets/lava18/google-play-store-apps)\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
