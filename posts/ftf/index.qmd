@@ -1,6 +1,6 @@
 ---
 title: "Data what?"
-subtitle: "Data Analyst, Data Engineer, Data Scientist, Machine Learning Engineer, MLOps - what's the difference?"
+subtitle: "Data Analyst, Data Engineer, Data Scientist, Machine Learning Engineer, MLOps Engineer - what's the difference?"
 author: "Pham Nguyen Hung"
 draft: true
 date: "2022-11-11"
@@ -10,18 +10,32 @@ format:
         code-fold: true
 jupyter: python3 
 ---
-It was just confusing.
+![](72leoy.jpg)
 
-It was 10pm and I was staring at the laptop screen. LinkedIn was opened, showing me all the possible internships in "Machine Learning Engineer", "Data Analyst", "Data Scientist", and "Data Engineer". The funny thing was, many openings were included in all of them. I had explored all of these openings for the last 2 hours, and I had come the worst conclusion: I did not know what I wanted.
+This is my first post  documenting my journey to become a machine learning engineer. You can consider this post as the answer to the interview question "How do you that you want this *exact* job?". Short answer: because I have researched enough and know the difference between these all the jobs. Long answer: read down.
 
-I believe the experience is shared by many learners who set out to break into the "data field" - the summation of all the industries that rely on data to create values, or more practically for us, the companies that offer jobs including "Data" or "Machine Learning". We simply do not know what we want, and indeed the jobs' descriptions are vague. This post is my attempt to know comprehensively about the field, and help me (and hopefully you, too) to know exactly what I (we) want.
+# Machine Learning (ML), Artificical Intelligence (AI), Data Science (DS):
+AI is the catch-all phrase to describe techniques that make machines display "intelligence" similar to humans in some sense. The most famous example is the ability to recognize a cat in the picture. ML is an approach in AI. There are other approaches such as symbolic artificial intelligence, but we all know which one dominates. A side note: Deep learning (DL) is an approach in ML. One good way to think about ML is it is trying to fit a function to the data at hand. DL tries to accomplish this with neural network, which was proved to be able to simulate *any* continuous function (with enough size and data) and to have stellar results.
 
-Let's dive straight in
-# Context: Business Analytics
-The context we are considering is within a business.
+DS is the science of extracting insights from data. Simply put, it is statistics paired with human expertise. One example is sabermetrics, and if you want some entertainment, watch *Moneyball*. ML techniques, because of their usefulness, have found their way into DS, with success, to put it mildly.
 
-1. **Descriptive Analytics**: Generate line chart, bar chart, histogram; calculate mean, median, standard deviations; look for outliers, missing values, etc. The goal is to uncover the historical patterns, trends, and anomalies of the data.
+> "Data! Data! Data!" he cried impatiently. "I can't make bricks without clay." - Sherlock Holmes
 
-2. **Predictive Analytics**: Use/Develop machine learning models to predict the future with past data. Housing price prediction, movie recommendation, painting prediction, etc.
+A key takeaway from this is the emphasis on *data*. All the shiny models and dashboards  will cease to exist without data. So whatever you want, being able to work with data is expected.
 
-3. **Prescriptive Analytics**: With the insights from descriptive and/or predictive analytics, you need to decide on the action to take to benefit from the predicted outcomes.
+Next, we will try to answer the question "What exactly is working with data?" by turning to the field of business analytics.
+
+# Business Analytics:
+For any reader who feels this violent jump is troublesome, we will likely to work for a company a.k.a a business. And in business, data science is called business analytics, or business intelligence. It is totally okay and possible to work in data science outside a business, such as trying to find out if the legalization of abortion in the US reduced crime rate (this is definitely not a *Freakonomics* reference). 
+
+Simply put, business analytics is data science in the context of a business. From data about performnace of the company, you want to extract insights to do better i.e. expose and remove flaws, determine whether a new service is viable or not, etc. Business analytics are divided into 3 stages:
+
+1. **Descriptive Analytics**: If you are thinking about descriptive statistics when you read this, bingo. The goal at this stage is to uncover historical trends and anomalies. We capture that with mean, median, standard deviation, quantiles, inter-quarter range, etc. Little ML is involved at this stage. One example is analyzing the relationships between favourite artists and genres of music of the subscribers to the music streaming service.
+
+2. **Predictive Analytics**: This is when ML models come into play. The goal of this stage is to make inference about the future from the patterns we dig out in the last stage. To continue with the example, now we want to predict user's ratings to a new artist that we may introduce to them through our streaming app.
+
+3. **Prescriptive Analytics**: From the insights of previous stages, now we can formulate strategy and take actions to benefit from the predicted outcomes. It means going on and recommend new artists of the same genre to an user whom you are quite certain will respond positively to the recommendations, and not doing so otherwise.
+
+The jobs and responsibilities
+
+# Data Analyst:
