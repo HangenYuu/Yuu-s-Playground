@@ -36,6 +36,34 @@ Simply put, business analytics is data science in the context of a business. Fro
 
 3. **Prescriptive Analytics**: From the insights of previous stages, now we can formulate strategy and take actions to benefit from the predicted outcomes. It means going on and recommend new artists of the same genre to an user whom you are quite certain will respond positively to the recommendations, and not doing so otherwise.
 
-The jobs and responsibilities
+The jobs and responsibilities of a data-whoever varies based on the stage they are at. Let's explore this in-depth.
 
-# Data Analyst:
+# Different stages, different jobs:
+
+## Data Analyst:
+For a data analyst, his jobs mainly involve stage 1. He is given a data set, extracts insights from the data, and then visualizes and report the findings back to stakeholders.
+<p align=center>
+<img src="image1_7987ef4fa0.png">
+<figcaption align=center>Source: <a href="https://www.datacamp.com/blog/data-analyst-vs-data-scientist-a-comparative-guide">DataCamp</a> </figcaption>
+</p>
+Data analysts are concerned with the questions What? and Why?. Here are the abilities data analysts are expected to have, listed by the stages in the diagram:
+1. Getting your hands on the data. This may involve using SQL, calling API to an online database.
+2. Loading, cleaning, and exploring the data. In Python, this will most likely mean Pandas and Matplotlib/Seaborn (for tabular data). There are other tools such as Tableau and Power BI that can also be used.
+Note: Exploring here means both describing the data - calculating means, medians, interquartile range, etc. and finding plausible reasons explaining the data characteristics, e.g. "Why does teenagers make up the majority of our customers?"
+3. Reporting: It can be a written report or a meeting to communicate the findings to the stakeholders, or a dashboard that helps another team (e.g. sales) respond better to what you have found. It is likely that you will write you report with Microsoft Words, which will contain visualizations from above i.e. using Matplotlib/Tableau/Power BI.
+
+## Data Scientist:
+For a data scientist, the jobs will be more about predictive and prescriptive analytics. He will need to act on the insights that data analysts or he has found, often with the help of ML.
+<p align=center>
+<img src="image2_dad0dc931d.png">
+<figcaption align=center>Source: <a href="https://www.datacamp.com/blog/data-analyst-vs-data-scientist-a-comparative-guide">DataCamp</a> </figcaption>
+</p>
+Two notes:
+
+1. He will need to sit through all these meetings with the data analyst team.
+2. In the case of no data analyst, it means that the data scientist must do the job of the data analyst first - getting the data, extracting insights - basically get to know the data well before starting doing anything. (As a consolation, he may not need to organize meetings.)
+
+Data scientists are concerned with the question What will happen? and If so, what we will do? This leads to these abilities that data scientists are expected to have, listed by the stages in the diagram:
+1. Getting the data. Again, SQL and API calling are your friends. However, for a data scientist, the volume of data that you process may be even larger, and you sometimes are expected to work with a data engineer team to get the data.
+2. Cleaning the data. The purposes are twofold: you need to get used to the data, and you need to prepare it for subsequent steps involving the models. In Python, you will want to comfortably work with Pandas and Matplotlib, but sometimes you will go a level lower with Numpy.
+3. Feature engineering. With this, we get deeper into ML.

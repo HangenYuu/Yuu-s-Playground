@@ -37,10 +37,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -166,12 +166,39 @@ ul.task-list li input[type="checkbox"] {
 <li><p><strong>Predictive Analytics</strong>: This is when ML models come into play. The goal of this stage is to make inference about the future from the patterns we dig out in the last stage. To continue with the example, now we want to predict user’s ratings to a new artist that we may introduce to them through our streaming app.</p></li>
 <li><p><strong>Prescriptive Analytics</strong>: From the insights of previous stages, now we can formulate strategy and take actions to benefit from the predicted outcomes. It means going on and recommend new artists of the same genre to an user whom you are quite certain will respond positively to the recommendations, and not doing so otherwise.</p></li>
 </ol>
-<p>The jobs and responsibilities</p>
+<p>The jobs and responsibilities of a data-whoever varies based on the stage they are at. Let’s explore this in-depth.</p>
 </section>
-<section id="data-analyst" class="level1">
-<h1>Data Analyst:</h1>
+<section id="different-stages-different-jobs" class="level1">
+<h1>Different stages, different jobs:</h1>
+<section id="data-analyst" class="level2">
+<h2 class="anchored" data-anchor-id="data-analyst">Data Analyst:</h2>
+For a data analyst, his jobs mainly involve stage 1. He is given a data set, extracts insights from the data, and then visualizes and report the findings back to stakeholders.
+<p align="center">
+<img src="image1_7987ef4fa0.png">
+</p><figcaption align="center">
+Source: <a href="https://www.datacamp.com/blog/data-analyst-vs-data-scientist-a-comparative-guide">DataCamp</a>
+</figcaption>
+<p></p>
+<p>Data analysts are concerned with the questions What? and Why?. Here are the abilities data analysts are expected to have, listed by the stages in the diagram: 1. Getting your hands on the data. This may involve using SQL, calling API to an online database. 2. Loading, cleaning, and exploring the data. In Python, this will most likely mean Pandas and Matplotlib/Seaborn (for tabular data). There are other tools such as Tableau and Power BI that can also be used. Note: Exploring here means both describing the data - calculating means, medians, interquartile range, etc. and finding plausible reasons explaining the data characteristics, e.g.&nbsp;“Why does teenagers make up the majority of our customers?” 3. Reporting: It can be a written report or a meeting to communicate the findings to the stakeholders, or a dashboard that helps another team (e.g.&nbsp;sales) respond better to what you have found. It is likely that you will write you report with Microsoft Words, which will contain visualizations from above i.e.&nbsp;using Matplotlib/Tableau/Power BI.</p>
+</section>
+<section id="data-scientist" class="level2">
+<h2 class="anchored" data-anchor-id="data-scientist">Data Scientist:</h2>
+For a data scientist, the jobs will be more about predictive and prescriptive analytics. He will need to act on the insights that data analysts or he has found, often with the help of ML.
+<p align="center">
+<img src="image2_dad0dc931d.png">
+</p><figcaption align="center">
+Source: <a href="https://www.datacamp.com/blog/data-analyst-vs-data-scientist-a-comparative-guide">DataCamp</a>
+</figcaption>
+<p></p>
+<p>Two notes:</p>
+<ol type="1">
+<li>He will need to sit through all these meetings with the data analyst team.</li>
+<li>In the case of no data analyst, it means that the data scientist must do the job of the data analyst first - getting the data, extracting insights - basically get to know the data well before starting doing anything. (As a consolation, he may not need to organize meetings.)</li>
+</ol>
+<p>Data scientists are concerned with the question What will happen? and If so, what we will do? This leads to these abilities that data scientists are expected to have, listed by the stages in the diagram: 1. Getting the data. Again, SQL and API calling are your friends. However, for a data scientist, the volume of data that you process may be even larger, and you sometimes are expected to work with a data engineer team to get the data. 2. Cleaning the data. The purposes are twofold: you need to get used to the data, and you need to prepare it for subsequent steps involving the models. In Python, you will want to comfortably work with Pandas and Matplotlib, but sometimes you will go a level lower with Numpy. 3. Feature engineering. With this, we get deeper into ML.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
