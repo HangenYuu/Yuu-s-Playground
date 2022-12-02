@@ -1,6 +1,6 @@
 ---
-title: "Data what?"
-subtitle: "Data Analyst, Data Engineer, Data Scientist, Machine Learning Engineer, MLOps Engineer - what's the difference?"
+title: "First thing first"
+subtitle: "Data Scientist and Machine Learning Engineer - with a brief mention of Data Analyst and Data Engineer"
 author: "Pham Nguyen Hung"
 draft: true
 date: "2022-11-11"
@@ -10,9 +10,9 @@ format:
         code-fold: true
 jupyter: python3 
 ---
-![](72leoy.jpg)
+![](72vazj.jpg)
 
-This is my first post  documenting my journey to become a machine learning engineer. You can consider this post as the answer to the interview question "How do you that you want this *exact* job?". Short answer: because I have researched enough and know the difference between these all the jobs. Long answer: read down.
+This is my first post  documenting my journey to become a machine learning engineer/data scientist. You can consider this post as the answer to why I have written "machine learning engineer/data scientist", not just any. Short answer: the definition (responsibilities and skills) varies from company to company. Long answer: read down.
 
 # Machine Learning (ML), Artificical Intelligence (AI), Data Science (DS):
 AI is the catch-all phrase to describe techniques that make machines display "intelligence" similar to humans in some sense. The most famous example is the ability to recognize a cat in the picture. ML is an approach in AI. There are other approaches such as symbolic artificial intelligence, but we all know which one dominates. A side note: Deep learning (DL) is an approach in ML. One good way to think about ML is it is trying to fit a function to the data at hand. DL tries to accomplish this with neural network, which was proved to be able to simulate *any* continuous function (with enough size and data) and to have stellar results.
@@ -38,19 +38,24 @@ Simply put, business analytics is data science in the context of a business. Fro
 
 The jobs and responsibilities of a data-whoever varies based on the stage they are at. Let's explore this in-depth.
 
-# Different stages, different jobs:
+# The easily distinguished jobs:
 
 ## Data Analyst:
-For a data analyst, his jobs mainly involve stage 1. He is given a data set, extracts insights from the data, and then visualizes and report the findings back to stakeholders.
+For a data analyst, his job is mainly stage 1. He is given a data set, extracts insights from the data, and then visualizes and report the findings back to stakeholders.
 <p align=center>
 <img src="image1_7987ef4fa0.png">
 <figcaption align=center>Source: <a href="https://www.datacamp.com/blog/data-analyst-vs-data-scientist-a-comparative-guide">DataCamp</a> </figcaption>
 </p>
 Data analysts are concerned with the questions What? and Why?. Here are the abilities data analysts are expected to have, listed by the stages in the diagram:
-1. Getting your hands on the data. This may involve using SQL, calling API to an online database.
+1. Getting your hands on the data. This may involve using SQL, calling API to an online database, sending an email to the data engineer, etc.
 2. Loading, cleaning, and exploring the data. In Python, this will most likely mean Pandas and Matplotlib/Seaborn (for tabular data). There are other tools such as Tableau and Power BI that can also be used.
 Note: Exploring here means both describing the data - calculating means, medians, interquartile range, etc. and finding plausible reasons explaining the data characteristics, e.g. "Why does teenagers make up the majority of our customers?"
 3. Reporting: It can be a written report or a meeting to communicate the findings to the stakeholders, or a dashboard that helps another team (e.g. sales) respond better to what you have found. It is likely that you will write you report with Microsoft Words, which will contain visualizations from above i.e. using Matplotlib/Tableau/Power BI.
+
+## Data Engineer:
+As a [LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:6991442210093219840/) post suggested, a data engineer's job is making sure that data analysts and data scientists can do their job. He is in charge of the data pipeline. Specifically (but not exhaustively):
+
+1. Storing the data. It means you need a database, and when you talk about database, you talk about SQL. But wait, maybe the data need to be shareable to other teams. It means the database must be in the cloud.
 
 ## Data Scientist:
 For a data scientist, the jobs will be more about predictive and prescriptive analytics. He will need to act on the insights that data analysts or he has found, often with the help of ML.
@@ -64,6 +69,15 @@ Two notes:
 2. In the case of no data analyst, it means that the data scientist must do the job of the data analyst first - getting the data, extracting insights - basically get to know the data well before starting doing anything. (As a consolation, he may not need to organize meetings.)
 
 Data scientists are concerned with the question What will happen? and If so, what we will do? This leads to these abilities that data scientists are expected to have, listed by the stages in the diagram:
+may come from
 1. Getting the data. Again, SQL and API calling are your friends. However, for a data scientist, the volume of data that you process may be even larger, and you sometimes are expected to work with a data engineer team to get the data.
-2. Cleaning the data. The purposes are twofold: you need to get used to the data, and you need to prepare it for subsequent steps involving the models. In Python, you will want to comfortably work with Pandas and Matplotlib, but sometimes you will go a level lower with Numpy.
-3. Feature engineering. With this, we get deeper into ML.
+2. Cleaning the data. The purposes are twofold: you need to get used to the data, and you need to prepare it for subsequent steps involving the models. Working with tabular data, you will want to comfortably work with Pandas and Matplotlib, but sometimes you will go a level lower with Numpy. In computer vision, you will likely hear about data augmentation, which is often within a framework like TensorFlow or PyTorch.
+3. Feature engineering. ML 101: our chief task is to find the relationship between the inputs (features) and the ouputs. In simple cases, the features are just the data themselves, for example, feeding height an weight to a model to predict whether a person is obese or not. In feature engineering, we combine the base features to create new feature, for example, we calculate BMI from height and weight and feed into the model as additional inputs. We engineer features when we suspect that the additional features can lead the model to better prediction. The suspect may come from current knowledge, as with BMI and obesity, from "scientific/engineering sense" or just testing random ideas. Pandas is often something you should know.
+4. Model development. First, choose a model. For most of us, it means that you need to read around to see if anyone has tried any kind of model in this problem before and how successful he was. Most likely, the answer would be "Yes" and "State-of-the-art". If no, then you will need to look for successful cases close enough to yours and adapt the model to your situation. If you are really good, you may even create new model architectures. Anyway, it all starts with the ability to research. Second, you need to train and test the model. You will use a framework for this, whether it is scikit-learn, TensorFlow, or PyTorch.
+Note the loop in the diagram: you do not just create a good model and then you are done. Model development is likely to be an interative process: you train your model, your model fails spectacularly, you go back, diagnose the problem, build and train a new model before it fails... You get what I mean. Even in the (very rare) case that your model works immediately, you need to look around and try other modethods and compare them with your first methods.
+Here, besides the need to know at least one framework, you also need to know about ML knowledge. The first one is *metrics* - measures of model performances such as accuracy, F1 score, etc. The second one is *diagnosis tools* e.g. confusion matrix for classification problem.
+5. Productionizing the model.
+
+![]{Screenshot 2022-12-02 152917.png}
+
+Okay hear me out. We have come to a controversial topic: data science vs 
