@@ -53,31 +53,18 @@ Note: Exploring here means both describing the data - calculating means, medians
 3. Reporting: It can be a written report or a meeting to communicate the findings to the stakeholders, or a dashboard that helps another team (e.g. sales) respond better to what you have found. It is likely that you will write you report with Microsoft Words, which will contain visualizations from above i.e. using Matplotlib/Tableau/Power BI.
 
 ## Data Engineer:
-As a [LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:6991442210093219840/) post suggested, a data engineer's job is making sure that data analysts and data scientists can do their job. He is in charge of the data pipeline. Specifically (but not exhaustively):
+As a [LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:6991442210093219840/) post suggested, a data engineer's job is making sure that data analysts and data scientists can do their job. He is in charge of the data pipeline. It means designing a system that:
 
-1. Storing the data. It means you need a database, and when you talk about database, you talk about SQL. But wait, maybe the data need to be shareable to other teams. It means the database must be in the cloud.
+1. Store the data safely.
+2. Control the quality of the data.
+3. Make the data easily retrievable.
 
-## Data Scientist:
-For a data scientist, the jobs will be more about predictive and prescriptive analytics. He will need to act on the insights that data analysts or he has found, often with the help of ML.
+First, you need to know SQL. Second, you need to understand the difference between data system categories, such as data lake, data warehouse, data mart, etc. You are expected to master a framework such as Hadoop or Spark (though it can be Flink or Kafka as well). Your company's system is likely to exist in a cloud, so you must be familiar with Amazon Web Services, Google Cloud Product, or Microsoft Azure. Adding to your growing toolbox, we have Docker (and Kubernetes), orchestration toolbox such as Airflow, CI/CD toolbox such as Jenkins, and computing platforms such as Databricks (which surely can mess it with your knowledge above with their data "lakehouse") or Snowflake. And who-knows-what-else you will need to pick up on the job. All in all, so many things that you will wonder how can you fit all of them in your schedule. But hey, at least it is well-defined, unlike the next topic I am going at...
+
+## Data Scientist/Machine Learning Engineer:
+First, let's start with a diagram from DataCamp.
 <p align=center>
 <img src="image2_dad0dc931d.png">
 <figcaption align=center>Source: <a href="https://www.datacamp.com/blog/data-analyst-vs-data-scientist-a-comparative-guide">DataCamp</a> </figcaption>
 </p>
-Two notes:
-
-1. He will need to sit through all these meetings with the data analyst team.
-2. In the case of no data analyst, it means that the data scientist must do the job of the data analyst first - getting the data, extracting insights - basically get to know the data well before starting doing anything. (As a consolation, he may not need to organize meetings.)
-
-Data scientists are concerned with the question What will happen? and If so, what we will do? This leads to these abilities that data scientists are expected to have, listed by the stages in the diagram:
-may come from
-1. Getting the data. Again, SQL and API calling are your friends. However, for a data scientist, the volume of data that you process may be even larger, and you sometimes are expected to work with a data engineer team to get the data.
-2. Cleaning the data. The purposes are twofold: you need to get used to the data, and you need to prepare it for subsequent steps involving the models. Working with tabular data, you will want to comfortably work with Pandas and Matplotlib, but sometimes you will go a level lower with Numpy. In computer vision, you will likely hear about data augmentation, which is often within a framework like TensorFlow or PyTorch.
-3. Feature engineering. ML 101: our chief task is to find the relationship between the inputs (features) and the ouputs. In simple cases, the features are just the data themselves, for example, feeding height an weight to a model to predict whether a person is obese or not. In feature engineering, we combine the base features to create new feature, for example, we calculate BMI from height and weight and feed into the model as additional inputs. We engineer features when we suspect that the additional features can lead the model to better prediction. The suspect may come from current knowledge, as with BMI and obesity, from "scientific/engineering sense" or just testing random ideas. Pandas is often something you should know.
-4. Model development. First, choose a model. For most of us, it means that you need to read around to see if anyone has tried any kind of model in this problem before and how successful he was. Most likely, the answer would be "Yes" and "State-of-the-art". If no, then you will need to look for successful cases close enough to yours and adapt the model to your situation. If you are really good, you may even create new model architectures. Anyway, it all starts with the ability to research. Second, you need to train and test the model. You will use a framework for this, whether it is scikit-learn, TensorFlow, or PyTorch.
-Note the loop in the diagram: you do not just create a good model and then you are done. Model development is likely to be an interative process: you train your model, your model fails spectacularly, you go back, diagnose the problem, build and train a new model before it fails... You get what I mean. Even in the (very rare) case that your model works immediately, you need to look around and try other modethods and compare them with your first methods.
-Here, besides the need to know at least one framework, you also need to know about ML knowledge. The first one is *metrics* - measures of model performances such as accuracy, F1 score, etc. The second one is *diagnosis tools* e.g. confusion matrix for classification problem.
-5. Productionizing the model.
-
-![]{Screenshot 2022-12-02 152917.png}
-
-Okay hear me out. We have come to a controversial topic: data science vs 
+The things that confuse me
