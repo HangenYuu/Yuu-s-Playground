@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: docs
 website:
-  title: "Hung's Playground"
+  title: "H's notes"
   navbar:
     right:
       - about.qmd
@@ -13,7 +13,7 @@ website:
         href: https://twitter.com
 format:
   html:
-    theme: sketchy
+    theme: lux
     css: styles.css
 
 

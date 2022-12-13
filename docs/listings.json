@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/ftf/index.html",
       "/posts/hello_world/index.html"
     ]
   }
