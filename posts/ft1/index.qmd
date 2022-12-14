@@ -16,7 +16,7 @@ jupyter: python3
 
 # Motivation:
 
-This is my first post  documenting my journey to become a machine learning engineer/data scientist. The idea was stumbled during my job search, when I confused "Data Scientist" and "Machine Learning Engineer" (and "Data Analyst" and "Data Engineer", to a lesser extent) together. The post was created so that nobody having read it in the near future got confused again.
+The idea for the post was stumbled during my job search, when I confused "Data Scientist" and "Machine Learning Engineer" (and "Data Analyst" and "Data Engineer", to a lesser extent) together so many times. The post was created so that nobody having read it in the near future got confused again.
 
 The post will be straight to the point, because I want to save our time. Now, some head-up:
 
