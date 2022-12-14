@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Pham Nguyen Hung">
-<meta name="dcterms.date" content="2022-12-13">
+<meta name="dcterms.date" content="2022-12-14">
 
 <title>H’s notes - First thing (1)</title>
 <style>
@@ -129,7 +129,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">December 13, 2022</p>
+        <p class="date">December 14, 2022</p>
       </div>
     </div>
       
@@ -150,8 +150,8 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#data-analyst" id="toc-data-analyst" class="nav-link" data-scroll-target="#data-analyst">Data Analyst:</a></li>
   <li><a href="#data-engineer" id="toc-data-engineer" class="nav-link" data-scroll-target="#data-engineer">Data Engineer:</a></li>
-  <li><a href="#data-scientistmachine-learning-engineer" id="toc-data-scientistmachine-learning-engineer" class="nav-link" data-scroll-target="#data-scientistmachine-learning-engineer">Data Scientist/Machine Learning Engineer:</a></li>
   </ul></li>
+  <li><a href="#confusion-and-introduction-to-the-next-post" id="toc-confusion-and-introduction-to-the-next-post" class="nav-link" data-scroll-target="#confusion-and-introduction-to-the-next-post">Confusion, and introduction to the next post:</a></li>
   </ul>
 </nav>
     </div>
@@ -190,36 +190,28 @@ ul.task-list li input[type="checkbox"] {
 <p>Preferred: These are specific TikTok’s preferences:</p>
 <ol start="3" type="1">
 <li>…how to do statistical analysis. This is arguably “basic”, not “preferred”. The numbers you calculate in the platform, they all have statistical meanings, so it helps to know what you are calculating. In short, statistics is fundamental, so learn it well from the resource you prefer. (You can now find a playlist of entire university course or free textbook online).</li>
-<li>…how to use API. A business intelligence platform can do all things, except generating initial data - you will need to load them in yourself. For TikTok, the data seem to be stored in a cloud database, so you will need to use API to pull them down. The best way to learn is through experimenting. For me, I used API to . Side note: API is often used with a programming language, so you should learn some basic syntax for one. Python is a good choice for beginner.</li>
+<li>…how to use API. A business intelligence platform can do all things, except generating initial data - you will need to load them in yourself. For TikTok, the data seem to be stored in a cloud database, so you will need to use API to pull them down. The best way to learn is through experimenting. For me, I used API to <a href="https://developers.zamzar.com/">convert ebook for my Kindle</a> and <a href="https://github.com/HangenYuu/Coursera-Python3_Programming-Final_Project/blob/main/Movie_Recommendation_With_API.ipynb">create movie ratings and recommendation</a>. Side note: API is often used with a programming language, so you should learn some basic syntax for one. Python is a good choice for beginner.</li>
 <li>…how to use Hadoop-related technology. Apache Hadoop is an open-source framework specialized in handling big data, especially in batch. Hadoop Distributed File System (HDFS), as the name suggests, help you work with data that are distributed across different databases. A company using Hadoop suggests a large volume of data (and facilities to store them), which is certainly the case at TikTok - just imagine how many reels are uploaded per day. And this is a company-specific preference: not all companies have data so big that Hadoop is required. But if you think that knowing Hadoop is beneficial in this age of big data, you can learn it. Make sure to focus on your job - data extraction, data preparation, etc.</li>
 </ol>
 </section>
 <section id="data-engineer" class="level2">
 <h2 class="anchored" data-anchor-id="data-engineer">Data Engineer:</h2>
-<p>As a <a href="https://www.linkedin.com/feed/update/urn:li:activity:6991442210093219840/">LinkedIn</a> post suggested, a data engineer’s job is “being in charge of the data pipeline”, making sure that people such as data scientists can have the data to do their jobs. I will admit that I know next to nothing about data engineer, so the following came from a certain <a href="https://www.youtube.com/watch?v=WgCavqDntlQ">“God-tier” roadmap</a> that I picked up. (I am weak again anything “God-tier”, so please refrain from using that against me). I will guess that the job requirements will vary. The data you need to work on may just be stored in a single AWS S3, but there are cases where the data are distributed in 23 data centers around the world, and you need Vitess on top of MySQL to handle the requests successfully (totally not Youtube). In any case, a quick rundown of the “God-tier” roadmap reviews that you need:</p>
+<p>As a <a href="https://www.linkedin.com/feed/update/urn:li:activity:6991442210093219840/">LinkedIn</a> post suggested, data engineers are important. A data pipeline must exists before any analysis can be done. So I put here two internship posts: <img src="Screenshot%202022-12-14%20at%2009-39-55%20(18)%20data%20engineer%20Jobs%20LinkedIn.png" class="img-fluid"> <img src="Screenshot%202022-12-14%20at%2009-41-06%20(18)%20data%20engineer%20Jobs%20LinkedIn.png" class="img-fluid"></p>
+<p>Before continuing, let’s me clarify that data engineer is not my current path, so I do not know the topics I mention well. There are people who are more qualified than me out there (especially on YouTube), seek them for further details. From the job descriptions, you will need to know…</p>
 <ol type="1">
-<li>SQL (and NoSQL)</li>
-<li>Database system knowledge (data lake, data warehouse, etc.)</li>
-<li>Linux a.k.a working with command line interface (CLI)</li>
-<li>Big data framework (Hadoop, Spark, Kafka, depends on your company)</li>
-<li>Cloud service knowledge (Google Cloud Product (GCP), Amazon Web Services (AWS), or Microsoft Azure - depends on your company)</li>
-<li>Containerization technology: Docker (and Kubernetes)</li>
+<li>…SQL. The language of database. MySQL is the place to start (YouTube uses that), and you can find free courses on Kaggle and practices on <a href="https://www.stratascratch.com/">StrataScratch</a>. But remember the emphasis on related project experience.</li>
+<li>…one or more in Java/Go/C++/C#/Python. There is no “supreme language”, use the one that you feel confident about. Again, remember the empahsis on “software development”/“capabilities and mastering” - it means project(s).</li>
+<li>…data structures &amp; algorithms. Some would say one word: LeetCode, but I would say two: “explain LeetCode”. Your DSA will be measured in the coding questions, and you must make sure to solve them. However, notice the emphasis on “communication skills” - you also need to explain your solution in the simplest way possible.</li>
+<li>…data warehouse/ETL development/data model/(data analysis/ecommerce). Extract Transform Load (ETL) is the basic job of data engineers: extract data from source(s), transform them based on requirement, and load the data into systems so that end-users can access. Data warehouse obviously stores data, but it needs designing based on your company’s needs. E-commerce is company’s specific needs. For data analysis appearance in data engineer’s descriptions, I will treat it below.</li>
+<li>…Hadoop ecosystem/open-source big data. These are again company’s specific needs. Instead of going into details, let’s remind the job seekers that each of these tech stacks is for a different problem, so trying to know all of the Apache family is inferior to knowing what your company requires.</li>
 </ol>
-<p>You may find the rest in the video and the <a href="https://ufile.io/ttjqxmr8">attached document</a>. Now onto the confusing topic…</p>
 </section>
-<section id="data-scientistmachine-learning-engineer" class="level2">
-<h2 class="anchored" data-anchor-id="data-scientistmachine-learning-engineer">Data Scientist/Machine Learning Engineer:</h2>
-First, let’s start with a diagram from DataCamp.
-<p align="center">
-<img src="image2_dad0dc931d.png">
-</p><figcaption align="center">
-Source: <a href="https://www.datacamp.com/blog/data-analyst-vs-data-scientist-a-comparative-guide">DataCamp</a>
-</figcaption>
-<p></p>
-<p>The things that confuse me</p>
+</section>
+<section id="confusion-and-introduction-to-the-next-post" class="level1">
+<h1>Confusion, and introduction to the next post:</h1>
+<p>Now, let’s go back to “data analysis in data engineer job”, and “Hadoop in data analyst”. This is why I am initially confused: there is no definite boundary on the job descriptions. This inevitably will exist. For example, the company may be small, so data analysts are responsible for designing the data pipeline. At bigger companies, the roles are separated, but how shoudl data engineers design the pipeline? Based on data analysts’ needs, of course, so it is beneficial that data engineers know data analysis to facilitate communication. And if data analysts know how to pull data directly from the company’s Hadoop cluster, then it is less job for the data engineers, and so on. The lesson to us job seekers is 1) study your company, know its needs (often with the help of imagination) and 2) don’t confine your knowledge to your job title, expand it to the ones that you (hopefully will) work closely with. In the next post, I will treat two titles that even overlap more: data scientists and machine learning engineers.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

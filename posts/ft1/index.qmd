@@ -3,7 +3,7 @@ title: "First thing (1)"
 subtitle: "Data Analyst and Data Engineer"
 author: "Pham Nguyen Hung"
 draft: false
-date: "2022-12-13"
+date: "2022-12-14"
 categories: [basic]
 format:
     html:
@@ -49,26 +49,23 @@ Preferred:
 These are specific TikTok's preferences:
 
 3. ...how to do statistical analysis. This is arguably "basic", not "preferred". The numbers you calculate in the platform, they all have statistical meanings, so it helps to know what you are calculating. In short, statistics is fundamental, so learn it well from the resource you prefer. (You can now find a playlist of entire university course or free textbook online).
-4. ...how to use API. A business intelligence platform can do all things, except generating initial data - you will need to load them in yourself. For TikTok, the data seem to be stored in a cloud database, so you will need to use API to pull them down. The best way to learn is through experimenting. For me, I used API to . Side note: API is often used with a programming language, so you should learn some basic syntax for one. Python is a good choice for beginner.
+4. ...how to use API. A business intelligence platform can do all things, except generating initial data - you will need to load them in yourself. For TikTok, the data seem to be stored in a cloud database, so you will need to use API to pull them down. The best way to learn is through experimenting. For me, I used API to [convert ebook for my Kindle](https://developers.zamzar.com/) and [create movie ratings and recommendation](https://github.com/HangenYuu/Coursera-Python3_Programming-Final_Project/blob/main/Movie_Recommendation_With_API.ipynb). Side note: API is often used with a programming language, so you should learn some basic syntax for one. Python is a good choice for beginner.
 5. ...how to use Hadoop-related technology. Apache Hadoop is an open-source framework specialized in handling big data, especially in batch. Hadoop Distributed File System (HDFS), as the name suggests, help you work with data that are distributed across different databases. A company using Hadoop suggests a large volume of data (and facilities to store them), which is certainly the case at TikTok - just imagine how many reels are uploaded per day. And this is a company-specific preference: not all companies have data so big that Hadoop is required. But if you think that knowing Hadoop is beneficial in this age of big data, you can learn it. Make sure to focus on your job - data extraction, data preparation, etc.
 
 ## Data Engineer:
-As a [LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:6991442210093219840/) post suggested, a data engineer's job is "being in charge of the data pipeline", making sure that people such as data scientists can have the data to do their jobs. I will admit that I know next to nothing about data engineer, so the following came from a certain ["God-tier" roadmap](https://www.youtube.com/watch?v=WgCavqDntlQ) that I picked up. (I am weak again anything "God-tier", so please refrain from using that against me). I will guess that the job requirements will vary. The data you need to work on may just be stored in a single AWS S3, but there are cases where the data are distributed in 23 data centers around the world, and you need Vitess on top of MySQL to handle the requests successfully (totally not Youtube). In any case, a quick rundown of the "God-tier" roadmap reviews that you need:
+As a [LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:6991442210093219840/) post suggested, data engineers are important. A data pipeline must exists before any analysis can be done. So I put here two internship posts:
+![](Screenshot 2022-12-14 at 09-39-55 (18) data engineer Jobs LinkedIn.png)
+![](Screenshot 2022-12-14 at 09-41-06 (18) data engineer Jobs LinkedIn.png)
 
-1. SQL (and NoSQL)
-2. Database system knowledge (data lake, data warehouse, etc.)
-3. Linux a.k.a working with command line interface (CLI)
-4. Big data framework (Hadoop, Spark, Kafka, depends on your company)
-5. Cloud service knowledge (Google Cloud Product (GCP), Amazon Web Services (AWS), or Microsoft Azure - depends on your company)
-6. Containerization technology: Docker (and Kubernetes)
+Before continuing, let's me clarify that data engineer is not my current path, so I do not know the topics I mention well. There are people who are more qualified than me out there (especially on YouTube), seek them for further details.
+From the job descriptions, you will need to know...
 
-You may find the rest in the video and the [attached document](https://ufile.io/ttjqxmr8).
-Now onto the confusing topic...
+1. ...SQL. The language of database. MySQL is the place to start (YouTube uses that), and you can find free courses on Kaggle and practices on [StrataScratch](https://www.stratascratch.com/). But remember the emphasis on related project experience.
+2. ...one or more in Java/Go/C++/C#/Python. There is no "supreme language", use the one that you feel confident about. Again, remember the empahsis on "software development"/"capabilities and mastering" - it means project(s).
+3. ...data structures & algorithms. Some would say one word: LeetCode, but I would say two: "explain LeetCode". Your DSA will be measured in the coding questions, and you must make sure to solve them. However, notice the emphasis on "communication skills" - you also need to explain your solution in the simplest way possible.
+4. ...data warehouse/ETL development/data model/(data analysis/ecommerce). Extract Transform Load (ETL) is the basic job of data engineers: extract data from source(s), transform them based on requirement, and load the data into systems so that end-users can access. Data warehouse obviously stores data, but it needs designing based on your company's needs. E-commerce is company's specific needs. For data analysis appearance in data engineer's descriptions, I will treat it below.
+5. ...Hadoop ecosystem/open-source big data. These are again company's specific needs. Instead of going into details, let's remind the job seekers that each of these tech stacks is for a different problem, so trying to know all of the Apache family is inferior to knowing what your company requires.
 
-## Data Scientist/Machine Learning Engineer:
-First, let's start with a diagram from DataCamp.
-<p align=center>
-<img src="image2_dad0dc931d.png">
-<figcaption align=center>Source: <a href="https://www.datacamp.com/blog/data-analyst-vs-data-scientist-a-comparative-guide">DataCamp</a> </figcaption>
-</p>
-The things that confuse me
+# Confusion, and introduction to the next post:
+Now, let's go back to "data analysis in data engineer job", and "Hadoop in data analyst". This is why I am initially confused: there is no definite boundary on the job descriptions. This inevitably will exist. For example, the company may be small, so data analysts are responsible for designing the data pipeline. At bigger companies, the roles are separated, but how shoudl data engineers design the pipeline? Based on data analysts' needs, of course, so it is beneficial that data engineers know data analysis to facilitate communication. And if data analysts know how to pull data directly from the company's Hadoop cluster, then it is less job for the data engineers, and so on. The lesson to us job seekers is 1) study your company, know its needs (often with the help of imagination) and 2) don't confine your knowledge to your job title, expand it to the ones that you (hopefully will) work closely with.
+In the next post, I will treat two titles that even overlap more: data scientists and machine learning engineers. 
