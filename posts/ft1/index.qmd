@@ -18,15 +18,6 @@ jupyter: python3
 
 The idea for the post was stumbled during my job search, when I confused "Data Scientist" and "Machine Learning Engineer" (and "Data Analyst" and "Data Engineer", to a lesser extent) together so many times. The post was created so that nobody having read it in the near future got confused again.
 
-The post will be straight to the point, because I want to save our time. Now, some head-up:
-
-# Machine Learning (ML), Artificical Intelligence (AI), Data Science (DS):
-AI is the catch-all phrase to describe techniques that make machines display "intelligence" similar to humans in some sense. The most famous example is the ability to recognize a cat in the picture. ML is a part of AI, sepcifically a goal of "leveraging data to improve performance of machine". Side note: Deep learning (DL) is an approach in AI. One good way to think about ML: whatever model, it is trying to fit a function to the data at hand. DL tries to accomplish this with neural network, which was proved to be able to simulate *any* continuous function (with enough network size and data) and to have stellar results.
-
-DS is the science of extracting insights from data. Simply put, it is statistics paired with human expertise. One example is sabermetrics, and if you want some entertainment, try *Moneyball*. ML techniques, because of their usefulness, have found their way into DS with success, to put it mildly.
-
-The emphasis is on *data*. All the shiny models will cease to exist without data. So whatever you want, being able to work with data is expected.
-
 Now let's look at some internships from TikTok on LinkedIn, the company I am eyeing at. These job posts have high requirements for candidates and should be a good ceiling.
 
 # The easily distinguished jobs:
