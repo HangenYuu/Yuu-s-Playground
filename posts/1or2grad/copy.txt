@@ -1,0 +1,12 @@
+<!-- For demonstration, however, we use a not-so-complex example: a neural network with 2 neurons in the first layer, and a sigma activation function for the output:
+![](photo1671353608.jpeg)
+
+The function describing the process is:
+$$f(x)=\sigma((w_0*x_0+w_1*x_1+b_1)*w_2+b_2)$$
+with:
+$$\sigma(x)=\frac{1}{1+e^{-x}}$$
+
+$w_0,w_1,b_1,w_2,b_2$ are called *parameters* of the model, and are what we need to change to make the model better. But how do we know if the model is better? We have our *loss function*, which describes the distance between our model's prediction and the real result. With that, our task of developing the model becomes (almost just) finding the minimum of the loss function.
+
+In calculus class, if you did not sleep through it, you would be taught that to find the minimum or maximum of a function, whether it is just $f(x)$ or if it is $J(w_0,w_1,w_2,b_1,b_2)$, you needed to take the (partial) derivative(s) of the function with respect to the variable, set it to 0 and solve the equation to get the result. Well, such calculation is impractical for a model such as [AlexNet](https://paperswithcode.com/method/alexnet) with all the convolutional and max_pooling.
+![AlexNet architecture](AlexNet-architecture-used-as-the-baseline-model-for-the-analysis-of-results-on-the.png) -->
