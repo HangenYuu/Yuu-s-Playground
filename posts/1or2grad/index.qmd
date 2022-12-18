@@ -8,7 +8,8 @@ categories: [basic]
 format:
     html:
         toc: true
-        code-fold: true
+        code-fold: false
+        highlight-style: pygments
 jupyter: python3 
 ---
 While scrolling through LinkedIn, I found this curious requirement for the machine learning engineer intern position:
@@ -38,5 +39,13 @@ with tf.GradientTape() as g:
     g.watch(x)
     y = x * x
 dy_dx = g.gradient(y, x)
+print(dy_dx)
+```
+So that's it for gradient taping - it's a way to keep track of the operations on a variable, which is used to calculate the gradient in backpropagation time. Most major framework, such as TensorFlow, have a way to implement this, so you don't need to do that from scratch (if you are interested in doing so, check out this [tutorial](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)), you just need to know how to use them. For example, this is the equivalent code in PyTorch, another popular deep learning framework:
+```{python}
+import torch
+x = torch.Tensor(3, requires_grad=True)
+y = x*x
+dy_dx = torch.autograd.grad(y, x, grad_outputs=torch.ones_like(y))
 print(dy_dx)
 ```
