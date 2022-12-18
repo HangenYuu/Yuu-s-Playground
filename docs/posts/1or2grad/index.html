@@ -208,7 +208,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#machine-learning-and-gradient" id="toc-machine-learning-and-gradient" class="nav-link active" data-scroll-target="#machine-learning-and-gradient">Machine learning and gradient:</a></li>
-  <li><a href="#backpropagation-or-autodifferentiation-or-gradienttape-or-autograd-or" id="toc-backpropagation-or-autodifferentiation-or-gradienttape-or-autograd-or" class="nav-link" data-scroll-target="#backpropagation-or-autodifferentiation-or-gradienttape-or-autograd-or">Backpropagation, or Autodifferentiation, or GradientTape, or Autograd, or…</a></li>
+  <li><a href="#backpropagation-or-autodifferentiation-or-gradienttape-or-autograd-or" id="toc-backpropagation-or-autodifferentiation-or-gradienttape-or-autograd-or" class="nav-link" data-scroll-target="#backpropagation-or-autodifferentiation-or-gradienttape-or-autograd-or">Backpropagation, or Autodifferentiation, or GradientTape, or Autograd, or…</a>
+  <ul class="collapse">
+  <li><a href="#image-credits" id="toc-image-credits" class="nav-link" data-scroll-target="#image-credits">Image Credits:</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -242,9 +245,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>tf.Tensor(6.0, shape=(), dtype=float32)</code></pre>
 </div>
 </div>
-<p>So that</p>
+<p>So that’s it for gradient taping - it’s a way to keep track of the operations on a variable, which is used to calculate the gradient in backpropagation time. Most major framework, such as TensorFlow, have a way to implement this, so you don’t need to do that from scratch (if you are interested in doing so, check out this <a href="https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ">tutorial</a>), you just need to know how to use them. For example, this is a code block in PyTorch, another popular deep learning framework, that does the exact same thing:</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.tensor([<span class="fl">3.</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x<span class="op">*</span>x</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>dy_dx <span class="op">=</span> torch.autograd.grad(y, x, grad_outputs<span class="op">=</span>torch.ones_like(y))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dy_dx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(tensor([6.]),)</code></pre>
+</div>
+</div>
+<p>We could also store the gradient value in the <code>.grad</code> attribute of variable <code>x</code>:</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.tensor([<span class="fl">3.</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x<span class="op">*</span>x</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>y.backward()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x.grad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([6.])</code></pre>
+</div>
+</div>
+<p>The second way is more commonly seen in model training.</p>
+<section id="image-credits" class="level2">
+<h2 class="anchored" data-anchor-id="image-credits">Image Credits:</h2>
+<p>From top to bottom:</p>
+<p><a href="https://www.cerebras.net/blog/cerebras-makes-it-easy-to-harness-the-predictive-power-of-gpt-j">https://www.cerebras.net/blog/cerebras-makes-it-easy-to-harness-the-predictive-power-of-gpt-j</a></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

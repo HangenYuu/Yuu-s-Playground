@@ -41,11 +41,26 @@ with tf.GradientTape() as g:
 dy_dx = g.gradient(y, x)
 print(dy_dx)
 ```
-So that's it for gradient taping - it's a way to keep track of the operations on a variable, which is used to calculate the gradient in backpropagation time. Most major framework, such as TensorFlow, have a way to implement this, so you don't need to do that from scratch (if you are interested in doing so, check out this [tutorial](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)), you just need to know how to use them. For example, this is the equivalent code in PyTorch, another popular deep learning framework:
+So that's it for gradient taping - it's a way to keep track of the operations on a variable, which is used to calculate the gradient in backpropagation time. Most major framework, such as TensorFlow, have a way to implement this, so you don't need to do that from scratch (if you are interested in doing so, check out this [tutorial](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)), you just need to know how to use them. For example, this is a code block in PyTorch, another popular deep learning framework, that does the exact same thing:
 ```{python}
 import torch
-x = torch.Tensor(3, requires_grad=True)
+x = torch.tensor([3.], requires_grad=True)
 y = x*x
 dy_dx = torch.autograd.grad(y, x, grad_outputs=torch.ones_like(y))
 print(dy_dx)
 ```
+
+We could also store the gradient value in the `.grad` attribute of variable `x`:
+```{python}
+import torch
+x = torch.tensor([3.], requires_grad=True)
+y = x*x
+y.backward()
+print(x.grad)
+```
+The second way is more commonly seen in model training.
+
+## Image Credits:
+From top to bottom:
+
+[https://www.cerebras.net/blog/cerebras-makes-it-easy-to-harness-the-predictive-power-of-gpt-j](https://www.cerebras.net/blog/cerebras-makes-it-easy-to-harness-the-predictive-power-of-gpt-j) 
