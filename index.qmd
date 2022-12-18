@@ -2,7 +2,7 @@
 title: "H's notes"
 listing:
   contents: posts
-  fields: [image, date, title, subtitle, categories, author, reading-time]
+  fields: [date, title, subtitle, categories, author, reading-time]
   sort: "date desc"
   type: default
   categories: true
