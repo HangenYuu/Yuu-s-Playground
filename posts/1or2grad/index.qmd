@@ -63,4 +63,5 @@ The second way is more commonly seen in model training.
 ## Image Credits:
 From top to bottom:
 
-[https://www.cerebras.net/blog/cerebras-makes-it-easy-to-harness-the-predictive-power-of-gpt-j](https://www.cerebras.net/blog/cerebras-makes-it-easy-to-harness-the-predictive-power-of-gpt-j) 
+1. This [internship post](https://www.linkedin.com/jobs/search/?currentJobId=3389948741&f_C=18706840&f_E=1&geoId=102454443&keywords=machine%20learning%20engineer&location=Singapore&refresh=true&position=1&pageNum=0) by Datature.
+2. This [blog post](https://www.cerebras.net/blog/cerebras-makes-it-easy-to-harness-the-predictive-power-of-gpt-j) on Cerebras
