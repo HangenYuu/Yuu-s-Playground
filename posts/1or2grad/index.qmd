@@ -4,7 +4,7 @@ subtitle: "From an interesting internship post"
 author: "Pham Nguyen Hung"
 draft: false
 date: "2022-12-18"
-categories: [basic]
+categories: [code]
 format:
     html:
         toc: true
