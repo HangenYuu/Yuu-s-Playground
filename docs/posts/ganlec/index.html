@@ -6,9 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Pham Nguyen Hung">
 <meta name="dcterms.date" content="2023-01-20">
 
-<title>H’s notes - Now</title>
+<title>H’s notes - A Primer on Generative Adversarial Networks (GANs)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,22 +25,22 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -61,17 +62,17 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">H’s notes</span>
     </a>
   </div>
@@ -81,10 +82,10 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html">About</a>
+    <a class="nav-link" href="../../about.html">About</a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./now.html" aria-current="page">Now</a>
+    <a class="nav-link" href="../../now.html">Now</a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/HangenYuu/"><i class="bi bi-github" role="img">
@@ -103,59 +104,64 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">A Primer on Generative Adversarial Networks (GANs)</h1>
+            <p class="subtitle lead">My notes on taking the specialization by deeplearning.ai</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">code</div>
+                <div class="quarto-category">GAN</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Pham Nguyen Hung </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 20, 2023</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
-<!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Now</h1>
-</div>
-
-
-
-<div class="quarto-title-meta">
-
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">January 20, 2023</p>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#a-brief-history-of-gans" id="toc-a-brief-history-of-gans" class="nav-link active" data-scroll-target="#a-brief-history-of-gans">A brief history of GANs</a></li>
+  </ul>
+</nav>
     </div>
-  </div>
-    
-  </div>
-  
-
-</header>
-
-<section id="whats-i-am-currently-doing-now" class="level1">
-<h1>What’s I am currently doing now:</h1>
-<section id="studying-for-my-bachelors-degree-at-ntu" class="level2">
-<h2 class="anchored" data-anchor-id="studying-for-my-bachelors-degree-at-ntu">Studying for my bachelor’s degree at NTU</h2>
-<p>My major is chemical engineering, but I want to be a deep learning practitioner.</p>
-</section>
-<section id="learning-the-deep-learning-and-gan-specializations-from-deeplearning.ai" class="level2">
-<h2 class="anchored" data-anchor-id="learning-the-deep-learning-and-gan-specializations-from-deeplearning.ai">Learning the Deep Learning and GAN Specializations from deeplearning.ai</h2>
-<p>I studied it on Coursera. Two courses were released at different times, so there was a mismatched in module used (TensorFlow vs PyTorch), but that means that I can learn from both worlds. I often encountered champions for PyTorch, such as Jeremy Howard, who praised the module over TensorFlow, but I feel like I need to experience both to judge.</p>
-</section>
-<section id="documenting-my-notes-here-on-hs-notes" class="level2">
-<h2 class="anchored" data-anchor-id="documenting-my-notes-here-on-hs-notes">Documenting my notes here on H’s Notes</h2>
-<p>Just go to a blog post and see one of my entry.</p>
-</section>
-<section id="working-on-projects-to-deepen-my-understanding" class="level2">
-<h2 class="anchored" data-anchor-id="working-on-projects-to-deepen-my-understanding">Working on projects to deepen my understanding</h2>
-<p>You can see them at my <a href="https://tinyurl.com/VisLe">Github repo</a>. For the philosophy of project-based and just-in-time learning, check out this <a href="https://medium.com/@init_27/how-not-to-do-fast-ai-or-any-ml-mooc-3d34a7e0ab8c">post</a> or this <a href="https://eugeneyan.com/writing/you-dont-need-another-mooc/">post</a>.</p>
-</section>
-<section id="looking-for-summer-internship-in-singapore" class="level2">
-<h2 class="anchored" data-anchor-id="looking-for-summer-internship-in-singapore">Looking for summer internship in Singapore</h2>
-<p>It is not an easy market that I come into, with the news about tech layoffs in Singapore this 2023. Still, I do what I can do and have to do. My deadline is 29/01/2023, when the career fair at my school starts.</p>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
-</section>
+
+
+<p>If you have studied deep learning before, you will notice that we will encounter classification many times. To be honest, it is fun in a way, having your own model to classify anime characters. Alas, it is a bit dry to me. Intelligence, for me, is creativity, the ability to create something <em>new</em>. I want a model that can create, especially work of art. That led me right to GANs, not so much a model but an elegant way of thinking.</p>
+<section id="a-brief-history-of-gans" class="level1">
+<h1>A brief history of GANs</h1>
+<p><em>For a fuller account, check out the <a href="https://www.technologyreview.com/2018/02/21/145289/the-ganfather-the-man-whos-given-machines-the-gift-of-imagination/">MIT Technology Review article</a>.</em></p>
+<p>Back in 2014, computer vision had witnessed the power of deep learning. One must not look no further than the entries for the ImageNet challenge, with the introduction of very deep models from <a href="https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">AlexNet</a> to <a href="https://arxiv.org/pdf/1409.1556.pdf">VGG</a>.</p>
+<p><em>All the quoted paper from ArXiv was embedded with its corresponding Ar5iv link for the HTML version instead. To change to the abstract page, follow this example:</em> <code>https://ar5iv.labs.arxiv.org/html/1409.1556</code> → <code>https://arxiv.org/abs/1409.1556</code>.</p>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -256,6 +262,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
   }
 });
+</script>
+<script src="https://giscus.app/client.js" data-repo="HangenYuu/h_notes" data-repo-id="R_kgDOIR-cmQ" data-category="General" data-category-id="DIC_kwDOIR-cmc4CTtCC" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 

@@ -4,7 +4,7 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this blog"
+    "text": "Hello, my name is Pham Nguyen Hung. I am a Deep Learning Practitioner. The stage I am at (student, master, etc.) is bound to change over the years, so you are encouraged to view the Now tab for my current position. I have a knack for numbers and complex concepts, and love learning them. Outside that, I have an interest in books of all types, and arts (music, drawing). The word that motivates me is “polymath”, and the figure is Nassim Nicholas Taleb."
   },
   {
     "objectID": "index.html",
@@ -18,7 +18,7 @@
     "href": "now.html",
     "title": "Now",
     "section": "",
-    "text": "I want to go into MLOps. One general assumption, reflected by the curriculum is that you need to know a lot about creating a machine learning first before going into MLOps. That is also the normal trajectory of “normal” MLOps. I also believe that you should have knowledge in the model before building one. Alas, I want to dive head first and see what I exactly need to deploy a model, which I believe involve a lot less than my impression. The experience from a recent hackathon also shows that you can easily find a person who can train a model well, but it is hard to find a person who can deploy the model and do all the fancy demo.\n\n\n\nFinding joy in the adventures of Feynman’s again. I loved his humor and his irresponsibility. His story is something to balance with all the depressing meta stories that I expose myself to, and probably continue to."
+    "text": "My major is chemical engineering, but I want to be a deep learning practitioner.\n\n\n\nI studied it on Coursera. Two courses were released at different times, so there was a mismatched in module used (TensorFlow vs PyTorch), but that means that I can learn from both worlds. I often encountered champions for PyTorch, such as Jeremy Howard, who praised the module over TensorFlow, but I feel like I need to experience both to judge.\n\n\n\nJust go to a blog post and see one of my entry.\n\n\n\nYou can see them at my Github repo. For the philosophy of project-based and just-in-time learning, check out this post or this post.\n\n\n\nIt is not an easy market that I come into, with the news about tech layoffs in Singapore this 2023. Still, I do what I can do and have to do. My deadline is 29/01/2023, when the career fair at my school starts."
   },
   {
     "objectID": "posts/hello_world/index.html",

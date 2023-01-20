@@ -1,5 +1,6 @@
 ---
 title: "H's notes"
+comments: false
 listing:
   contents: posts
   fields: [date, title, subtitle, categories, author, reading-time]

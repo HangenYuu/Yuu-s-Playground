@@ -1,19 +1,19 @@
 ---
 title: "About"
-image: profile.jpg
+image: IMG_1353.JPG
 about:
   template: jolla
   links:
-    - icon: twitter
-      text: Twitter
-      href: https://twitter.com
+    - icon: facebook
+      text: Facebook
+      href: https://www.facebook.com/hunggggg.phamm/
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/phnghung/
     - icon: github
       text: Github
       href: https://github.com/HangenYuu/
-
 ---
 
-About this blog
+# About this blog
+Hello, my name is Pham Nguyen Hung. I am a Deep Learning Practitioner. The stage I am at (student, master, etc.) is bound to change over the years, so you are encouraged to view the `Now` tab for my current position. I have a knack for numbers and complex concepts, and love learning them. Outside that, I have an interest in books of all types, and arts (music, drawing). The word that motivates me is "polymath", and the figure is Nassim Nicholas Taleb.

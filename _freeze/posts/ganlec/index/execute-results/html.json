@@ -1,0 +1,11 @@
+{
+  "hash": "bcfdfa15483680d20059e22e8d73f422",
+  "result": {
+    "markdown": "---\ntitle: A Primer on Generative Adversarial Networks (GANs)\nsubtitle: My notes on taking the specialization by deeplearning.ai\nauthor: Pham Nguyen Hung\ndraft: true\ndate: '2023-01-20'\ncategories:\n  - code\n  - GAN\nformat:\n  html:\n    toc: true\n    code-fold: true\n    css: styles.css\n---\n\nIf you have studied deep learning before, you will notice that we will encounter classification many times. To be honest, it is fun in a way, having your own model to classify anime characters. Alas, it is a bit dry to me. Intelligence, for me, is creativity, the ability to create something *new*. I want a model that can create, especially work of art. That led me right to GANs, not so much a model but an elegant way of thinking.\n\n# A brief history of GANs\n*For a fuller account, check out the [MIT Technology Review article](https://www.technologyreview.com/2018/02/21/145289/the-ganfather-the-man-whos-given-machines-the-gift-of-imagination/).*\n\nBack in 2014, computer vision had witnessed the power of deep learning. One must not look no further than the entries for the ImageNet challenge, with the introduction of very deep models from [AlexNet](https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf) to [VGG](https://arxiv.org/pdf/1409.1556.pdf).\n\n*All the quoted paper from ArXiv was embedded with its corresponding Ar5iv link for the HTML version instead. To change to the abstract page, follow this example:* `https://ar5iv.labs.arxiv.org/html/1409.1556` &rarr; `https://arxiv.org/abs/1409.1556`.\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
