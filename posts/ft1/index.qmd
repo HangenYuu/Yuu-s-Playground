@@ -2,7 +2,7 @@
 title: "First thing (1)"
 subtitle: "Data Analyst and Data Engineer"
 author: "Pham Nguyen Hung"
-draft: false
+draft: true
 date: "2022-12-14"
 categories: [basic]
 format:

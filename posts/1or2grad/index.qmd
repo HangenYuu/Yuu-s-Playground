@@ -2,7 +2,7 @@
 title: "A thing or two about gradient"
 subtitle: "From an interesting internship post"
 author: "Pham Nguyen Hung"
-draft: false
+draft: true
 date: "2022-12-18"
 categories: [code]
 format:

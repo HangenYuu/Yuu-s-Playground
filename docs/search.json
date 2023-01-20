@@ -11,7 +11,7 @@
     "href": "index.html",
     "title": "H’s notes",
     "section": "",
-    "text": "0 min\n\n\n\n\n\n\n\n\n\nFrom an interesting internship post\n\n\n\n\ncode\n\n\n \n\n\n\n\nDec 18, 2022\n\n\nPham Nguyen Hung\n\n\n3 min\n\n\n\n\n\n\n\n\n\nData Analyst and Data Engineer\n\n\n\n\nbasic\n\n\n \n\n\n\n\nDec 14, 2022\n\n\nPham Nguyen Hung\n\n\n6 min\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nnew\n\n\ncode\n\n\n \n\n\n\n\nOct 22, 2022\n\n\nPham Nguyen Hung\n\n\n0 min\n\n\n\n\n\n\nNo matching items"
+    "text": "new\n\n\ncode\n\n\n \n\n\n\n\nOct 22, 2022\n\n\nPham Nguyen Hung\n\n\n0 min\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "now.html",
@@ -68,40 +68,5 @@
     "title": "First thing (1)",
     "section": "Data Scientist/Machine Learning Engineer:",
     "text": "Data Scientist/Machine Learning Engineer:\nFirst, let’s start with a diagram from DataCamp.\n\n\n\nSource: DataCamp\n\n\nThe things that confuse me"
-  },
-  {
-    "objectID": "posts/ft1/index.html#data-analyst",
-    "href": "posts/ft1/index.html#data-analyst",
-    "title": "First thing (1)",
-    "section": "Data Analyst:",
-    "text": "Data Analyst:\n\nHere is a helpful diagram from DataCamp that sums up the job descriptions well:\n\nI will analyze the job descriptions from the angle of someone seeking employment as soon as possible, and that is the meaning of “for our purpose” below. From the job descriptions, you will need to know…\nBasic:\n\n…how to use a business intelligence platforms - Looker, Power BI, Tableau and the like. These platforms help you do all of the steps 2-4 above. Take Power BI. You can prepare and transform data; you can explore data from basic (mean, median, etc.) to complex operations that you define yourself; you can do all kinds of visualizations; you can publish the findings to a report, an app (possibly dashboard), or slides to aid your presentation (more on that below).\n…how to communicate (written and oral). After analyzing the data, of course you will need to present insights to “stakeholders” and your superiors, often in a meeting. Because n̶o̶b̶o̶d̶y̶ ̶l̶i̶k̶e̶s̶ ̶m̶e̶e̶t̶i̶n̶g̶time is precious, “concise” and “easy to understand” are good traits to have.\n\nA simple (but not easy) way to demonstrate the two points above is having done a project on the platform of your choice and keep a blog where you update the progress (and muse about other topics).\nPreferred (These are specific TikTok’s preferences):\n\n…how to do statistical analysis. This is arguably “basic”, not “preferred”. The techniques and numbers you use in data analysis all have statistical meanings; you really should know them to a) avoid foolish mistakes and b) modify the technique based on your need instead of just using them as is.\n…how to use API. Application Programming Interface (API) is a way for computer to communicate, most commonly seen on the Internet. A business intelligence platform can do all things, except generating initial data - you will need to load them in yourself. For TikTok, the data seem to be stored in a cloud database, so you will need to use API to pull them down. Best way to learn is to try out the APIs of website on the Internet, which is just a different way of browsing. For me, I used API to convert ebook for my Kindle and create movie ratings and recommendation.\n..how to use Hadoop-related technology. Apache Hadoop is an open-source framework specialized in handling big data. Hadoop Distributed File System (HDFS), as the name suggests, help you work with data that are distributed across different nodes in a cluster (read: different computers in a group of computers connected in some special way by Hadoop). A company asking for Hadoop suggests a large volume of data (and facilities to store them), which is certainly the case at TikTok. This is a confusion for me. Hadoop is more often seen in the requirement for data engineers who use the framework to design data architecture and pipeline helping end-users (such as data analysts) to access massive volume of data fast and accurately."
-  },
-  {
-    "objectID": "posts/ft1/index.html#data-engineer",
-    "href": "posts/ft1/index.html#data-engineer",
-    "title": "First thing (1)",
-    "section": "Data Engineer:",
-    "text": "Data Engineer:\nAs a LinkedIn post suggested, data engineers are important. A data pipeline must exists before any analysis can be done. So I put here two internship posts:  \nBefore continuing, let’s me clarify that data engineer is not my current path, so I do not know the topics I mention well. There are people who are more qualified than me out there (especially on YouTube), seek them for further details. From the job descriptions, you will need to know…\n\n…Hadoop ecosystem/open-source big data tech stacks. From the Apache distributed (big) data family, Hadoop has many brothers, most notably Spark, Kafka, and Flink. These tech stacks are the main tools of you data engineers, so know them well.\n…SQL. MySQL is the place to start (YouTube uses that), and you can find free courses on Kaggle and practices on StrataScratch.\n…one or more in Java/Go/C++/C#/Python. There is no “supreme language”, use the one that you feel confident about.\n…data structures & algorithms. Your DSA will be measured in the coding interviews. But don’t go on rocking 500+ LeetCode problems, make sure to explain the solution well, as you will be tested on communication skills as well after online assessment.\n…data warehouse/ETL development/data model/(data analysis/E-Commerce). Extract Transform Load (ETL) is the basic job of data engineers: extract data from source(s), transform them based on requirement, and load the data into systems so that end-users can access. Data warehouse is a data architecture, alongside with others (try “data lake” and “data lakehouse”). E-Commerce is company-specific. But data analysis?"
-  },
-  {
-    "objectID": "posts/ft1/index.html#data-scientistmachine-learning-engineer",
-    "href": "posts/ft1/index.html#data-scientistmachine-learning-engineer",
-    "title": "First thing (1)",
-    "section": "Data Scientist/Machine Learning Engineer:",
-    "text": "Data Scientist/Machine Learning Engineer:\nFirst, let’s start with a diagram from DataCamp.\n\n\n\nSource: DataCamp\n\n\nThe things that confuse me"
-  },
-  {
-    "objectID": "posts/1or2grad/index.html",
-    "href": "posts/1or2grad/index.html",
-    "title": "A thing or two about gradient",
-    "section": "",
-    "text": "While scrolling through LinkedIn, I found this curious requirement for the machine learning engineer intern position:\nTo be honest, I have no idea what is “gradient taping”, though I vaguely remember that TensorFlow has a tf.GradientTape() class. And yes, it does. So what exactly is a gradient tape, and why do we need it?"
-  },
-  {
-    "objectID": "posts/1or2grad/index.html#image-credits",
-    "href": "posts/1or2grad/index.html#image-credits",
-    "title": "A thing or two about gradient",
-    "section": "Image Credits:",
-    "text": "Image Credits:\nFrom top to bottom:\n\nThis internship post by Datature.\nThis blog post on Cerebras"
   }
 ]
