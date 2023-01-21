@@ -10,11 +10,11 @@
 <atom:link href="https://hangenyuu.github.io/h_notes/index.xml" rel="self" type="application/rss+xml"/>
 <description>H's Notes on Deep Learning</description>
 <generator>quarto-1.1.251</generator>
-<lastBuildDate>Thu, 19 Jan 2023 16:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 20 Jan 2023 16:00:00 GMT</lastBuildDate>
 <item>
   <title>A Primer on Generative Adversarial Networks (GANs)</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>
-  <link>https://hangenyuu.github.io/h_notes/posts/ganlec/index.html</link>
+  <link>https://hangenyuu.github.io/h_notes/posts/gan_p1/index.html</link>
   <description><![CDATA[ 
 
 
@@ -27,7 +27,7 @@
 <p>Back in 2014, computer vision had witnessed the power of deep learning. One must not look no further than the entries for the ImageNet challenge, with the introduction of very deep models from <a href="https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">AlexNet</a> to <a href="https://ar5iv.labs.arxiv.org/html/1409.1556">VGG</a>. (Not to mention <a href="https://ar5iv.labs.arxiv.org/html/1512.03385">ResNet</a> in 2015, an architecture with so interesting an idea that I had to <a href="https://github.com/HangenYuu/vision_learner/tree/main/ARCHITECTURE/CNN/Paper">make a project</a> for it.) However, as discerning and mature as these models could get in classification, they were nascent in generating data: results were blurry images or with weird artifact. “Complex statistical analysis of the elements that make up a photograph” was proposed but would not work. We needed a simpler, more elegant way of solving the problem. And the solution arrived in Goodfellow’s seminal paper, <a href="https://ar5iv.labs.arxiv.org/html/1406.2661">Generative Adversarial Nets</a>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/ganlec/Screenshot%202023-01-20%20at%2019-53-43%20Generative%20Dog%20Images%20Kaggle.png" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p1/Screenshot%202023-01-20%20at%2019-53-43%20Generative%20Dog%20Images%20Kaggle.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>The image was not from the era, but was representative of what you got from the model at that time (and still now with GANs). <a href="https://www.kaggle.com/c/generative-dog-images/discussion/97753">Source</a></em></figcaption><p></p>
 </figure>
 </div>
@@ -37,9 +37,9 @@
 <li>Advances in neural network came about with backpropagation. Neural network could be powerful, yes, but at that time (before the 90s) there existed no easy and computationally cheap way to update the parameters. Then there was backpropagation. The parameters could now be initialized randomly at the beginning, and then be updated incrementally with the gradient of the loss value with it. In other words, now we can start from (almost) anywhere because we have this amazing magical map that can tell the next direction that we need to take.</li>
 </ol>
 </section>
-<section id="the-galns-game" class="level1">
-<h1>The GA<del>L</del>N’s game:</h1>
-<p>Note: I will use digital images as examples to describe GANs. A quick introduction: images are stored as matrices of numbers inside computer’s memory. It we are talking about a black and white image, its content could be divided into discrete squares called pixels; each pixel stores a number describing the intensity of light at the pixel, with 0 for black and 255 for white, and numbers in-between for the shades of gray. If we are referring to colored images, we will have three matrices for intensity of red, green, and blue. This means that to generate images, we just need to generate one matrix or three matrices of certain dimensions, which could be displayed to the screen later.</p>
+<section id="the-gans-game" class="level1">
+<h1>The GANs game:</h1>
+<p><strong>Note:</strong> I will use digital images as examples to describe GANs. A quick introduction: images are stored as matrices of numbers inside computer’s memory. It we are talking about a black and white image, its content could be divided into discrete squares called pixels; each pixel stores a number describing the intensity of light at the pixel, with 0 for black and 255 for white, and numbers in-between for the shades of gray. If we are referring to colored images, we will have three matrices for intensity of red, green, and blue. This means that to generate images, we just need to generate one matrix or three matrices of certain dimensions, which could be displayed to the screen later.</p>
 <p>The word “adversarial” in GAN means “involving or characterized by conflict or opposition” according to Oxford Dictionary. Simply put, a GANs’ system consists of, instead of one, two neural networks pitted against each other. The first one is called <em>Generator</em>, its inputs will be some random numbers, and its output will be the matrix or matrices described above. The second one is called <em>Discriminator</em>, (or <em>Critic</em>, which we will meet later), its inputs will be some real images and the generated images, its output will classification of the image it sees (ideally 0 for real images and 1 for generated images). An analogy is we have the real images as a pile of real antique paintings, the Generator as a forger, the generated images as a pile of forged paintings, and the Discriminator as an appraiser trying to discern the two piles.</p>
 <table class="table">
 <thead>
@@ -67,6 +67,7 @@
 </tr>
 </tbody>
 </table>
+<p><strong>Quick detour:</strong> the GAN concept advances generative AI the same way backpropagation does so. The approach of trying to know the distribution of the image features was right, but the method was wrong a.k.a too complex and computationally expensive. With GAN, we have an elegant way to start with any random distribution while moving towards the optimal distribution incrementally. No need to know everything any more.</p>
 <p>Our loss function will be the good ol’ binary cross-entropy: <img src="https://latex.codecogs.com/png.latex?J(%5Ctheta)%20=%20-%5Cfrac%7B1%7D%7Bm%7D*%5By%5E%7B(i)%7Dlog(h(x%5E%7B(i)%7D,%20%5Ctheta))%20+%20(1%20-%20y%5E%7B(i)%7D)log(1%20-%20(h(x%5E%7B(i)%7D,%20%5Ctheta)))%5D"></p>
 <p>That surely looks very intimidating, but one must not let symbols and numbers get in the way of intuition. One just need to know <img src="https://latex.codecogs.com/png.latex?y%5E%7B(i)%7D"> is the true label of the i<sup>th</sup> example (0 or 1), <img src="https://latex.codecogs.com/png.latex?h(x%5E%7B(i)%7D,%20%5Ctheta)"> is the predicted label for the i<sup>th</sup> example with input <img src="https://latex.codecogs.com/png.latex?x%5E%7B(i)%7D"> and parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta">. With this information, it is easy to realize that the loss will be 0 if the predicted label is the true label and infinitely large otherwise.</p>
 <div class="cell" data-execution_count="1">
@@ -96,7 +97,7 @@
 <div class="cell-output cell-output-display">
 <div id="fig-0" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/ganlec/index_files/figure-html/fig-0-output-1.png" width="605" height="439" class="figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p1/index_files/figure-html/fig-0-output-1.png" width="605" height="439" class="figure-img"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;1: BCE loss when y = 0</figcaption><p></p>
 </figure>
 </div>
@@ -119,13 +120,18 @@
 <div class="cell-output cell-output-display">
 <div id="fig-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/ganlec/index_files/figure-html/fig-1-output-1.png" width="605" height="439" class="figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p1/index_files/figure-html/fig-1-output-1.png" width="605" height="439" class="figure-img"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;2: BCE loss when y = 1</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p><em>All the quoted paper from ArXiv was embedded with its corresponding Ar5iv link for the HTML version instead to support the <a href="https://ar5iv.labs.arxiv.org/">tool</a>. To change to the abstract page, follow this example:</em> <code>https://ar5iv.labs.arxiv.org/html/1409.1556</code> → <code>https://arxiv.org/abs/1409.1556</code>.</p>
+<p>I mentioned that this is a conflict between Generator and Discriminator. For Discriminator, it wants to classify correctly i.e.&nbsp;catch the Generator every time while approve the value of the real images. In other words, it wants to <em>minimize</em> its loss function. For Generator, it wants the reverse i.e.&nbsp;pass a fake as a real to the Discriminator every single time. In other words, it wants to <em>maximize</em> the loss function (of the Discriminator). This leads to the ter <em>minimax game</em> that you may hear some people use to describe GAN.</p>
+<p>The game can be considered complete when the Discriminator’s accuracy drops to 50% i.e.&nbsp;it can no longer discern, and essentially has to guess at random for each image. At this, our Generator will become potent enough to fool even us with its <a href="https://thispersondoesnotexist.com/">humans</a> and <a href="https://thiscatdoesnotexist.com/">cats</a>.</p>
+</section>
+<section id="end-of-part-1" class="level1">
+<h1>End of part 1:</h1>
+<p>As a primer this is far enough. I will continue on the subject, describing each model’s simplest architecture possible, the process of training one, as well as the difficulty in training GANs. (Training a model is hard enough, now we have two.) <em>All the quoted paper from ArXiv was embedded with its corresponding Ar5iv link for the HTML version instead to support the <a href="https://ar5iv.labs.arxiv.org/">tool</a>. To change to the abstract page, follow this example:</em> <code>https://ar5iv.labs.arxiv.org/html/1409.1556</code> → <code>https://arxiv.org/abs/1409.1556</code>.</p>
 
 
 </section>
@@ -133,8 +139,8 @@
  ]]></description>
   <category>code</category>
   <category>GAN</category>
-  <guid>https://hangenyuu.github.io/h_notes/posts/ganlec/index.html</guid>
-  <pubDate>Thu, 19 Jan 2023 16:00:00 GMT</pubDate>
+  <guid>https://hangenyuu.github.io/h_notes/posts/gan_p1/index.html</guid>
+  <pubDate>Fri, 20 Jan 2023 16:00:00 GMT</pubDate>
   <media:content url="https://www.kaggle.com/c/generative-dog-images/discussion/97753" medium="image"/>
 </item>
 <item>
