@@ -3,6 +3,8 @@ project:
   output-dir: docs
 website:
   title: "H's notes"
+  site-url: https://hangenyuu.github.io/h_notes/
+  description: H's Notes on Deep Learning
   navbar:
     right:
       - about.qmd

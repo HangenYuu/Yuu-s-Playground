@@ -2,7 +2,7 @@
 title: "A Primer on Generative Adversarial Networks (GANs)"
 subtitle: "My notes on taking the specialization by deeplearning.ai"
 author: "Pham Nguyen Hung"
-draft: true
+draft: false
 date: "2023-01-20"
 categories: [code, GAN]
 format:
@@ -18,11 +18,63 @@ If you have studied deep learning before, you will notice that we will encounter
 
 Back in 2014, computer vision had witnessed the power of deep learning. One must not look no further than the entries for the ImageNet challenge, with the introduction of very deep models from [AlexNet](https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf) to [VGG](https://ar5iv.labs.arxiv.org/html/1409.1556). (Not to mention [ResNet](https://ar5iv.labs.arxiv.org/html/1512.03385) in 2015, an architecture with so interesting an idea that I had to [make a project](https://github.com/HangenYuu/vision_learner/tree/main/ARCHITECTURE/CNN/Paper) for it.) However, as discerning and mature as these models could get in classification, they were nascent in generating data: results were blurry images or with weird artifact. "Complex statistical analysis of the elements that make up a photograph" was proposed but would not work. We needed a simpler, more elegant way of solving the problem. And the solution arrived in Goodfellow's seminal paper, [Generative Adversarial Nets](https://ar5iv.labs.arxiv.org/html/1406.2661).
 
-![My dog also has a face in his buttocks](Screenshot 2023-01-20 at 19-53-43 Generative Dog Images Kaggle.png)
-*The image was not from the era, but was representative of what you got from the model at that time (and still now with GANs). [Source](https://www.kaggle.com/c/generative-dog-images/discussion/97753)*
+![*The image was not from the era, but was representative of what you got from the model at that time (and still now with GANs). [Source](https://www.kaggle.com/c/generative-dog-images/discussion/97753)*](Screenshot 2023-01-20 at 19-53-43 Generative Dog Images Kaggle.png)
 
 Now I wanted to make two quick detours before going into the inside of GANs:
 
-1. At its core sense, a *function* is a set of rule(s) to describe how inputs should be matched with outputs. For each problem that we pose to a neural network, there exists an optimal function to do so. The easiest example is image classification, with the optimal function being a human being (with many constraints behind, but yes, humans still surpass machines in this). If we think this way, then training a model is *trying to update its parameters such that the model will approximate the optimal function as closely as possible*. Neural networks are powerful because 
+1. At its core sense, a *function* is a set of rule(s) to describe how inputs should be matched with outputs. For each problem that we pose to a neural network, there exists an optimal function to do so. The easiest example is image classification, with the optimal function being a human being (with many constraints behind, but yes, humans still surpass machines in this). If we think this way, then training a model is *trying to update its parameters such that the model will approximate the optimal function as closely as possible*. Neural networks thus are powerful because they can approximate very complex functions, such as the neural configuration in our head that map these pixels of a tree to the word "tree".
+2. Advances in neural network came about with backpropagation. Neural network could be powerful, yes, but at that time (before the 90s) there existed no easy and computationally cheap way to update the parameters. Then there was backpropagation. The parameters could now be initialized randomly at the beginning, and then be updated incrementally with the gradient of the loss value with it. In other words, now we can start from (almost) anywhere because we have this amazing magical map that can tell the next direction that we need to take.
+
+# The GA~~L~~N's game:
+**Note:** I will use digital images as examples to describe GANs. A quick introduction: images are stored as matrices of numbers inside computer's memory. It we are talking about a black and white image, its content could be divided into discrete squares called pixels; each pixel stores a number describing the intensity of light at the pixel, with 0 for black and 255 for white, and numbers in-between for the shades of gray. If we are referring to colored images, we will have three matrices for intensity of red, green, and blue. This means that to generate images, we just need to generate one matrix or three matrices of certain dimensions, which could be displayed to the screen later.
+
+The word "adversarial" in GAN means "involving or characterized by conflict or opposition" according to Oxford Dictionary. Simply put, a GANs' system consists of, instead of one, two neural networks pitted against each other. The first one is called *Generator*, its inputs will be some random numbers, and its output will be the matrix or matrices described above. The second one is called *Discriminator*, (or *Critic*, which we will meet later), its inputs will be some real images and the generated images, its output will classification of the image it sees (ideally 0 for real images and 1 for generated images). An analogy is we have the real images as a pile of real antique paintings, the Generator as a forger, the generated images as a pile of forged paintings, and the Discriminator as an appraiser trying to discern the two piles.
+
+| | **Generator** | **Discriminator** |
+| --- | --- | --- |
+| **Input** | Random numbers | Images (real & generated) |
+| **Output** | Images | Class of image (binary) |
+| **Role** | Forger | Appraiser |
+
+Our loss function will be the good ol' binary cross-entropy:
+$$J(\theta) = -\frac{1}{m}*[y^{(i)}log(h(x^{(i)}, \theta)) + (1 - y^{(i)})log(1 - (h(x^{(i)}, \theta)))]$$
+
+That surely looks very intimidating, but one must not let symbols and numbers get in the way of intuition. One just need to know $y^{(i)}$ is the true label of the i^th^ example (0 or 1), $h(x^{(i)}, \theta)$ is the predicted label for the i^th^ example with input $x^{(i)}$ and parameters $\theta$. With this information, it is easy to realize that the loss will be 0 if the predicted label is the true label and infinitely large otherwise.
+
+```{python}
+import matplotlib.pyplot as plt
+import torch
+
+# Define the BCE function
+def bce(y_true, y_pred):
+    return -1*(y_true*torch.log(y_pred) + (1-y_true)*torch.log(1-y_pred))
+```
+```{python}
+#| label: fig-0
+#| fig-cap: "BCE loss when y = 0"
+y_true = torch.zeros(50)
+y_pred = torch.linspace(0., 1., 50)
+
+plt.figure()
+plt.plot(y_pred, bce(y_true, y_pred), "o--")
+plt.xlabel("prediction", fontsize=23)
+plt.ylabel("loss", fontsize=23)
+plt.grid()
+plt.show()
+```
+```{python}
+#| label: fig-1
+#| fig-cap: "BCE loss when y = 1"
+y_true = torch.ones(50)
+y_pred = torch.linspace(0., 1., 50)
+criterion = torch.nn.BCELoss(reduction='none')
+
+plt.figure()
+plt.plot(y_pred, bce(y_true, y_pred), "o--")
+plt.xlabel("prediction", fontsize=23)
+plt.ylabel("loss", fontsize=23)
+plt.grid()
+plt.show()
+```
 
 *All the quoted paper from ArXiv was embedded with its corresponding Ar5iv link for the HTML version instead to support the [tool](https://ar5iv.labs.arxiv.org/). To change to the abstract page, follow this example:* `https://ar5iv.labs.arxiv.org/html/1409.1556` &rarr; `https://arxiv.org/abs/1409.1556`.
