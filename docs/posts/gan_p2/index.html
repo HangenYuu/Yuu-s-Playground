@@ -161,8 +161,14 @@ ul.task-list li input[type="checkbox"] {
 <p>Like any training process, the process GANs can be decomposed into feed-forward and backpropagation, though with distinct features from, say, training a classifier. The parameters updated after backpropagation can also be divided into two steps, for Discriminator and Generator. These are summed up in the images below:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
+<p><img src="GAN-p2-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">First, in the feed-forward, we pass some random noise (denoted by <span class="math inline">\(\xi\)</span>) into the Generator, which outputs some fake examples (denoted by <span class="math inline">\(\hat{X}\)</span>). The fake examples are then merged with a dataset of real examples (just <span class="math inline">\(X\)</span>) and feed into the Discriminator, and we receive the outputs as a vector containing the possibilities of each example being real (between 0 and 1).</figcaption><p></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
 <p><img src="GAN-p2.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">First, tn the feed-forward, we pass some random noise (denoted by <span class="math inline">\(\xi\)</span>) into the Generator, which outputs some fake examples (denoted by <span class="math inline">\(\hat{X}\)</span>). The fake examples are then merged with a dataset of real examples (just <span class="math inline">\(X\)</span>) and feed into the Discriminator, and we receive the outputs as a vector containing the possibilities of each example being real (between 0 and 1).</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Second, ).</figcaption><p></p>
 </figure>
 </div>
 

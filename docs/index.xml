@@ -10,7 +10,43 @@
 <atom:link href="https://hangenyuu.github.io/h_notes/index.xml" rel="self" type="application/rss+xml"/>
 <description>H's Notes on Deep Learning</description>
 <generator>quarto-1.1.251</generator>
-<lastBuildDate>Fri, 20 Jan 2023 16:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 21 Jan 2023 16:00:00 GMT</lastBuildDate>
+<item>
+  <title>Building a simple GANs</title>
+  <dc:creator>Pham Nguyen Hung</dc:creator>
+  <link>https://hangenyuu.github.io/h_notes/posts/gan_p2/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>In the last post, I briefed you the history and concept of Generative Adversarial Networks (GANs). In this post, we will get more technical, going into the training process as well as trying our hand creating a simple GAN model on my favourite dataset, <a href="https://github.com/rois-codh/kmnist">KMNIST</a>.</p>
+<section id="training-gans" class="level1">
+<h1>Training GANs:</h1>
+<p>Like any training process, the process GANs can be decomposed into feed-forward and backpropagation, though with distinct features from, say, training a classifier. The parameters updated after backpropagation can also be divided into two steps, for Discriminator and Generator. These are summed up in the images below:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/GAN-p2-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">First, in the feed-forward, we pass some random noise (denoted by <img src="https://latex.codecogs.com/png.latex?%5Cxi">) into the Generator, which outputs some fake examples (denoted by <img src="https://latex.codecogs.com/png.latex?%5Chat%7BX%7D">). The fake examples are then merged with a dataset of real examples (just <img src="https://latex.codecogs.com/png.latex?X">) and feed into the Discriminator, and we receive the outputs as a vector containing the possibilities of each example being real (between 0 and 1).</figcaption><p></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/GAN-p2.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Second, ).</figcaption><p></p>
+</figure>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>code</category>
+  <category>GAN</category>
+  <guid>https://hangenyuu.github.io/h_notes/posts/gan_p2/index.html</guid>
+  <pubDate>Sat, 21 Jan 2023 16:00:00 GMT</pubDate>
+  <media:content url="https://hangenyuu.github.io/h_notes/posts/gan_p2/GAN-p2-1.png" medium="image" type="image/png" height="44" width="144"/>
+</item>
 <item>
   <title>A Primer on Generative Adversarial Networks (GANs)</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>

@@ -2,7 +2,7 @@
 title: "Building a simple GANs"
 subtitle: "My notes on taking the specialization by deeplearning.ai series"
 author: "Pham Nguyen Hung"
-draft: true
+draft: false
 date: "2023-01-22"
 categories: [code, GAN]
 format:
