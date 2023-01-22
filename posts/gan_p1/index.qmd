@@ -1,6 +1,6 @@
 ---
 title: "A Primer on Generative Adversarial Networks (GANs)"
-subtitle: "My notes on taking the specialization by deeplearning.ai"
+subtitle: "My notes on taking the specialization by deeplearning.ai series"
 author: "Pham Nguyen Hung"
 draft: false
 date: "2023-01-21"

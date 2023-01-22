@@ -1,0 +1,13 @@
+---
+title: "A Primer on Generative Adversarial Networks (GANs)"
+subtitle: "My notes on taking the specialization by deeplearning.ai"
+author: "Pham Nguyen Hung"
+draft: true
+date: "2023-01-21"
+categories: [code, GAN]
+format:
+    html:
+        toc: true
+        code-fold: true
+jupyter: python3 
+---
