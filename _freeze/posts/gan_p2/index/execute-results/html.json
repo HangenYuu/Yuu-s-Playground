@@ -1,0 +1,11 @@
+{
+  "hash": "0fd67e2893284555944b9a40de469bd5",
+  "result": {
+    "markdown": "---\ntitle: Building a simple GANs\nsubtitle: My notes on taking the specialization by deeplearning.ai series\nauthor: Pham Nguyen Hung\ndraft: true\ndate: '2023-01-22'\ncategories:\n  - code\n  - GAN\nformat:\n  html:\n    toc: true\n    code-fold: true\n---\n\nIn the last post, I briefed you the history and concept of Generative Adversarial Networks (GANs). In this post, we will get more technical, going into the training process as well as trying our hand creating a simple GAN model on my favourite dataset, [KMNIST](https://github.com/rois-codh/kmnist).\n\n# Training GANs:\nLike any training process, the process GANs can be decomposed into feed-forward and backpropagation, though with distinct features from, say, training a classifier. The parameters updated after backpropagation can also be divided into two steps, for Discriminator and Generator. These are summed up in the images below:\n\n![First, tn the feed-forward, we pass some random noise (denoted by $\\xi$) into the Generator, which outputs some fake examples (denoted by $\\hat{X}$). The fake examples are then merged with a dataset of real examples (just $X$) and feed into the Discriminator, and we receive the outputs as a vector containing the possibilities of each example being real (between 0 and 1).](GAN-p2.png)\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
