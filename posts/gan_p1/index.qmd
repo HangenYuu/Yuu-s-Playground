@@ -84,4 +84,5 @@ The game can be considered complete when the Discriminator's accuracy drops to 5
 
 # End of part 1:
 As a primer this is far enough. I will continue on the subject, describing each model's simplest architecture possible, the process of training one, as well as the difficulty in training GANs. (Training a model is hard enough, now we have two.)
+
 *All the quoted paper from ArXiv was embedded with its corresponding Ar5iv link for the HTML version instead to support the [tool](https://ar5iv.labs.arxiv.org/). To change to the abstract page, follow this example:* `https://ar5iv.labs.arxiv.org/html/1409.1556` &rarr; `https://arxiv.org/abs/1409.1556`.
