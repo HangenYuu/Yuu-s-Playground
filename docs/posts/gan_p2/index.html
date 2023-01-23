@@ -240,13 +240,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p></p><figcaption class="figure-caption">Second, for training the Discriminator. We will calculate the loss as binary cross-entropy (BCE) loss for two components: how closely to 0 the Discriminator predicted the fake examples, and how closely to 1 the Discriminator predicted the real examples. Here, we need to detach the Generator from the gradient flow as we want to update the Discriminator’s parameters only</figcaption><p></p>
 </figure>
 </div>
-<p><img src="GAN-p2-3.png" class="img-fluid" alt="Third, for training the Generator. From the predictions for the fake examples, we calculate the BCE loss as how closely the Discriminator predicted them to 1. We then update the Generator’s parameters."> Hopefully the ideas are not too complicated. If they are so, hopefully things will make more sense when we look at the codes.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="GAN-p2-3.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Third, for training the Generator. From the predictions for the fake examples, we calculate the BCE loss as how closely the Discriminator predicted them to 1. We then update the Generator’s parameters.</figcaption><p></p>
+</figure>
+</div>
+<p>Hopefully the ideas are not too complicated. If they are so, hopefully things will make more sense when we look at the codes.</p>
 </section>
 <section id="hands-on---creating-gans" class="level1">
 <h1>Hands-on - Creating GANs:</h1>
 <section id="the-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="the-dataset">The dataset:</h2>
-<p>First rule: always, always look at the data first. Now, KMNIST is a dataset inspired by the MNIST dataset of 10 hand-written digits. Here, we have 10 hand-written Kanji characters. Look at the provided examples, the handwriting surely looks messy, some almost unrecognizable from the modern version. <img src="kmnist_examples.png" class="img-fluid" alt="The 10 classes of Kuzushiji-MNIST, with the first column showing each character’s modern hiragana counterpart. Source"> Similar to MNIST, a KMNIST image has only one channel. Let’s visualize one.</p>
+<p>First rule: always, always look at the data first. Now, KMNIST is a dataset inspired by the MNIST dataset of 10 hand-written digits. Here, we have 10 hand-written Kanji characters. Look at the provided examples, the handwriting surely looks messy, some almost unrecognizable from the modern version.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="kmnist%20examples.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>The 10 classes of Kuzushiji-MNIST, with the first column showing each character’s modern hiragana counterpart. <a href="https://github.com/rois-codh/kmnist#the-dataset">Source</a></em></figcaption><p></p>
+</figure>
+</div>
+<p>Similar to MNIST, a KMNIST image has only one channel. Let’s visualize one.</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>

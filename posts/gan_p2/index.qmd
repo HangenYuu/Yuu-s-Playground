@@ -22,12 +22,16 @@ Like any training process, the process GANs can be decomposed into feed-forward 
 ![Second, for training the Discriminator. We will calculate the loss as binary cross-entropy (BCE) loss for two components: how closely to 0 the Discriminator predicted the fake examples, and how closely to 1 the Discriminator predicted the real examples. Here, we need to detach the Generator from the gradient flow as we want to update the Discriminator's parameters only](GAN-p2-2.png)
 
 ![Third, for training the Generator. From the predictions for the fake examples, we calculate the BCE loss as how closely the Discriminator predicted them to 1. We then update the Generator's parameters.](GAN-p2-3.png)
+
 Hopefully the ideas are not too complicated. If they are so, hopefully things will make more sense when we look at the codes.
 
 # Hands-on - Creating GANs:
 ## The dataset:
 First rule: always, always look at the data first. Now, KMNIST is a dataset inspired by the MNIST dataset of 10 hand-written digits. Here, we have 10 hand-written Kanji characters. Look at the provided examples, the handwriting surely looks messy, some almost unrecognizable from the modern version.
-![*The 10 classes of Kuzushiji-MNIST, with the first column showing each character's modern hiragana counterpart. [Source](https://github.com/rois-codh/kmnist#the-dataset)*](kmnist_examples.png)
+
+![*The 10 classes of Kuzushiji-MNIST, with the first column showing each character's modern hiragana counterpart. [Source](https://github.com/rois-codh/kmnist#the-dataset)*](kmnist examples.png)
+
+
 Similar to MNIST, a KMNIST image has only one channel. Let's visualize one.
 ```{python}
 import torch
