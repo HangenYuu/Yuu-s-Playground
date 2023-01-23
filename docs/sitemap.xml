@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://hangenyuu.github.io/h_notes/index.html</loc>
-    <lastmod>2023-01-23T03:06:12.572Z</lastmod>
+    <lastmod>2023-01-23T10:53:19.941Z</lastmod>
   </url>
   <url>
     <loc>https://hangenyuu.github.io/h_notes/posts/ganlec/index.html</loc>
@@ -10,10 +10,14 @@
   </url>
   <url>
     <loc>https://hangenyuu.github.io/h_notes/posts/gan_p1/index.html</loc>
-    <lastmod>2023-01-23T03:00:20.082Z</lastmod>
+    <lastmod>2023-01-23T10:53:29.684Z</lastmod>
   </url>
   <url>
     <loc>https://hangenyuu.github.io/h_notes/posts/gan_p2/index.html</loc>
-    <lastmod>2023-01-23T03:06:12.057Z</lastmod>
+    <lastmod>2023-01-23T11:05:33.652Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hangenyuu.github.io/h_notes/now.html</loc>
+    <lastmod>2023-01-23T10:53:04.412Z</lastmod>
   </url>
 </urlset>
