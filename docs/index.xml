@@ -12,7 +12,7 @@
 <generator>quarto-1.1.251</generator>
 <lastBuildDate>Sat, 21 Jan 2023 16:00:00 GMT</lastBuildDate>
 <item>
-  <title>Building a simple GANs</title>
+  <title>Building a simple GAN</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>
   <link>https://hangenyuu.github.io/h_notes/posts/gan_p2/index.html</link>
   <description><![CDATA[ 
@@ -21,8 +21,8 @@
 
 
 <p>In the last post, I briefed you the history and concept of Generative Adversarial Networks (GANs). In this post, we will get more technical, going into the training process as well as trying our hand creating a simple GAN model on my favourite dataset, <a href="https://github.com/rois-codh/kmnist">KMNIST</a>.</p>
-<section id="training-gans" class="level1">
-<h1>Training GANs:</h1>
+<section id="concept---training-gans" class="level1">
+<h1>Concept - Training GANs:</h1>
 <p>Like any training process, the process GANs can be decomposed into feed-forward and backpropagation, though with distinct features from, say, training a classifier. The parameters updated after backpropagation can also be divided into two steps, for Discriminator and Generator. These are summed up in the images below:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -36,14 +36,94 @@
 <p></p><figcaption class="figure-caption">Second, for training the Discriminator. We will calculate the loss as binary cross-entropy (BCE) loss for two components: how closely to 0 the Discriminator predicted the fake examples, and how closely to 1 the Discriminator predicted the real examples. Here, we need to detach the Generator from the gradient flow as we want to update the Discriminator’s parameters only</figcaption><p></p>
 </figure>
 </div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/GAN-p2-3.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Third, for training the Generator. From the predictions for the fake examples, we calculate the BCE loss as how closely the Discriminator predicted them to 1. We then update the Generator’s parameters.</figcaption><p></p>
-</figure>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/GAN-p2-3.png" class="img-fluid" alt="Third, for training the Generator. From the predictions for the fake examples, we calculate the BCE loss as how closely the Discriminator predicted them to 1. We then update the Generator’s parameters."> Hopefully the ideas are not too complicated. If they are so, hopefully things will make more sense when we look at the codes.</p>
+</section>
+<section id="hands-on---creating-gans" class="level1">
+<h1>Hands-on - Creating GANs:</h1>
+<section id="the-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="the-dataset">The dataset:</h2>
+<p>First rule: always, always look at the data first. Now, KMNIST is a dataset inspired by the MNIST dataset of 10 hand-written digits. Here, we have 10 hand-written Kanji characters. Look at the provided examples, the handwriting surely looks messy, some almost unrecognizable from the modern version. <img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/kmnist_examples.png" class="img-fluid" alt="The 10 classes of Kuzushiji-MNIST, with the first column showing each character’s modern hiragana counterpart. Source"> Similar to MNIST, a KMNIST image has only one channel. Let’s visualize one.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;">import</span> torch</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;">from</span> torch <span class="im" style="color: #00769E;">import</span> nn</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;">from</span> torchvision <span class="im" style="color: #00769E;">import</span> datasets, transforms</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;">from</span> torch.utils.data <span class="im" style="color: #00769E;">import</span> DataLoader</span>
+<span id="cb1-5"><span class="im" style="color: #00769E;">from</span> torchvision.utils <span class="im" style="color: #00769E;">import</span> make_grid</span>
+<span id="cb1-6"><span class="im" style="color: #00769E;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;">as</span> plt</span></code></pre></div>
+</div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;"># Function learnt from GAN's Specialization Course 1 Week 1</span></span>
+<span id="cb2-2"><span class="kw" style="color: #003B4F;">def</span> tensor_show(image_tensor, num_images<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">25</span>, size<span class="op" style="color: #5E5E5E;">=</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">28</span>, <span class="dv" style="color: #AD0000;">28</span>)):</span>
+<span id="cb2-3">    <span class="co" style="color: #5E5E5E;"># The original image tensor could be stored on GPU and </span></span>
+<span id="cb2-4">    <span class="co" style="color: #5E5E5E;"># have been flattened out for training, so we restore it</span></span>
+<span id="cb2-5">    <span class="co" style="color: #5E5E5E;"># first.</span></span>
+<span id="cb2-6">    image_unflat <span class="op" style="color: #5E5E5E;">=</span> image_tensor.detach().cpu().view(<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>, <span class="op" style="color: #5E5E5E;">*</span>size)</span>
+<span id="cb2-7">    image_grid <span class="op" style="color: #5E5E5E;">=</span> make_grid(image_unflat[:num_images], nrow<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">5</span>)</span>
+<span id="cb2-8">    <span class="co" style="color: #5E5E5E;"># torch uses (color channel, height, width) while </span></span>
+<span id="cb2-9">    <span class="co" style="color: #5E5E5E;"># matplotlib used (height, width, color channel)</span></span>
+<span id="cb2-10">    <span class="co" style="color: #5E5E5E;"># so we fix it here</span></span>
+<span id="cb2-11">    plt.imshow(image_grid.permute(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">2</span>, <span class="dv" style="color: #AD0000;">0</span>).squeeze())</span>
+<span id="cb2-12">    plt.show()</span></code></pre></div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">batch_size <span class="op" style="color: #5E5E5E;">=</span> <span class="dv" style="color: #AD0000;">32</span></span>
+<span id="cb3-2">dataloader <span class="op" style="color: #5E5E5E;">=</span> DataLoader(</span>
+<span id="cb3-3">    datasets.KMNIST(<span class="st" style="color: #20794D;">'data'</span>, download<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">True</span>, transform<span class="op" style="color: #5E5E5E;">=</span>transforms.ToTensor()),</span>
+<span id="cb3-4">    batch_size<span class="op" style="color: #5E5E5E;">=</span>batch_size,</span>
+<span id="cb3-5">    shuffle<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">True</span>)</span></code></pre></div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">image_tensor <span class="op" style="color: #5E5E5E;">=</span> <span class="bu" style="color: null;">next</span>(<span class="bu" style="color: null;">iter</span>(dataloader))[<span class="dv" style="color: #AD0000;">0</span>]</span>
+<span id="cb4-2">tensor_show(image_tensor)</span></code></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/index_files/figure-html/cell-5-output-1.png" width="416" height="408"></p>
+</div>
+</div>
+</section>
+<section id="the-discriminator" class="level2">
+<h2 class="anchored" data-anchor-id="the-discriminator">The Discriminator:</h2>
+<p>The Discriminator is essentially a classifier, so we can define as with a normal classifier. It means that we can start with the good ol’ linear model, but I will skip a bit to the year 2015, when <a href="https://ar5iv.labs.arxiv.org/html/1511.06434">Deep Convolutional GAN</a> was introduced and construct my GANs with a 3-layered convolutional architecture. To conveniently construct each layer, I will also define a general function to create a layer of arbitrary sizes. A not-last layer will have a convolution followed by batch normalization and LeakyReLU (batch normalization is there to stabilize GAN’s training. We will touch upon tricks to stabilize GAN’s training in the next post).</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="kw" style="color: #003B4F;">class</span> Discriminator(nn.Module):</span>
+<span id="cb5-2">    <span class="kw" style="color: #003B4F;">def</span> <span class="fu" style="color: #4758AB;">__init__</span>(<span class="va" style="color: #111111;">self</span>, im_chan<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">1</span>, hidden_dim<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">56</span>):</span>
+<span id="cb5-3">        <span class="bu" style="color: null;">super</span>().<span class="fu" style="color: #4758AB;">__init__</span>()</span>
+<span id="cb5-4">        <span class="va" style="color: #111111;">self</span>.disc <span class="op" style="color: #5E5E5E;">=</span> nn.Sequential(</span>
+<span id="cb5-5">            <span class="va" style="color: #111111;">self</span>.make_disc_block(im_chan, hidden_dim),</span>
+<span id="cb5-6">            <span class="va" style="color: #111111;">self</span>.make_disc_block(hidden_dim, hidden_dim),</span>
+<span id="cb5-7">            <span class="va" style="color: #111111;">self</span>.make_disc_block(hidden_dim, <span class="dv" style="color: #AD0000;">1</span>, final_layer<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">True</span>),</span>
+<span id="cb5-8">        )</span>
+<span id="cb5-9"></span>
+<span id="cb5-10">    <span class="kw" style="color: #003B4F;">def</span> make_disc_block(<span class="va" style="color: #111111;">self</span>, input_channels, output_channels, kernel_size<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">4</span>, stride<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">2</span>, final_layer<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">False</span>):</span>
+<span id="cb5-11">        <span class="cf" style="color: #003B4F;">if</span> <span class="kw" style="color: #003B4F;">not</span> final_layer:</span>
+<span id="cb5-12">            <span class="cf" style="color: #003B4F;">return</span> nn.Sequential(</span>
+<span id="cb5-13">                    nn.Conv2d(input_channels, output_channels, kernel_size, stride),</span>
+<span id="cb5-14">                    nn.BatchNorm2d(output_channels),</span>
+<span id="cb5-15">                    nn.LeakyReLU(negative_slope<span class="op" style="color: #5E5E5E;">=</span><span class="fl" style="color: #AD0000;">0.25</span>)</span>
+<span id="cb5-16">            )</span>
+<span id="cb5-17">        <span class="cf" style="color: #003B4F;">else</span>: <span class="co" style="color: #5E5E5E;"># Final Layer</span></span>
+<span id="cb5-18">            <span class="cf" style="color: #003B4F;">return</span> nn.Sequential(</span>
+<span id="cb5-19">                    nn.Conv2d(input_channels, output_channels, kernel_size, stride)</span>
+<span id="cb5-20">            )</span>
+<span id="cb5-21">    </span>
+<span id="cb5-22">    <span class="kw" style="color: #003B4F;">def</span> forward(<span class="va" style="color: #111111;">self</span>, x: torch.Tensor):</span>
+<span id="cb5-23">        <span class="co" style="color: #5E5E5E;"># The input can be a tensor of multiple images</span></span>
+<span id="cb5-24">        <span class="co" style="color: #5E5E5E;"># We want to return a tensor with the possibility</span></span>
+<span id="cb5-25">        <span class="co" style="color: #5E5E5E;"># of real/fake for each image.</span></span>
+<span id="cb5-26">        x <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>.disc(x)</span>
+<span id="cb5-27">        <span class="cf" style="color: #003B4F;">return</span> x.view(<span class="bu" style="color: null;">len</span>(x), <span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>)</span></code></pre></div>
+</div>
+</section>
+<section id="the-generator" class="level2">
+<h2 class="anchored" data-anchor-id="the-generator">The Generator:</h2>
+<p>A point to note: convolution (or convolution/pooling) will reduce the dimensions of your data, essentially <em>distilling</em> the information to the output (the possibility of a class in a classifier). Meanwhile, Generator will make use of the <em>transposed convolution</em> operation, which <em>increases</em> the dimensions of data, essentially <em>magnifying</em> the noises into an image. (I will create a blog post about convolution in the future, in the meantime, check out this <a href="https://github.com/HangenYuu/vision_learner/blob/main/ARCHITECTURE/CNN/Tiny/TinyCNN.ipynb">notebook</a> as my draft.)</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;">class</span> Generator(nn.Module):</span>
+<span id="cb6-2">    <span class="kw" style="color: #003B4F;">def</span> <span class="fu" style="color: #4758AB;">__init__</span>(<span class="va" style="color: #111111;">self</span>):</span>
+<span id="cb6-3">        <span class="bu" style="color: null;">super</span>().<span class="fu" style="color: #4758AB;">__init__</span>()        </span></code></pre></div>
 </div>
 
 
+</section>
 </section>
 
  ]]></description>
@@ -70,7 +150,7 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p1/Screenshot%202023-01-20%20at%2019-53-43%20Generative%20Dog%20Images%20Kaggle.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>The image was not from the era, but was representative of what you got from the model at that time (and still now with GANs). <a href="https://www.kaggle.com/c/generative-dog-images/discussion/97753">Source</a></em></figcaption><p></p>
+<p></p><figcaption class="figure-caption"><em>The image was not from the era, but was representative of what you got from the model at that time (and still now with GANs, if your model was trained poorly or prematurely). <a href="https://www.kaggle.com/c/generative-dog-images/discussion/97753">Source</a></em></figcaption><p></p>
 </figure>
 </div>
 <p>Now I wanted to make two quick detours before going into the inside of GANs:</p>
