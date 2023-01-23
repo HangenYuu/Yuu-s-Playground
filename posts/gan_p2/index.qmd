@@ -14,9 +14,15 @@ jupyter: python3
 
 In the last post, I briefed you the history and concept of Generative Adversarial Networks (GANs). In this post, we will get more technical, going into the training process as well as trying our hand creating a simple GAN model on my favourite dataset, [KMNIST](https://github.com/rois-codh/kmnist).
 
-# Training GANs:
+# Concept - Training GANs:
 Like any training process, the process GANs can be decomposed into feed-forward and backpropagation, though with distinct features from, say, training a classifier. The parameters updated after backpropagation can also be divided into two steps, for Discriminator and Generator. These are summed up in the images below:
 
-![First, in the feed-forward, we pass some random noise (denoted by $\xi$) into the Generator, which outputs some fake examples (denoted by $\hat{X}$). The fake examples are then merged with a dataset of real examples (just $X$) and feed into the Discriminator, and we receive the outputs as a vector containing the possibilities of each example being real (between 0 and 1).](GAN-p2-1.png)
+![First, in the feed-forward, we pass some random noise (denoted by $\xi$) into the Generator, which outputs some fake examples (denoted by $\hat{X}$). The fake examples are then merged with a dataset of real examples (just $X$) and feed separately into the Discriminator, and we receive the outputs as a vector containing the possibilities of each example being real (between 0 and 1).](GAN-p2-1.png)
 
-![Second, ).](GAN-p2.png)
+![Second, for training the Discriminator. We will calculate the loss as binary cross-entropy (BCE) loss for two components: how closely to 0 the Discriminator predicted the fake examples, and how closely to 1 the Discriminator predicted the real examples. Here, we need to detach the Generator from the gradient flow as we want to update the Discriminator's parameters only](GAN-p2-2.png)
+
+![Third, for training the Generator. From the predictions for the fake examples, we calculate the BCE loss as how closely the Discriminator predicted them to 1. We then update the Generator's parameters.](GAN-p2-3.png)
+Hopefully the ideas are not too complicated. If they are so, hopefully things will make more sense when we look at the codes.
+
+# Hands-on - Creating GANs:
+## The dataset
