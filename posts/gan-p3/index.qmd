@@ -1,5 +1,5 @@
 ---
-title: "Penalize that Unstable GAN"
+title: "That Unstable GAN"
 subtitle: "My notes on taking the specialization by deeplearning.ai series"
 author: "Pham Nguyen Hung"
 draft: false
