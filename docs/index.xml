@@ -10,7 +10,33 @@
 <atom:link href="https://hangenyuu.github.io/h_notes/index.xml" rel="self" type="application/rss+xml"/>
 <description>H's Notes on Deep Learning</description>
 <generator>quarto-1.1.251</generator>
-<lastBuildDate>Sun, 22 Jan 2023 16:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 23 Jan 2023 16:00:00 GMT</lastBuildDate>
+<item>
+  <title>Penalize that Unstable GAN</title>
+  <dc:creator>Pham Nguyen Hung</dc:creator>
+  <link>https://hangenyuu.github.io/h_notes/posts/gan-p3/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>In the last two posts, I have gone over the concept and process of training GANs. I made it seem so straightforward, but reality is harsher. Recall that for GANs, we are training two neural networks at once, and these two compete with each other to mutually improve. Much like real life, if one competitor is too good, the other will not learn anything, if the at point before the end the Generator or the Discriminator becomes too good (or the other becomes too bad), then training breaks down. Thus, training GANs is highly unstable, and any way to ensure smoother training is encouraged.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/test%2017.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>I tried to find an xkcd comic for training GANs, but found none. Instead I found this <a href="https://github.com/generic-github-user/xkcd-Generator/">repo</a> about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference is obvious</em></figcaption><p></p>
+</figure>
+</div>
+
+
+
+ ]]></description>
+  <category>code</category>
+  <category>GAN</category>
+  <guid>https://hangenyuu.github.io/h_notes/posts/gan-p3/index.html</guid>
+  <pubDate>Mon, 23 Jan 2023 16:00:00 GMT</pubDate>
+  <media:content url="https://github.com/generic-github-user/xkcd-Generator/" medium="image"/>
+</item>
 <item>
   <title>Building a simple GAN</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>

@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/gan-p3/index.html",
       "/posts/gan_p2/index.html",
       "/posts/gan_p1/index.html",
       "/posts/hello_world/index.html"

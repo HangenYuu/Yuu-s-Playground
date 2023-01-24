@@ -1,0 +1,16 @@
+---
+title: "Penalize that Unstable GAN"
+subtitle: "My notes on taking the specialization by deeplearning.ai series"
+author: "Pham Nguyen Hung"
+draft: false
+date: "2023-01-24"
+categories: [code, GAN]
+format:
+    html:
+        toc: true
+        code-fold: false
+jupyter: python3 
+---
+In the last two posts, I have gone over the concept and process of training GANs. I made it seem so straightforward, but reality is harsher. Recall that for GANs, we are training two neural networks at once, and these two compete with each other to mutually improve. Much like real life, if one competitor is too good, the other will not learn anything, if the at point before the end the Generator or the Discriminator becomes too good (or the other becomes too bad), then training breaks down. Thus, training GANs is highly unstable, and any way to ensure smoother training is encouraged.
+
+![*I tried to find an xkcd comic for training GANs, but found none. Instead I found this [repo](https://github.com/generic-github-user/xkcd-Generator/) about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference is obvious*](test 17.png)

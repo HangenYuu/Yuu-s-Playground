@@ -21,8 +21,6 @@ comments:
 highlight-style: github
 format:
   html:
-    theme: lux
-    css: styles.css
-
-
-
+    theme:
+      light: [lux, light.scss]
+      dark: [darkly, dark.scss]
