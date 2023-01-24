@@ -8,9 +8,66 @@ categories: [code, GAN]
 format:
     html:
         toc: true
-        code-fold: false
+        code-fold: true
 jupyter: python3 
 ---
 In the last two posts, I have gone over the concept and process of training GANs. I made it seem so straightforward, but reality is harsher. Recall that for GANs, we are training two neural networks at once, and these two compete with each other to mutually improve. Much like real life, if one competitor is too good, the other will not learn anything, if the at point before the end the Generator or the Discriminator becomes too good (or the other becomes too bad), then training breaks down. Thus, training GANs is highly unstable, and any way to ensure smoother training is encouraged.
 
 ![*I tried to find an xkcd comic for training GANs, but found none. Instead I found this [repo](https://github.com/generic-github-user/xkcd-Generator/) about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference is obvious*](test 17.png)
+
+# General methods
+## Activation function
+Activation function is a requirement for neural networks' ability to approximate complex function. Without it, a neural network will become just another linear function.
+```{python}
+import torch
+import torch.nn.functional as F
+import matplotlib.pyplot as plt
+
+torch.manual_seed(17)
+def linear(a, b, x):
+    return a*x + b
+```
+```{python}
+#| label: fig-1
+#| fig-cap: "Stacking linear functions on top of each other is just a linear function. Meanwhile, stacking ReLU functions on top of each other create a piecemeal linear function that approximates a curve."
+x = torch.randn(50)
+
+fig = plt.figure(figsize=(9,3))
+ax1 = fig.add_subplot(121)
+ax2 = fig.add_subplot(122)
+
+ax1.plot(x, linear(.5, 4, x) + linear(3.56, -5.32, x) + linear(-1.86, 3.74, x), 'o--')
+ax2.plot(x, torch.relu(0.5*x) + torch.relu(3.56*x) + torch.relu(-1.86*x), 'o--')
+
+ax1.grid()
+ax2.grid()
+plt.show()
+```
+We all starts with the sigmoid function in a binary cross-entropy problem. However, sigmoid, together with tanh, leads to the "vanishing gradient" problem. When the output value of gets close to 0 or 1 for sigmoid (or -1 or 1 for tanh), the gradient gets close to 0, so the weights either are updated very slowly or stop learning altogether. That was when ReLU came into play: the function has a clear, positive gradient when output value is greater than 0, while the bend makes sure that ReLU stacking on each other can produce a curve.
+
+![*Each neural network had three hidden layers with three units in each one. The only difference was the activation function. Learning rate: 0.03, regularization: L2. [Source](https://towardsdatascience.com/if-rectified-linear-units-are-linear-how-do-they-add-nonlinearity-40247d3e4792)*](1 KKjPz4KaEERCpvI04D6Bng.webp)
+
+
+However, the joy ReLU brought came to halt when "dying ReLU" problem was reported. Suppose we have an output smaller or equal 0, then our derivative will be 0. The 0 derivative on the node means that it will not get updated, and that's the end for it. Worse, the previous components connected to the node are affected as well, so the whole structure of our neural network will be "dead". To fix, we have the variation: LeakyReLU. For LeakyReLU, the output value below 0 is not set at 0, but is multiplied by a constant (such as 0.2). Gradient for such value will still be non-zero, provide information to update the weights.
+
+Another, more advanced variation is [GeLU](https://ar5iv.labs.arxiv.org/html/1606.08415v4), where the output is multiplied with i.e. weighted by its percentile. Sounds too complicated? Look at the formula:
+$$GELU(x)=x*P(X<x)=x*\Phi(x)$$
+for $X$ ~ $\mathcal{N}(0, 1)$
+GELU has been successfully applied in Transformer models such as [BERT](https://ar5iv.labs.arxiv.org/html/1810.04805v2), [GPT-3](https://ar5iv.labs.arxiv.org/html/2005.14165v4), and especially in CNN such as [ConvNeXts](https://ar5iv.labs.arxiv.org/html/2201.03545). (Yeah, look at ConvNeXts - it started with a ResNet, the great ConvNet architecture, then the authors slowly introduced all the modern training tricks, until the result surpassed the Swin Transformer in the cheer of CNN-backer/Transformer-haters. Okay, that was eaxaggerating, but still...)
+```{python}
+#| label: fig-2
+#| fig-cap: "LeakyReLU and GELU"
+fig = plt.figure(figsize=(9,3))
+ax1 = fig.add_subplot(121)
+ax2 = fig.add_subplot(122)
+
+ax1.plot(x, F.leaky_relu(x, negative_slope=0.1), 'o--')
+ax2.plot(x, F.gelu(x), 'o--')
+
+ax1.grid()
+ax2.grid()
+plt.show()
+```
+Now let's move on to the second general trick that we have already done: batch normalization.
+## Batch normalization
+We all know that neural netowrk is a function that 
