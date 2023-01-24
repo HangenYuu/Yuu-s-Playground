@@ -217,9 +217,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#general-methods" id="toc-general-methods" class="nav-link active" data-scroll-target="#general-methods">General methods:</a>
+  <li><a href="#general-methods" id="toc-general-methods" class="nav-link active" data-scroll-target="#general-methods">General methods</a>
   <ul class="collapse">
-  <li><a href="#activation-function" id="toc-activation-function" class="nav-link" data-scroll-target="#activation-function">Activation function:</a></li>
+  <li><a href="#activation-function" id="toc-activation-function" class="nav-link" data-scroll-target="#activation-function">Activation function</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -234,24 +234,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="test%2017.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>I tried to find an xkcd comic for training GANs, but found none. Instead I found this <a href="https://github.com/generic-github-user/xkcd-Generator/">repo</a> about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference is obvious</em></figcaption><p></p>
+<p></p><figcaption class="figure-caption"><em>I tried to find an xkcd comic for training GANs, but found none. Instead I found this <a href="https://github.com/generic-github-user/xkcd-Generator/">repo</a> about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference between THIS and an <a href="https://xkcd.com/1838/">xkcd comic</a> is obvious</em></figcaption><p></p>
 </figure>
 </div>
 <section id="general-methods" class="level1">
-<h1>General methods:</h1>
+<h1>General methods</h1>
 <section id="activation-function" class="level2">
-<h2 class="anchored" data-anchor-id="activation-function">Activation function:</h2>
+<h2 class="anchored" data-anchor-id="activation-function">Activation function</h2>
 <p>Activation function is a requirement for neural networks’ ability to approximate complex function. Without it, a neural network will become just another linear function.</p>
 <div class="cell" data-execution_count="1">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(<span class="dv">17</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> linear(a, b, x):</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a<span class="op">*</span>x <span class="op">+</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sb</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">17</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(<span class="dv">17</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> linear(a, b, x):</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a<span class="op">*</span>x <span class="op">+</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-execution_count="2">
@@ -287,7 +292,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </figure>
 </div>
 <p>However, the joy ReLU brought came to halt when “dying ReLU” problem was reported. Suppose we have an output smaller or equal 0, then our derivative will be 0. The 0 derivative on the node means that it will not get updated, and that’s the end for it. Worse, the previous components connected to the node are affected as well, so the whole structure of our neural network will be “dead”. To fix, we have the variation: LeakyReLU. For LeakyReLU, the output value below 0 is not set at 0, but is multiplied by a constant (such as 0.2). Gradient for such value will still be non-zero, provide information to update the weights.</p>
-<p>Another, more advanced variation is <a href="https://ar5iv.labs.arxiv.org/html/1606.08415v4">GeLU</a>, where the output is multiplied with i.e.&nbsp;weighted by its percentile. Sounds too complicated? Look at the formula: <span class="math display">\[GELU(x)=x*P(X&lt;x)=x*\Phi(x)\]</span> for <span class="math inline">\(X\)</span> ~ <span class="math inline">\(\mathcal{N}(0, 1)\)</span> GELU has been successfully applied in Transformer models such as <a href="https://ar5iv.labs.arxiv.org/html/1810.04805v2">BERT</a>, <a href="https://ar5iv.labs.arxiv.org/html/2005.14165v4">GPT-3</a>, and especially in CNN such as <a href="https://ar5iv.labs.arxiv.org/html/2201.03545">ConvNeXts</a>. (Yeah, look at ConvNeXts - it started with a ResNet, the great ConvNet architecture, then the authors slowly introduced all the modern training tricks, until the result surpassed the Swin Transformer in the cheer of CNN-backer/Transformer-haters. Okay, that was eaxaggerating, but still…)</p>
+<p>Another, more advanced variation is <a href="https://ar5iv.labs.arxiv.org/html/1606.08415v4">GeLU</a>, where the output is multiplied with i.e.&nbsp;weighted by its percentile. Sounds too complicated? Look at the formula: <span class="math display">\[GELU(x)=x*P(X&lt;x)=x*\Phi(x)\]</span> for <span class="math inline">\(X\)</span> ~ <span class="math inline">\(\mathcal{N}(0, 1)\)</span></p>
+<p>GELU has been successfully applied in Transformer models such as <a href="https://ar5iv.labs.arxiv.org/html/1810.04805v2">BERT</a>, <a href="https://ar5iv.labs.arxiv.org/html/2005.14165v4">GPT-3</a>, and especially in CNN such as <a href="https://ar5iv.labs.arxiv.org/html/2201.03545">ConvNeXts</a>. (Yeah, look at ConvNeXts - it started with a ResNet, the great ConvNet architecture, then the authors slowly introduced all the modern training tricks, until the result surpassed the Swin Transformer in the cheer of CNN-backer/Transformer-haters. Okay, that was eaxaggerating, but still…)</p>
 <div class="cell" data-execution_count="3">
 <details>
 <summary>Code</summary>
@@ -307,6 +313,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <figure class="figure">
 <p><img src="index_files/figure-html/fig-2-output-1.png" width="719" height="259" class="figure-img"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;2: LeakyReLU and GELU</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now let’s move on to the second general trick that we have already done: batch normalization. ## Batch normalization We all know that neural netowrk is trying to appromixate a certain way of mapping inputs i.e.&nbsp;data to outputs. The parameters of a neural network therefore depend on the data we receive, characteristically the <em>distribution of the data</em>. Here I have this example of an HDR image, which captures a farther range of color and exposure than a compressed format such as JPG or PNG. I found the original image from the Internet <a href="https://blog.gregzaal.com/2014/03/29/pano-golden-gate/">here</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Screenshot%202023-01-24%20205502.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>The curve at the bottom that may remind you of a bell curve is the curve for the distribution of pixel values a.k.a colors</em></figcaption><p></p>
+</figure>
+</div>
+<p>Now, we train a neural network on data having similar color distribution such as this image, possibly for the task of recognizing grass. The model was trained well. Alas, the testing image contains one such as this</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Screenshot%202023-01-24%20205554.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>This was the exact same image, but compressed at a differen color distribution (shifted to the right)</em></figcaption><p></p>
+</figure>
+</div>
+<p>Here we say that the data distribution <em>has shifted between training data and testing data</em>. This generally will cause model problems (decrease accuracy, etc.). Data distribution shift (or covariate shift) can also happen between batches of training data, leading to slow convergence (imagine the model has to take a zig-zag path instead of a straight one). This can be dealt with by <em>normalization</em>, where make sure that the distributions of the training set and the testing set are similar e.g.&nbsp;centered around a mean of 0 and a standard deviation of 1. This could be done by taking the mean and standard deviation for each training batch of image and normalize the inputs of each training batch, then take the accumulated statistics to normalize the testing set during testing. This will smooth out the cost function and increases model performance (you might not need to do this if your training set and testing set are already similar to each other).</p>
+<p>However, model is susceptible to <em>internal covariate shift</em> as well, where the activation output distributions shift between each layer. This can happen due to the change in the weights of each layer. Batch normalization came into play here by normalizing the inputs to each layer (“batch” means that we do so for each batch of image). For example, supposed are at nueron <span class="math inline">\(i\)</span> of non-last layer <span class="math inline">\(l\)</span>, with activated output from the last layer to this neuron being <span class="math inline">\(a_{i}^{[l-1]}\)</span>. The logit out of this neuron will be <span class="math display">\[z_{i}^{[l]}=\Sigma W_{i}^{[l]}a_{i}^{[l-1]}\]</span></p>
+<p>Without batch normalization, the logit will be passed into activation to output <span class="math inline">\(a_{i}^{[l]}\)</span>. But here, we will perform batch normalization:</p>
+<ol type="1">
+<li>We get the statistics mean <span class="math inline">\(\mu _{z_{i}^{[l]}}\)</span> and variance <span class="math inline">\(\sigma _{z_{i}^{[l]}} ^{2}\)</span> for the batch.</li>
+<li>We use them in the formula <span class="math display">\[\hat{z}_{i}^{[l]}=\frac{z_{i}^{[l]}-\mu _{z_{i}^{[l]}}}{\sqrt{\sigma _{z_{i}^{[l]}} ^{2} + \epsilon}}\]</span> Nothing too fancy - it’s just the normalization formula that you encounter in any statistics course/textbook: substract the value by the mean, then divide it by the square root of variance a.k.a the standard deviation. The <span class="math inline">\(\epsilon\)</span> term is a positive constant there to make sure that the denominator is always positive.</li>
+<li>We map the normalized value <span class="math inline">\(\hat{z}_{i}^{[l]}\)</span> to a new distribution with the formula <span class="math display">\[y_{i}^{[l]}=\gamma*\hat{z}_{i}^{[l]} + \beta\]</span> where <span class="math inline">\(\gamma\)</span> is <em>scale factor</em> and <span class="math inline">\(\beta\)</span> the <em>shift factor</em>. These two are learnable inputs in the batch normalization layer, and will be tuned to figure out the best distribution for the task at hand.</li>
+<li>We pass <span class="math inline">\(y_{i}^{[l]}\)</span> through the activation function to the output <span class="math inline">\(a_{i}^{[l]}\)</span>.</li>
+</ol>
+<p>The batch normalization layer seems complicated, but we usually does not need to all the things. As backpropagation is reduced to just calling <a href="https://pytorch.org/tutorials/beginner/introyt/trainingyt.html#the-training-loop"><code>loss.backward</code></a> in PyTorch, the <a href="https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html"><code>nn.BatchNorm2d()</code></a> (for images) will take care of this during training.</p>
+<p>There is another normalization method called <em>layer normalization</em>. I will not go into details here, though I very much want to because it was used in the training of ConvNeXts as well (seriously, I want to make a blog post just about the tricks used in pushing this CNN to surpass Swin). Here is a <a href="https://www.pinecone.io/learn/batch-layer-normalization/">post</a> about the two normalizations that also have great images. In PyTorch, this is implemented in <a href="https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html"><code>nn.LayerNorm()</code></a>. # GAN’s specific method To be honest, there should be tens of tricks for GANs. But I will only cover one this post: Wasserstein GAN (WGAN) and the accompanied Gradient Penalty. ## WGAN: First, we need to talk about <em>mode collapse</em>. Now, a mode in statistical term is the value that we are most likely to get from a distribution (not too correct for continuous distribution, but still great for understanding). This will be represented by a peak in the data distribution, such as the mean in a normal distribution. A distribution can have just one mode, like the normal distribution, or multiple modes like below.</p>
+<div class="cell" data-execution_count="4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sample1 <span class="op">=</span> np.random.normal(loc<span class="op">=</span><span class="dv">20</span>, scale<span class="op">=</span><span class="dv">5</span>, size<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sample2 <span class="op">=</span> np.random.normal(loc<span class="op">=</span><span class="dv">40</span>, scale<span class="op">=</span><span class="dv">5</span>, size<span class="op">=</span><span class="dv">700</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Concatenating the two sample along the second axis</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sample <span class="op">=</span> np.hstack((sample1, sample2))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>sb.kdeplot(sample)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-3-output-1.png" width="606" height="404" class="figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: A bimodal distribution created by merging two normal distributions</figcaption><p></p>
 </figure>
 </div>
 </div>

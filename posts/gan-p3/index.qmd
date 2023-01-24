@@ -13,7 +13,7 @@ jupyter: python3
 ---
 In the last two posts, I have gone over the concept and process of training GANs. I made it seem so straightforward, but reality is harsher. Recall that for GANs, we are training two neural networks at once, and these two compete with each other to mutually improve. Much like real life, if one competitor is too good, the other will not learn anything, if the at point before the end the Generator or the Discriminator becomes too good (or the other becomes too bad), then training breaks down. Thus, training GANs is highly unstable, and any way to ensure smoother training is encouraged.
 
-![*I tried to find an xkcd comic for training GANs, but found none. Instead I found this [repo](https://github.com/generic-github-user/xkcd-Generator/) about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference is obvious*](test 17.png)
+![*I tried to find an xkcd comic for training GANs, but found none. Instead I found this [repo](https://github.com/generic-github-user/xkcd-Generator/) about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference between THIS and an [xkcd comic](https://xkcd.com/1838/) is obvious*](test 17.png)
 
 # General methods
 ## Activation function
@@ -21,8 +21,13 @@ Activation function is a requirement for neural networks' ability to approximate
 ```{python}
 import torch
 import torch.nn.functional as F
+
+import numpy as np
+import seaborn as sb
+
 import matplotlib.pyplot as plt
 
+np.random.seed(17)
 torch.manual_seed(17)
 def linear(a, b, x):
     return a*x + b
@@ -53,6 +58,7 @@ However, the joy ReLU brought came to halt when "dying ReLU" problem was reporte
 Another, more advanced variation is [GeLU](https://ar5iv.labs.arxiv.org/html/1606.08415v4), where the output is multiplied with i.e. weighted by its percentile. Sounds too complicated? Look at the formula:
 $$GELU(x)=x*P(X<x)=x*\Phi(x)$$
 for $X$ ~ $\mathcal{N}(0, 1)$
+
 GELU has been successfully applied in Transformer models such as [BERT](https://ar5iv.labs.arxiv.org/html/1810.04805v2), [GPT-3](https://ar5iv.labs.arxiv.org/html/2005.14165v4), and especially in CNN such as [ConvNeXts](https://ar5iv.labs.arxiv.org/html/2201.03545). (Yeah, look at ConvNeXts - it started with a ResNet, the great ConvNet architecture, then the authors slowly introduced all the modern training tricks, until the result surpassed the Swin Transformer in the cheer of CNN-backer/Transformer-haters. Okay, that was eaxaggerating, but still...)
 ```{python}
 #| label: fig-2
@@ -70,4 +76,45 @@ plt.show()
 ```
 Now let's move on to the second general trick that we have already done: batch normalization.
 ## Batch normalization
-We all know that neural netowrk is a function that 
+We all know that neural netowrk is trying to appromixate a certain way of mapping inputs i.e. data to outputs. The parameters of a neural network therefore depend on the data we receive, characteristically the *distribution of the data*. Here I have this example of an HDR image, which captures a farther range of color and exposure than a compressed format such as JPG or PNG. I found the original image from the Internet [here](https://blog.gregzaal.com/2014/03/29/pano-golden-gate/)
+
+![*The curve at the bottom that may remind you of a bell curve is the curve for the distribution of pixel values a.k.a colors*](Screenshot 2023-01-24 205502.png)
+
+Now, we train a neural network on data having similar color distribution such as this image, possibly for the task of recognizing grass. The model was trained well. Alas, the testing image contains one such as this
+
+![*This was the exact same image, but compressed at a differen color distribution (shifted to the right)*](Screenshot 2023-01-24 205554.png)
+
+Here we say that the data distribution *has shifted between training data and testing data*. This generally will cause model problems (decrease accuracy, etc.). Data distribution shift (or covariate shift) can also happen between batches of training data, leading to slow convergence (imagine the model has to take a zig-zag path instead of a straight one). This can be dealt with by *normalization*, where make sure that the distributions of the training set and the testing set are similar e.g. centered around a mean of 0 and a standard deviation of 1. This could be done by taking the mean and standard deviation for each training batch of image and normalize the inputs of each training batch, then take the accumulated statistics to normalize the testing set during testing. This will smooth out the cost function and increases model performance (you might not need to do this if your training set and testing set are already similar to each other).
+
+However, model is susceptible to *internal covariate shift* as well, where the activation output distributions shift between each layer. This can happen due to the change in the weights of each layer. Batch normalization came into play here by normalizing the inputs to each layer ("batch" means that we do so for each batch of image). For example, supposed are at nueron $i$ of non-last layer $l$, with activated output from the last layer to this neuron being $a_{i}^{[l-1]}$. The logit out of this neuron will be
+$$z_{i}^{[l]}=\Sigma W_{i}^{[l]}a_{i}^{[l-1]}$$
+
+Without batch normalization, the logit will be passed into activation to output $a_{i}^{[l]}$. But here, we will perform batch normalization:
+
+1. We get the statistics mean $\mu _{z_{i}^{[l]}}$ and variance $\sigma _{z_{i}^{[l]}} ^{2}$ for the batch.
+2. We use them in the formula
+$$\hat{z}_{i}^{[l]}=\frac{z_{i}^{[l]}-\mu _{z_{i}^{[l]}}}{\sqrt{\sigma _{z_{i}^{[l]}} ^{2} + \epsilon}}$$
+Nothing too fancy - it's just the normalization formula that you encounter in any statistics course/textbook: substract the value by the mean, then divide it by the square root of variance a.k.a the standard deviation. The $\epsilon$ term is a positive constant there to make sure that the denominator is always positive.
+3. We map the normalized value $\hat{z}_{i}^{[l]}$ to a new distribution with the formula
+$$y_{i}^{[l]}=\gamma*\hat{z}_{i}^{[l]} + \beta$$
+where $\gamma$ is *scale factor* and $\beta$ the *shift factor*. These two are learnable inputs in the batch normalization layer, and will be tuned to figure out the best distribution for the task at hand.
+4. We pass $y_{i}^{[l]}$ through the activation function to the output $a_{i}^{[l]}$.
+
+The batch normalization layer seems complicated, but we usually does not need to all the things. As backpropagation is reduced to just calling [`loss.backward`](https://pytorch.org/tutorials/beginner/introyt/trainingyt.html#the-training-loop) in PyTorch, the [`nn.BatchNorm2d()`](https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html) (for images) will take care of this during training.
+
+There is another normalization method called *layer normalization*. I will not go into details here, though I very much want to because it was used in the training of ConvNeXts as well (seriously, I want to make a blog post just about the tricks used in pushing this CNN to surpass Swin). Here is a [post](https://www.pinecone.io/learn/batch-layer-normalization/) about the two normalizations that also have great images. In PyTorch, this is implemented in [`nn.LayerNorm()`](https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html).
+# GAN's specific method
+To be honest, there should be tens of tricks for GANs. But I will only cover one this post: Wasserstein GAN (WGAN) and the accompanied Gradient Penalty.
+## WGAN:
+First, we need to talk about *mode collapse*. Now, a mode in statistical term is the value that we are most likely to get from a distribution (not too correct for continuous distribution, but still great for understanding). This will be represented by a peak in the data distribution, such as the mean in a normal distribution. A distribution can have just one mode, like the normal distribution, or multiple modes like below.
+```{python}
+#| label: fig-3
+#| fig-cap: "A bimodal distribution created by merging two normal distributions"
+sample1 = np.random.normal(loc=20, scale=5, size=300)
+sample2 = np.random.normal(loc=40, scale=5, size=700)
+# Concatenating the two sample along the second axis
+sample = np.hstack((sample1, sample2))
+
+sb.kdeplot(sample)
+plt.show()
+```
