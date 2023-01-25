@@ -5,6 +5,7 @@ website:
   title: "H's notes"
   site-url: https://hangenyuu.github.io/h_notes/
   description: H's Notes on Deep Learning
+  margin-header: subscribe.html
   navbar:
     right:
       - about.qmd
