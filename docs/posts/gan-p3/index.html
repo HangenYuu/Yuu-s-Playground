@@ -212,7 +212,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<p>subscribe.html</p>
+</div></div>
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
@@ -220,6 +222,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#general-methods" id="toc-general-methods" class="nav-link active" data-scroll-target="#general-methods">General methods</a>
   <ul class="collapse">
   <li><a href="#activation-function" id="toc-activation-function" class="nav-link" data-scroll-target="#activation-function">Activation function</a></li>
+  <li><a href="#batch-normalization" id="toc-batch-normalization" class="nav-link" data-scroll-target="#batch-normalization">Batch normalization</a></li>
+  </ul></li>
+  <li><a href="#gans-specific-method" id="toc-gans-specific-method" class="nav-link" data-scroll-target="#gans-specific-method">GAN’s specific method</a>
+  <ul class="collapse">
+  <li><a href="#wgan" id="toc-wgan" class="nav-link" data-scroll-target="#wgan">WGAN:</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -317,7 +324,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<p>Now let’s move on to the second general trick that we have already done: batch normalization. ## Batch normalization We all know that neural netowrk is trying to appromixate a certain way of mapping inputs i.e.&nbsp;data to outputs. The parameters of a neural network therefore depend on the data we receive, characteristically the <em>distribution of the data</em>. Here I have this example of an HDR image, which captures a farther range of color and exposure than a compressed format such as JPG or PNG. I found the original image from the Internet <a href="https://blog.gregzaal.com/2014/03/29/pano-golden-gate/">here</a></p>
+<p>Now let’s move on to the second general trick that we have already done: batch normalization.</p>
+</section>
+<section id="batch-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="batch-normalization">Batch normalization</h2>
+<p>We all know that neural netowrk is trying to appromixate a certain way of mapping inputs i.e.&nbsp;data to outputs. The parameters of a neural network therefore depend on the data we receive, characteristically the <em>distribution of the data</em>. Here I have this example of an HDR image, which captures a farther range of color and exposure than a compressed format such as JPG or PNG. I found the original image from the Internet <a href="https://blog.gregzaal.com/2014/03/29/pano-golden-gate/">here</a></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot%202023-01-24%20205502.png" class="img-fluid figure-img"></p>
@@ -341,7 +352,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>We pass <span class="math inline">\(y_{i}^{[l]}\)</span> through the activation function to the output <span class="math inline">\(a_{i}^{[l]}\)</span>.</li>
 </ol>
 <p>The batch normalization layer seems complicated, but we usually does not need to all the things. As backpropagation is reduced to just calling <a href="https://pytorch.org/tutorials/beginner/introyt/trainingyt.html#the-training-loop"><code>loss.backward</code></a> in PyTorch, the <a href="https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html"><code>nn.BatchNorm2d()</code></a> (for images) will take care of this during training.</p>
-<p>There is another normalization method called <em>layer normalization</em>. I will not go into details here, though I very much want to because it was used in the training of ConvNeXts as well (seriously, I want to make a blog post just about the tricks used in pushing this CNN to surpass Swin). Here is a <a href="https://www.pinecone.io/learn/batch-layer-normalization/">post</a> about the two normalizations that also have great images. In PyTorch, this is implemented in <a href="https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html"><code>nn.LayerNorm()</code></a>. # GAN’s specific method To be honest, there should be tens of tricks for GANs. But I will only cover one this post: Wasserstein GAN (WGAN) and the accompanied Gradient Penalty. ## WGAN: First, we need to talk about <em>mode collapse</em>. Now, a mode in statistical term is the value that we are most likely to get from a distribution (not too correct for continuous distribution, but still great for understanding). This will be represented by a peak in the data distribution, such as the mean in a normal distribution. A distribution can have just one mode, like the normal distribution, or multiple modes like below.</p>
+<p>There is another normalization method called <em>layer normalization</em>. I will not go into details here, though I very much want to because it was used in the training of ConvNeXts as well (seriously, I want to make a blog post just about the tricks used in pushing this CNN to surpass Swin). Here is a <a href="https://www.pinecone.io/learn/batch-layer-normalization/">post</a> about the two normalizations that also have great images. In PyTorch, this is implemented in <a href="https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html"><code>nn.LayerNorm()</code></a>.</p>
+</section>
+</section>
+<section id="gans-specific-method" class="level1">
+<h1>GAN’s specific method</h1>
+<p>To be honest, there should be tens of tricks for GANs. But I will only cover one this post: Wasserstein GAN (WGAN) and the accompanied Gradient Penalty.</p>
+<section id="wgan" class="level2">
+<h2 class="anchored" data-anchor-id="wgan">WGAN:</h2>
+<p>First, we need to talk about <em>mode collapse</em>. Now, a mode in statistical term is the value that we are most likely to get from a distribution (not too correct for continuous distribution, but still great for understanding). This will be represented by a peak in the data distribution, such as the mean in a normal distribution. A distribution can have just one mode, like the normal distribution, or multiple modes like below.</p>
 <div class="cell" data-execution_count="4">
 <details>
 <summary>Code</summary>
@@ -362,6 +381,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
+<p>The outputs have their modes alright. For example, in our KMNIST dataset, there are 10 modes for the output, corresponding to 10 characters. So we have a new way to think about training: we are trying to make the model learn to shift the distribution of the outputs to approximate the one we want. For illustration, suppose initially our model is outputing each value for each pixel randomly, leading to an output distribution like this.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Copy%20of%20GAN-p2.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>Initial output distribution</em></figcaption><p></p>
+</figure>
+</div>
+<p>We want to change the output to this kind of distribution</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Copy%20of%20GAN-p3.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>We want to shift from the circle to just 10 peaks i.e.&nbsp;just outputting 1 from 10 classes at a time</em></figcaption><p></p>
+</figure>
+</div>
+<p>In the ideal scenario, our model will be guided by the loss function to make the right shift. However, notice a lack in the BCE loss: it only promotes the model generating images close to real images, regardless of the class of the image. This means that there exists a quick n’ dirty way for the Generator to reduce the loss by <em>only generating images from 1 class that the Discriminator is most fooled by</em>. So there exists a case where we end up with a Generator that outputs very realistic kanji character, only that it generates <em>kanji character</em>, say, only “tsu”. That’s boring.</p>
+<p>My last paragraph gives hint to the source of the problem: our loss function. BCE loss works to push the Generator forward, but it cannot capture the information of class within the image. We need something else. And that something else is <a href="https://ar5iv.labs.arxiv.org/html/1701.07875">Wasserstein GAN</a>, introducing a new kind of loss function: the Wasserstein Loss (no surprise) a.k.a the <em>Earth Mover’s distance</em>, or EM distance. It measures the difference between two distributions, and can be informally defined as the least amount of energy required to move and mold a earth pile in the shape of one distribution to the shape of another distribution (hence earth mover).</p>
+<p>In mathematical form, if we have the noise vector <span class="math inline">\(z\)</span>, the fake image data <span class="math inline">\(x\)</span>, the Generator model <span class="math inline">\(g()\)</span>, the Discriminator who becomes the Critic <span class="math inline">\(c()\)</span>, then the Wasserstein Loss is the difference between the expected value i.e.&nbsp;the mean of the Critic outputs for real images and the mean of the Critic outputs for generated images. <span class="math display">\[WLoss=E(c(x))-E(c(g(z)))\]</span></p>
+<p>We still have a minimax game here, with the Generator’s goal being minimize the above difference and the Critic’s goal being maximize the above difference. Notice also that the Critic now is no longer a classifier: it can give any real value possible e.g.&nbsp;higher score for real(istic) examples. This means that the Generator will get useful feedback for all classes of examples, and is less prone to mode collapse. Getting rid of the classifier i.e.&nbsp;the sigmoid function in the output also means that vanishing gradient is also less likely. Two birds, one stone.</p>
+<p>W-Loss has one condition: the function of the Critic should be 1-Lipschitz Continuity. That looks intimidating but it just means that the norm of the gradient (the value in 2D math, the <span class="math inline">\(\sqrt{x^{2}+y^{2}+...}\)</span> as example in higher dimensions) for the Critic can be at most 1 at any point. In other words, the output of the Critic cannot increase/decrease more than linearly at any point. To achieve this, the first proposed (and terrible way, according to the original author) was <em>weight clipping</em> - forcing the weights to a fixed interval, say, [0,1]. Any negative value will be set to 0, and any value more than 1 will be set to 1. This was terrible (I have to say it again) because it limits the potential of the Critic. Another less strict way is <a href="https://arxiv.org/abs/1704.00028">gradient penalty</a> (the first dead ar5iv link), where you add a regularization term in the loss function to <em>promote</em> the Critic to be 1-Lipschitz Continuity, as oppposed to forcing it. Formula is <span class="math display">\[WLoss=E(c(x))-E(c(g(z))) + \lambda * pen\]</span> with <span class="math inline">\(pen=E((|| \nabla c(\hat{x})||_{2}-1)^{2})\)</span>, <span class="math inline">\(\hat{x}=\epsilon x + (1-\epsilon)g(z)\)</span></p>
+<p>For completeness, the Critic gradient needs checking at every point in the feature space, which is impractical. What we do is sampling some points from real examples, and then some points from generated examples with weights for each, and then we calculate the penalty for the interpolated examples. An example for the code of WGAN can be found here (nothing for now). For a more technical review of WGAN, check out this <a href="https://ar5iv.labs.arxiv.org/html/1904.08994">paper</a>, also available as a <a href="https://lilianweng.github.io/posts/2017-08-20-gan/">blog post</a>.</p>
+<p>Next in line: Conditional GANs.</p>
+<p><em>All the quoted paper from ArXiv was embedded with its corresponding Ar5iv link for the HTML version instead to support the <a href="https://ar5iv.labs.arxiv.org/">tool</a>. To change to the abstract page, follow this example:</em> <code>https://ar5iv.labs.arxiv.org/html/1409.1556</code> → <code>https://arxiv.org/abs/1409.1556</code>.</p>
 
 
 </section>
