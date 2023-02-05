@@ -1,0 +1,11 @@
+{
+  "hash": "6a10f168b3a2eed6f08de5b28be888be",
+  "result": {
+    "markdown": "---\ntitle: Conditional GAN\nsubtitle: My notes on taking the specialization by deeplearning.ai series\nauthor: Pham Nguyen Hung\ndraft: true\ndate: '2023-02-05'\ncategories:\n  - code\n  - GAN\nformat:\n  html:\n    toc: true\n    code-fold: true\n---\n\nApologize for being late: it has been nearly 2 weeks already since the latest post. But I am back for the last week of content.\n\nUp till now, we have only \n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

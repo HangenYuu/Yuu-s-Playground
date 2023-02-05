@@ -2,26 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://hangenyuu.github.io/h_notes/index.html</loc>
-    <lastmod>2023-01-25T14:40:50.845Z</lastmod>
+    <lastmod>2023-02-05T14:10:10.182Z</lastmod>
   </url>
   <url>
     <loc>https://hangenyuu.github.io/h_notes/posts/ganlec/index.html</loc>
     <lastmod>2023-01-21T02:10:03.015Z</lastmod>
   </url>
   <url>
-    <loc>https://hangenyuu.github.io/h_notes/posts/gan_p1/index.html</loc>
-    <lastmod>2023-01-23T10:53:29.684Z</lastmod>
-  </url>
-  <url>
-    <loc>https://hangenyuu.github.io/h_notes/posts/gan_p2/index.html</loc>
-    <lastmod>2023-01-23T11:05:33.652Z</lastmod>
-  </url>
-  <url>
     <loc>https://hangenyuu.github.io/h_notes/now.html</loc>
-    <lastmod>2023-01-23T10:53:04.412Z</lastmod>
+    <lastmod>2023-02-05T14:04:45.846Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hangenyuu.github.io/h_notes/about.html</loc>
+    <lastmod>2023-02-05T13:56:32.202Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/index.html</loc>
+    <lastmod>2023-02-05T13:57:18.475Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hangenyuu.github.io/h_notes/posts/hello_world/index.html</loc>
+    <lastmod>2023-02-05T14:01:21.898Z</lastmod>
   </url>
   <url>
     <loc>https://hangenyuu.github.io/h_notes/posts/gan-p3/index.html</loc>
-    <lastmod>2023-01-25T14:40:50.246Z</lastmod>
+    <lastmod>2023-02-05T14:03:52.270Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hangenyuu.github.io/h_notes/posts/gan_p2/index.html</loc>
+    <lastmod>2023-02-05T14:10:09.617Z</lastmod>
   </url>
 </urlset>

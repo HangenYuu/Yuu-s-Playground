@@ -2,6 +2,7 @@
 title: "Hello World"
 author: "Pham Nguyen Hung"
 date: "2022-10-22"
+draft: false
 categories: [new, code]
 format:
     html:

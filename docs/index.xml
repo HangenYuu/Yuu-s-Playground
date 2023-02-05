@@ -10,7 +10,27 @@
 <atom:link href="https://hangenyuu.github.io/h_notes/index.xml" rel="self" type="application/rss+xml"/>
 <description>H's Notes on Deep Learning</description>
 <generator>quarto-1.1.251</generator>
-<lastBuildDate>Mon, 23 Jan 2023 16:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 04 Feb 2023 16:00:00 GMT</lastBuildDate>
+<item>
+  <title>Conditional GAN</title>
+  <dc:creator>Pham Nguyen Hung</dc:creator>
+  <link>https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Apologize for being late: it has been nearly 2 weeks already since the latest post. But I am back for the last week of content.</p>
+<p>Up till now, we have only</p>
+
+
+
+ ]]></description>
+  <category>code</category>
+  <category>GAN</category>
+  <guid>https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/index.html</guid>
+  <pubDate>Sat, 04 Feb 2023 16:00:00 GMT</pubDate>
+</item>
 <item>
   <title>That Unstable GAN</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>

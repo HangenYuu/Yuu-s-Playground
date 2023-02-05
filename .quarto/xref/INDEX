@@ -55,5 +55,8 @@
   },
   "posts/gan-p3/index.qmd": {
     "index.html": "d54f47e5"
+  },
+  "posts/gan-p4-conditional/index.qmd": {
+    "index.html": "4e7e21df"
   }
 }

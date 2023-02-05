@@ -1,0 +1,25 @@
+---
+title: "Conditional GAN"
+subtitle: "My notes on taking the specialization by deeplearning.ai series"
+author: "Pham Nguyen Hung"
+draft: false
+date: "2023-02-05"
+categories: [code, GAN]
+format:
+    html:
+        toc: true
+        code-fold: true
+jupyter: python3 
+---
+Apologize for being late: it has been nearly 2 weeks already since the latest post. But I am back for the last week of content.
+
+When I started writing, it was near the time to bed, and without a doubt, I am hungry. So let's deal with cookies this time.
+
+Up until now, our GAN has managed to do some interesting stuff ("writing" Kanji characters, or numbers, if you used the traditional MNIST dataset). However, one thing you must notice is that we have *no control over what the Generator will give us*. It can be a "na", it can be a "tsu", it can be a "ki" - no control whatsoever. In our cookie analogy, or cookanalogy, our current is like a goodwilled roomie who bakes for us every day, but each day we will receive a random cookie type.
+
+![*You know it is cookie, but you have no idea what type is it*](cookie 1.png)
+
+Now, if you love randomness and can tolerate the taste as well as the sugar, fine. But we usually want our model to be controllable, that is, we get to decide, or at least influence, what will be included in the output.
+
+![*It's much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on. Still matcha is the best.*](cookie 2.png)
+
