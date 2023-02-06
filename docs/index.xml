@@ -5,12 +5,12 @@
       xmlns:dc="http://purl.org/dc/elements/1.1/" 
       version="2.0">
 <channel>
-<title>H's notes</title>
+<title>H&#39;s notes</title>
 <link>https://hangenyuu.github.io/h_notes/index.html</link>
 <atom:link href="https://hangenyuu.github.io/h_notes/index.xml" rel="self" type="application/rss+xml"/>
-<description>H's Notes on Deep Learning</description>
-<generator>quarto-1.1.251</generator>
-<lastBuildDate>Sat, 04 Feb 2023 16:00:00 GMT</lastBuildDate>
+<description>H&#39;s Notes on Deep Learning</description>
+<generator>quarto-1.2.335</generator>
+<lastBuildDate>Sun, 05 Feb 2023 16:00:00 GMT</lastBuildDate>
 <item>
   <title>Conditional GAN</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>
@@ -25,25 +25,40 @@
 <p>Up until now, our GAN has managed to do some interesting stuff (“writing” Kanji characters, or numbers, if you used the traditional MNIST dataset). However, one thing you must notice is that we have <em>no control over what the Generator will give us</em>. It can be a “na”, it can be a “tsu”, it can be a “ki” - no control whatsoever. In our cookie analogy, or cookanalogy, our current is like a goodwilled roomie who bakes for us every day, but each day we will receive a random cookie type.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/cookie%201.png" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/cookie 1.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>You know it is cookie, but you have no idea what type is it</em></figcaption><p></p>
 </figure>
 </div>
 <p>Now, if you love randomness and can tolerate the taste as well as the sugar, fine. But we usually want our model to be controllable, that is, we get to decide, or at least influence, what will be included in the output.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/cookie%202.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>It’s much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on. Still matcha is the best.</em></figcaption><p></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/cookie 2.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>It’s much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on.</em></figcaption><p></p>
 </figure>
 </div>
+<p>With the objective set, let’s explore way to implement conditional GANs a.k.a way to make sure we have the correct cookie each day.</p>
+<section id="limiting-to-just-one-category" class="level1">
+<h1>Limiting to just one category:</h1>
+<p>This is a no-brainer solution. To prevent random category generation (and mode collapse as well), who don’t just feed in variational data of a single class only? In our cookanalogy, it is like always mixing matcha powder into the dough to make the cookies. Being an inexperienced chef and afraid of being cause, we sneak matcha powder in inconsistently between the days, but we are sure that every day we will get matcha cookies.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/cookie 3.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>A matcha cookie junkie’s dream. (Anyone else besides me?)</em></figcaption><p></p>
+</figure>
+</div>
+<p>Obviously this solution is for when you want to generate examples of one class only. One example would be augmenting data for brain EMR of a certain disease at a certain region. The other <del>trolled</del> example is <a href="https://www.kaggle.com/datasets/andy8744/ganyu-genshin-impact-anime-faces-gan-training">GANyu</a>, a dataset and models fine-tuned on it for the task of generating faces of the Genshin Impact character Ganyu (Check out the <a href="https://www.kaggle.com/datasets/andy8744/rezero-rem-anime-faces-for-gan-training">GA(N)Rem</a> as well).</p>
+<blockquote class="blockquote">
+<p>I don’t know what is the thing for weebs and GANs, but the moment I discovered GANs, I instantly thought of generating anime girls’ faces. Is is the same phenomenon as researchers in the 90’s instantly thought of classifying cat from everything else the moment they got a decent classifier… - A certain unfamous author on the web</p>
+</blockquote>
 
 
+</section>
 
  ]]></description>
   <category>code</category>
   <category>GAN</category>
   <guid>https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/index.html</guid>
-  <pubDate>Sat, 04 Feb 2023 16:00:00 GMT</pubDate>
+  <pubDate>Sun, 05 Feb 2023 16:00:00 GMT</pubDate>
   <media:content url="https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/cookie 1.png" medium="image" type="image/png" height="81" width="144"/>
 </item>
 <item>
@@ -58,7 +73,7 @@
 <p>In the last two posts, I have gone over the concept and process of training GANs. I made it seem so straightforward, but reality is harsher. Recall that for GANs, we are training two neural networks at once, and these two compete with each other to mutually improve. Much like real life, if one competitor is too good, the other will not learn anything, if the at point before the end the Generator or the Discriminator becomes too good (or the other becomes too bad), then training breaks down. Thus, training GANs is highly unstable, and any way to ensure smoother training is encouraged.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/test%2017.png" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/test 17.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>I tried to find an xkcd comic for training GANs, but found none. Instead I found this <a href="https://github.com/generic-github-user/xkcd-Generator/">repo</a> about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference between THIS and an <a href="https://xkcd.com/1838/">xkcd comic</a> is obvious</em></figcaption><p></p>
 </figure>
 </div>
@@ -112,7 +127,7 @@
 <p>We all starts with the sigmoid function in a binary cross-entropy problem. However, sigmoid, together with tanh, leads to the “vanishing gradient” problem. When the output value of gets close to 0 or 1 for sigmoid (or -1 or 1 for tanh), the gradient gets close to 0, so the weights either are updated very slowly or stop learning altogether. That was when ReLU came into play: the function has a clear, positive gradient when output value is greater than 0, while the bend makes sure that ReLU stacking on each other can produce a curve.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/1%20KKjPz4KaEERCpvI04D6Bng.webp" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/1 KKjPz4KaEERCpvI04D6Bng.webp" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>Each neural network had three hidden layers with three units in each one. The only difference was the activation function. Learning rate: 0.03, regularization: L2. <a href="https://towardsdatascience.com/if-rectified-linear-units-are-linear-how-do-they-add-nonlinearity-40247d3e4792">Source</a></em></figcaption><p></p>
 </figure>
 </div>
@@ -149,14 +164,14 @@
 <p>We all know that neural netowrk is trying to appromixate a certain way of mapping inputs i.e.&nbsp;data to outputs. The parameters of a neural network therefore depend on the data we receive, characteristically the <em>distribution of the data</em>. Here I have this example of an HDR image, which captures a farther range of color and exposure than a compressed format such as JPG or PNG. I found the original image from the Internet <a href="https://blog.gregzaal.com/2014/03/29/pano-golden-gate/">here</a></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/Screenshot%202023-01-24%20205502.png" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/Screenshot 2023-01-24 205502.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>The curve at the bottom that may remind you of a bell curve is the curve for the distribution of pixel values a.k.a colors</em></figcaption><p></p>
 </figure>
 </div>
 <p>Now, we train a neural network on data having similar color distribution such as this image, possibly for the task of recognizing grass. The model was trained well. Alas, the testing image contains one such as this</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/Screenshot%202023-01-24%20205554.png" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/Screenshot 2023-01-24 205554.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>This was the exact same image, but compressed at a differen color distribution (shifted to the right)</em></figcaption><p></p>
 </figure>
 </div>
@@ -202,14 +217,14 @@
 <p>The outputs have their modes alright. For example, in our KMNIST dataset, there are 10 modes for the output, corresponding to 10 characters. So we have a new way to think about training: we are trying to make the model learn to shift the distribution of the outputs to approximate the one we want. For illustration, suppose initially our model is outputing each value for each pixel randomly, leading to an output distribution like this.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/Copy%20of%20GAN-p2.png" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/Copy of GAN-p2.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>Initial output distribution</em></figcaption><p></p>
 </figure>
 </div>
 <p>We want to change the output to this kind of distribution</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/Copy%20of%20GAN-p3.png" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan-p3/Copy of GAN-p3.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>We want to shift from the circle to just 10 peaks i.e.&nbsp;just outputting 1 from 10 classes at a time</em></figcaption><p></p>
 </figure>
 </div>

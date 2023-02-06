@@ -3,7 +3,7 @@ title: "Conditional GAN"
 subtitle: "My notes on taking the specialization by deeplearning.ai series"
 author: "Pham Nguyen Hung"
 draft: false
-date: "2023-02-05"
+date: "2023-02-06"
 categories: [code, GAN]
 format:
     html:
@@ -21,5 +21,17 @@ Up until now, our GAN has managed to do some interesting stuff ("writing" Kanji 
 
 Now, if you love randomness and can tolerate the taste as well as the sugar, fine. But we usually want our model to be controllable, that is, we get to decide, or at least influence, what will be included in the output.
 
-![*It's much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on. Still matcha is the best.*](cookie 2.png)
+![*It's much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on.*](cookie 2.png)
+
+With the objective set, let's explore way to implement conditional GANs a.k.a way to make sure we have the correct cookie each day.
+
+# Limiting to just one category:
+
+This is a no-brainer solution. To prevent random category generation (and mode collapse as well), who don't just feed in variational data of a single class only? In our cookanalogy, it is like always mixing matcha powder into the dough to make the cookies. Being an inexperienced chef and afraid of being cause, we sneak matcha powder in inconsistently between the days, but we are sure that every day we will get matcha cookies.
+
+![*A matcha cookie junkie's dream. (Anyone else besides me?)*](cookie 3.png)
+
+Obviously this solution is for when you want to generate examples of one class only. One example would be augmenting data for brain EMR of a certain disease at a certain region. The other ~~trolled~~ example is [GANyu](https://www.kaggle.com/datasets/andy8744/ganyu-genshin-impact-anime-faces-gan-training), a dataset and models fine-tuned on it for the task of generating faces of the Genshin Impact character Ganyu (Check out the [GA(N)Rem](https://www.kaggle.com/datasets/andy8744/rezero-rem-anime-faces-for-gan-training) as well).
+
+> I don't know what is the thing for weebs and GANs, but the moment I discovered GANs, I instantly thought of generating anime girls' faces. Is is the same phenomenon as researchers in the 90's instantly thought of classifying cat from everything else the moment they got a decent classifier... - A certain unfamous author on the web
 
