@@ -10,6 +10,8 @@ website:
     right:
       - about.qmd
       - now.qmd
+      - icon: box-arrow-up-right
+        href: https://h-notes-on-dsa.netlify.app/
       - icon: github
         href: https://github.com/HangenYuu/
       - icon: linkedin
