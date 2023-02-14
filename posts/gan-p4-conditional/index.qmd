@@ -1,5 +1,5 @@
 ---
-title: "Conditional GAN"
+title: "Conditional & Controllable GAN"
 subtitle: "My notes on taking the specialization by deeplearning.ai series"
 author: "Pham Nguyen Hung"
 draft: false
@@ -35,7 +35,7 @@ Obviously this solution is for when you want to generate examples of one class o
 
 > I don't know what is the thing for animes and GANs, but the moment I discovered GANs, I instantly thought of generating anime girls' faces. Is is the same phenomenon as researchers in the 90's instantly thought of classifying cat from everything else the moment they got a decent classifier... - A certain unfamous author on the web
 
-# Conditional GANs (Conditional inputs):
+# Conditional Generation:
 
 One thing that we must make clear for our GAN: we cannot generate examples of something that is not in the training data. So first, we must ensure the thing that we want (matcha cookie) is in the training data (ingredients) fed to our two networks.
 
@@ -86,7 +86,7 @@ def combine_vectors(x, y):
 # Code will not run if just copy-paste
 # Pre-training
 # Just the basic part.
-mnist_shape = (1, 28, 28)
+kmnist_shape = (1, 28, 28)
 n_classes = 10
 
 device = 'cuda' if torch.cuda.available() else 'cpu'
@@ -124,7 +124,7 @@ for epoch in range(epochs):
         image_one_hot_labels = one_hot_labels[:, :, None, None]
         # Now the one-hot labels matrix has size (n_samples, 1, 1, 1). We need to turn it into
         # (n_samples, 1, 28, 28) to pass into the input layer.
-        image_one_hot_labels = image_one_hot_labels.repeat(1, 1, mnist_shape[1], mnist_shape[2])
+        image_one_hot_labels = image_one_hot_labels.repeat(1, 1, kmnist_shape[1], kmnist_shape[2])
 
         ### Update discriminator
         # Zero out the discriminator gradients
@@ -178,4 +178,25 @@ for epoch in range(epochs):
         generator_losses += [gen_loss.item()]
 ```
 
-# Controllable Generation (Noise is not just noise):
+# Controllable Generation:
+Up until now, the noise vector fed into GANs is just "noise" - sounds meaningless. However, the numbers in the noise vector do mean something. You can think that each number represent one feature that is recognized by the Generator. The combinations of all these features form a *latent space* - a space containing a simpler but hidden (to humans) information for generated examples. This is best understood with the example of amino acid.
+
+The basic of every bodily function is protein, which is a chain of amino acids (you don't need to know what they are). Each amino acid in the chain is encoded as a sequence of 3 nucleotides, which have 4 in total (there are $4^{3}=64$ total combinations, but several combinations encoding the same amino acid, and there are special ones called *ending combinations* that signify the end but do not encode).
+
+All the 64 combinations can thought of as the *latent space* of the amino acid. It's like we have a well-trained Generator on 22 classes that output the exact amino acid or ending signal we want by passing into it certain 3 nucleotides. This is a latent space because the information has been simplified, but it is not quite latent because we now know the exact *embedding* of the information.
+
+![*["The genetic code"](https://openstax.org/books/biology/pages/15-1-the-genetic-code#fig-ch15_01_04) by OpenStax College, Biology*](genetic code.png)
+
+In our KMNIST example, each image can be represented as a 28 by 28 matrix where each position stores the intensity of the pixel. It can be visualized as below.
+
+![*A certain Japanese letter*](KMNIST eg.png)
+
+In the noise vector above, we try to compress this information down to a vector of 64 numbers (recalling the `z_dim` above), hoping that this is sufficient to store the information to construct all 10 classes of handwritten kanji characters. But let's fall back to our cookies for a more easily visualizable example.
+
+![*Before, we have been generating random numbers in the noise vector. Let's say that we have been able to decode that the second number in our noise vector encodes information for color of the cookie, with 2.1 signifies the green matcha color we wants.*](cgan 5.png)
+
+![*Now, after training, we now know that 1.4 corresponds to the brown color of chochip cookies. We can now pass the number to get a brown cookie.*](cgan 6.png)
+
+Let's compare Conditional and Controllable Generation. For Conditional Generation, we want *a specific class*, while for Controllable Generation, we want *a specific feature* for the output. Secondly, if data for Conditional Generation must contain class information, data for Controllable Generation must contain the feature(s) that we want (we cannot get matcha cookie from if we don't have matcha powder); however, the data now do not need labeling. In both ways, we influence the input by the noise vector $z$, but if we concatenate it with class information before, now we try to directly modify the noise vector.
+
+In practice, we actually do not learn the exact embedding (if the word "embedding" still seems confusing, it just means a look-up table, or a dictionary, where there is a code for )

@@ -1208,7 +1208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code will not run if just copy-paste</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-training</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Just the basic part.</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mnist_shape <span class="op">=</span> (<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>kmnist_shape <span class="op">=</span> (<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>n_classes <span class="op">=</span> <span class="dv">10</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> <span class="st">'cuda'</span> <span class="cf">if</span> torch.cuda.available() <span class="cf">else</span> <span class="st">'cpu'</span></span>
@@ -1246,7 +1246,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        image_one_hot_labels <span class="op">=</span> one_hot_labels[:, :, <span class="va">None</span>, <span class="va">None</span>]</span>
 <span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Now the one-hot labels matrix has size (n_samples, 1, 1, 1). We need to turn it into</span></span>
 <span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># (n_samples, 1, 28, 28) to pass into the input layer.</span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        image_one_hot_labels <span class="op">=</span> image_one_hot_labels.repeat(<span class="dv">1</span>, <span class="dv">1</span>, mnist_shape[<span class="dv">1</span>], mnist_shape[<span class="dv">2</span>])</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        image_one_hot_labels <span class="op">=</span> image_one_hot_labels.repeat(<span class="dv">1</span>, <span class="dv">1</span>, kmnist_shape[<span class="dv">1</span>], kmnist_shape[<span class="dv">2</span>])</span>
 <span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        <span class="co">### Update discriminator</span></span>
 <span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Zero out the discriminator gradients</span></span>
@@ -1301,6 +1301,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="controllable-generation-noise-is-not-just-noise" class="level1">
 <h1>Controllable Generation (Noise is not just noise):</h1>
+<p>Up until now, the noise vector fed into GANs is just “noise” - sounds meaningless. However, the numbers in the noise vector do mean something. You can think that each number represent one feature that is recognized by the Generator. The combinations of all these features form a <em>latent space</em> - a space containing a simpler but hidden (to humans) information for generated examples. This is best understood with the example of amino acid.</p>
+<p>The basic of every bodily function is protein, which is a chain of amino acids (you don’t need to know what they are). Each amino acid in the chain is encoded as a sequence of 3 nucleotides, which have 4 in total (there are <span class="math inline">\(4^{3}=64\)</span> total combinations, but several combinations encoding the same amino acid, and there are special ones called <em>ending combinations</em> that signify the end but do not encode).</p>
+<p>All the 64 combinations can thought of as the <em>latent space</em> of the amino acid. It’s like we have a well-trained Generator on 22 classes that output the exact amino acid or ending signal we want by passing into it certain 3 nucleotides. This is a latent space because the information has been simplified, but it is not quite latent because we now know the exact <em>embedding</em> of the information.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="genetic code.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em><a href="https://openstax.org/books/biology/pages/15-1-the-genetic-code#fig-ch15_01_04">“The genetic code”</a> by OpenStax College, Biology</em></figcaption><p></p>
+</figure>
+</div>
+<p>In our KMNIST example, each image can be represented as a 28 by 28 matrix where each position stores the intensity of the pixel. It can be visualized as below.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="KMNIST eg.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>A certain Japanese letter</em></figcaption><p></p>
+</figure>
+</div>
+<p>In the noise vector above, we try to compress this information down to a vector of 64 numbers (recalling the <code>z_dim</code> above), hoping that this is sufficient to store the information to construct all 10 classes of handwritten kanji characters. But let’s fall back to our cookies for a more easily visualizable example.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="cgan 5.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>Before, we have been generating random numbers in the noise vector. Let’s say that we have been able to decode that the second number in our noise vector encodes information for color of the cookie, with 2.1 signifies the green matcha color we wants.</em></figcaption><p></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="cgan 6.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>Now, after training, we now know that 1.4 corresponds to the brown color of chochip cookies. We can now pass the number to get a brown cookie.</em></figcaption><p></p>
+</figure>
+</div>
 
 
 </section>
