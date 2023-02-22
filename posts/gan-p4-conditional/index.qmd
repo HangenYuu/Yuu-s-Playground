@@ -15,41 +15,41 @@ Apologize for being late: it has been nearly 3 weeks already since the latest po
 
 When I started writing, it was near the time to bed, and without a doubt, I am hungry. So let's deal with cookies this time.
 
-Up until now, our GAN has managed to do some interesting stuff ("writing" Kanji characters, or numbers, if you used the traditional MNIST dataset). However, one thing you must notice is that we have *no control over what the Generator will give us*. It can be a "na", it can be a "tsu", it can be a "ki" - no control whatsoever. In our cookie analogy, or cookanalogy, our current is like a goodwilled roomie who bakes for us every day, but each day we will receive a random cookie type.
+Up until now, our GAN has managed to do some interesting stuff ("writing" Kanji characters, or numbers, if you used the traditional MNIST dataset). However, one thing you must notice is that we have *no* control over what the Generator will give us. It can be a "na", it can be a "tsu", it can be a "ki" - no control whatsoever. In our cookie analogy, our current Generator is like a goodwilled roomie who bakes for us every day, but each day we will receive a random cookie type.
 
 ![*You know it is cookie, but you have no idea what type is it*](cookie 1.png)
 
-Now, if you love randomness and can tolerate the taste as well as the sugar, fine. But we usually want our model to be controllable, that is, we get to decide, or at least influence, what will be included in the output.
+Now, if you love randomness and can tolerate the taste as well as the sugar, fine. But we usually want our model to be *controllable*, that is, we get to decide (to some extent) what will be included in the output.
 
 ![*It's much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on.*](cookie 2.png)
 
-With the objective set, let's explore way to implement conditional GANs a.k.a way to make sure we have the correct cookie each day.
+With the objective set, let's explore way to implement controllable GAN a.k.a way to make sure we have the correct cookie each day.
 
 # Limiting to just one category:
 
-This is a no-brainer solution. To prevent random category generation (and mode collapse as well), who don't just feed in variational data of a single class only? In our cookanalogy, it is like always mixing matcha powder into the dough to make the cookies. Being an inexperienced chef and afraid of being cause, we sneak matcha powder in inconsistently between the days, but we are sure that every day we will get matcha cookies.
+This is a no-brainer solution. To prevent random category generation (and mode collapse as well), who don't just feed in data of a single class only? It is like always mixing matcha powder into the dough to make the cookies, ensuring that every day we will get matcha cookies.
 
-![*A matcha cookie junkie's dream. (Anyone else besides me?)*](cookie 3.png)
+![*A matcha cookie junkie's dream.*](cookie 3.png)
 
 Obviously this solution is for when you want to generate examples of one class only. One example would be augmenting data for brain EMR of a certain disease at a certain region. The other ~~trolled~~ example is [GANyu](https://www.kaggle.com/datasets/andy8744/ganyu-genshin-impact-anime-faces-gan-training), a dataset and models fine-tuned on it for the task of generating faces of the Genshin Impact character Ganyu (Check out the [GA(N)Rem](https://www.kaggle.com/datasets/andy8744/rezero-rem-anime-faces-for-gan-training) as well).
 
 > I don't know what is the thing for animes and GANs, but the moment I discovered GANs, I instantly thought of generating anime girls' faces. Is is the same phenomenon as researchers in the 90's instantly thought of classifying cat from everything else the moment they got a decent classifier... - A certain unfamous author on the web
 
-# Conditional Generation:
+Moving to more general (and sensible) solution, we must take note of a crucial principle: we cannot generate something that the model has not ever seen before. It's like we need to give matcha powder to our dear friend if we expect him to bake us some matcha cookies. This principle is handy in exploring the two solutions. The two approaches will both involve tampering with the input noise vector $z$. While one focuses on the *class/label* of the generated, the other focuses on the *features* of the generated.
 
-One thing that we must make clear for our GAN: we cannot generate examples of something that is not in the training data. So first, we must ensure the thing that we want (matcha cookie) is in the training data (ingredients) fed to our two networks.
+# Conditional Generation (Control the class):
 
-Next, we must be able to call on the Generator to produce what we want. This means that the data needs labelling. Simply put, the Discriminator needs to learn what a "matcha cookie" looks like before it can give any meaningful feedback - constrast between an original image and a generated one - to the Generator; the Generator also needs to know that the class it is generating to update the parameters accordingly. After training finishes, we can tell the Generator which class we want it to produce, and, voilà! A solution to achieve this was proposed in the [Conditional Generative Adversarial Nets](https://arxiv.org/pdf/1411.1784.pdf) by passing some extra information $y$ (the easiest is class labels, possibly as one-hot vector) to both Generator and Discriminator.
+[Conditional Generative Adversarial Nets](https://arxiv.org/pdf/1411.1784.pdf) was a solution to make GAN more controllable, by passing some extra information $y$ (the easiest is class labels, as one-hot vector) with the data fed to Generator and Discriminator. Here is an illustrated example and implementation:
 
 ![*An input vector to Generator now is made up of two components: noise inputs (to ensure that each generation will be unique) & one-hot class vector (to ensure that the generate example will be of the class we want)*](cgan 1.png)
 
-![*Similarly, an input to the Discriminator now is an image together with the an one-hot class vector. For an example to be regarded as real, not only it needs to look realistic (reflected by a low binary corss-entropy or Wasserstein loss) but it also needs to look like examples from the same class. Here, an original matcha cookie definitely looks like a matcha cookie.*](cgan 2.png)
+![*Similarly, an input to the Discriminator now is an image together with the an one-hot class vector. For an example to be regarded as real, not only it needs to look realistic (reflected by a low binary corss-entropy or Wasserstein loss) but it also needs to look like real examples from the same class. Here, an original matcha cookie definitely looks like a matcha cookie.*](cgan 2.png)
 
 ![*Here is the earlier generated matcha cookie. Let's say that our Discriminator is a bit better than the Generator. It means that it will detect this looks rather like a matcha cookie, but not too alike.*](cgan 3.png)
 
 ![*Now suppose that the required class is black chocochip, but our Generator gives a matcha cookie. The Discriminator will recognize in this case and gives a low chance that the example is real.*](cgan 4.png)
 
-The question now is how do we go on implementing this? From the descriptions, it seems that we need to do 2 things: 1) figure a way to pass the additional information into our two models and 2) update the loss function. However, we just need to do 1), as the same loss function (binary cross-entropy) can be used, we just need to make sure that the class of the examples are included in the output as well. For Generator, you just need to concatenate it with the noise vector above. For Discriminator, it is a bit trickier. We feed the images in by passing values of three channels, so the simplest way will be to create n channels more for n classes. This way works for dataset such as the good ol' MNIST, whether we flatten out images before concatentating or we keep the same matrix and just call `torch.cat()` (which will create 10 more channels, each of size 28*28, with one of them full of 1 and the rest full of 0). For larger images or ones we cannot/do not want to flatten, this simple approach will create a huge memory issue. We will want to pass class information in a different, such as via a different head of input layer. Here are the code snippets.
+The question now is how do we go on implementing this? From the descriptions, it seems that we need to do 2 things: 1) figure a way to pass the additional information into our two models and 2) update the loss function. 2) is trivial, as the same loss function (binary cross-entropy) can be used and we just need to make sure that the class of the examples are included in the output as well. For 1), in the case of Generator, you just need to concatenate it with the noise vector above. For Discriminator, it is a bit trickier. We feed the images in by passing values of three channels, so the simplest way will be to create n channels more for n classes. This way works for dataset such as the good ol' MNIST, whether we flatten out images before concatentating or we keep the same matrix and just call `torch.cat()` (which will create 10 more channels, each of size 28*28, with one of them full of 1 and the rest full of 0). For larger images or ones we do not want to flatten, this simple approach will create a huge memory issue. We will want to pass class information in differently, such as via a different head of input layer, but that is outside of this post scope. Here are the code snippets for the easy case.
 
 ```python
 import torch
@@ -178,12 +178,13 @@ for epoch in range(epochs):
         generator_losses += [gen_loss.item()]
 ```
 
-# Controllable Generation:
-Up until now, the noise vector fed into GANs is just "noise" - sounds meaningless. However, the numbers in the noise vector do mean something. You can think that each number represent one feature that is recognized by the Generator. The combinations of all these features form a *latent space* - a space containing a simpler but hidden (to humans) information for generated examples. This is best understood with the example of amino acid.
+# Controllable Generation (Control the feature):
+
+Up until now, the noise vector fed into GANs is just "noise" - meaningless. However, the numbers in the noise vector do mean something. You can think that each number represent one feature that is recognized by the Generator. The combinations of all these features form a *latent space* - a space containing a simpler but hidden (to humans) representation of generated examples. This is best understood with the example of amino acid.
 
 The basic of every bodily function is protein, which is a chain of amino acids (you don't need to know what they are). Each amino acid in the chain is encoded as a sequence of 3 nucleotides, which have 4 in total (there are $4^{3}=64$ total combinations, but several combinations encoding the same amino acid, and there are special ones called *ending combinations* that signify the end but do not encode).
 
-All the 64 combinations can thought of as the *latent space* of the amino acid. It's like we have a well-trained Generator on 22 classes that output the exact amino acid or ending signal we want by passing into it certain 3 nucleotides. This is a latent space because the information has been simplified, but it is not quite latent because we now know the exact *embedding* of the information.
+All the 64 combinations can thought of as the *latent space* of the amino acid. It's like we have a well-trained Generator on 22 classes that output the exact amino acid or ending signal we want by passing into it certain 3 nucleotides. This is a latent space because the information has been simplified, but it is not quite latent because we now know the exact encoding of the information.
 
 ![*["The genetic code"](https://openstax.org/books/biology/pages/15-1-the-genetic-code#fig-ch15_01_04) by OpenStax College, Biology*](genetic code.png)
 
@@ -197,6 +198,118 @@ In the noise vector above, we try to compress this information down to a vector 
 
 ![*Now, after training, we now know that 1.4 corresponds to the brown color of chochip cookies. We can now pass the number to get a brown cookie.*](cgan 6.png)
 
-Let's compare Conditional and Controllable Generation. For Conditional Generation, we want *a specific class*, while for Controllable Generation, we want *a specific feature* for the output. Secondly, if data for Conditional Generation must contain class information, data for Controllable Generation must contain the feature(s) that we want (we cannot get matcha cookie from if we don't have matcha powder); however, the data now do not need labeling. In both ways, we influence the input by the noise vector $z$, but if we concatenate it with class information before, now we try to directly modify the noise vector.
+In reality, there are multiple things to note in implementation. One unfortunate thing was the DNA analogy extends to the noise space. A feature is often not influenced by a single value of the noise vector alone but depends on many ones. This is called *entanglement*, which mostly arises from having a noise vector with dimension smaller than the number of features we want to control. Entanglemnt affects our controllability: if two or more features' values significantly depend on the same noise value, then changing it will shift all of them while we may want one to change. Therefore, we want to encourage *disentanglement* of features in two ways: 
 
-In practice, we actually do not learn the exact embedding (if the word "embedding" still seems confusing, it just means a look-up table, or a dictionary, where there is a code for )
+1. Ensure noise vector has enough data slots. You cannot expect disentanglement of 10 features if your noise vector only has 9 slots. Always have a noise vector with dimension at least the number of modifiable features you want
+2. As a regularization. 
+
+In practice, we will not learn the exact encoding (such as 2.1 for green or 1.4 for brown as above) but how the feature change with varying number (say, from green to brown by decreasing the $2^{nd}$ number of the noise vector). You do this with, well, a classifier and label. First, you freeze the weight of the Generator. Then you classify the generated examples based on whether they have the feature(s) or not. Afterwards, you *update the noise vector* based on the loss function with backpropagation. That is the most simple (and laziest) way to update the noise vector, making it the greatest way (for we always want to do the most work with the least effort). Of course, now we need a pre-trained classifier on the feature(s) that we are trying to detect. If we do not, then we will need to train one on our own i.e. more work to do. You can observe the gradual change in the demo video below for the famous paper on the subject [Interpreting the Latent Space of GANs for Semantic Face Editing](https://arxiv.org/pdf/1907.10786.pdf).
+
+{{< video https://www.youtube.com/embed/uoftpl3Bj6w >}}
+
+Here's the implementation
+
+```python
+# Again, this is not a full implementation
+# The images we will work with now are RGB
+import torch
+
+z_dim = 64
+batch_size = 128
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+n_classes = 40
+
+gen = Generator(z_dim).to(device)
+# Magically train the model or load a pretrained one
+# Put the pretrained model on evaluation mode
+gen.eval()
+
+# Defined class Classifier above
+classifier = Classifier(n_classes=n_classes).to(device)
+# Really load a pretrained model. Look for details at https://pytorch.org/tutorials/beginner/saving_loading_models.html
+class_dict = torch.load("pretrained_classifier.pth", map_location=torch.device(device))["classifier"]
+classifier.load_state_dict(class_dict)
+classifier.eval()
+
+# Here is the optimizer. We have frozen the weight of the classifier with .eval()
+# so only the noise gets updated.
+opt = torch.optim.Adam(classifier.parameters(), lr=0.01)
+
+# Gradient ascent for the noise
+def calculate_updated_noise(noise, weight):
+    '''
+    Update and return the noise vector with gradient ascent
+    :param noise: the old noise vector 
+    :param weight: the weights to update each noise value. An analogy
+                   to the learning rate, but for each noise value
+    :return: the updated noise vector
+    '''
+    return noise + ( noise.grad * weight)
+
+# Regularization for disentanglement - and also the scoring function to update noise
+def get_score(current_classifications, original_classifications, target_indices, other_indices, penalty_weight):
+    '''
+    Function to get the score of the update. Reward change in the target feature(s) to
+    change and penalize changes in other features.
+    :param current_classifications: the classifications associated with the current noise
+    :param original_classifications: the classifications associated with the original noise     
+    :param target_indices: the index of the target feature
+    :param other_indices: the indices of the other features
+    :param penalty_weight: the amount that the penalty should be weighted in the overall score
+
+    :return: the score for the current update. 
+    '''
+    # Penalize change in other features
+    other_distances = current_classifications[:,other_indices] - original_classifications[:,other_indices]
+    other_class_penalty = -torch.norm(other_distances, dim=1).mean() * penalty_weight
+    
+    # Reward change in the target feature(s)
+    target_score = current_classifications[:, target_indices].mean()
+    return target_score + other_class_penalty
+
+### Generation time!
+# The dataset of choice was CelebA, and here's the list of feature
+feature_names = ["5oClockShadow", "ArchedEyebrows", "Attractive", "BagsUnderEyes", "Bald", "Bangs",
+"BigLips", "BigNose", "BlackHair", "BlondHair", "Blurry", "BrownHair", "BushyEyebrows", "Chubby",
+"DoubleChin", "Eyeglasses", "Goatee", "GrayHair", "HeavyMakeup", "HighCheekbones", "Male", 
+"MouthSlightlyOpen", "Mustache", "NarrowEyes", "NoBeard", "OvalFace", "PaleSkin", "PointyNose", 
+"RecedingHairline", "RosyCheeks", "Sideburn", "Smiling", "StraightHair", "WavyHair", "WearingEarrings", 
+"WearingHat", "WearingLipstick", "WearingNecklace", "WearingNecktie", "Young"]
+
+grad_steps = 10
+fake_image_history = []
+
+target_indices = feature_names.index("Smiling") # Feel free to change this value
+other_indices = [cur_idx != target_indices for cur_idx, _ in enumerate(feature_names)]
+noise = get_noise(n_images, z_dim).to(device).requires_grad_() # Must have grad for gradient ascent
+original_classifications = classifier(gen(noise)).detach() # But we don't need gradients for classifier
+
+for i in range(grad_steps):
+    # Empty the optimizer
+    opt.zero_grad()
+
+    # Generate a batch of fake examples
+    # and add to history
+    fake = gen(noise)
+    fake_image_history += [fake]
+
+    # Calculate scoring function
+    fake_score = get_score(
+        classifier(fake), 
+        original_classifications,
+        target_indices,
+        other_indices,
+        penalty_weight=0.1
+    )
+    fake_score.backward() # Automatically calculate noise gradients
+    noise.data = calculate_updated_noise(noise, 1 / grad_steps)
+```
+
+Here is a `fake_image_history` for training for feature `"Smiling"`:
+
+![](celeb example.png)
+
+The faces looked distorted. There's no denying it. The reason may be correlation between features. For example, the model may not be able to generate a smiling face without creating one with a slightly open mouth. Moreover, the model may modify *unlabeled* features while modifying the target feature(s) and we cannot penalize them with this method.
+
+# Conclusion
+Let's compare Conditional and Controllable Generation. For Conditional Generation, we want *a specific class*, while for Controllable Generation, we want *a specific feature* for the output. Secondly, if data for Conditional Generation must contain class information, data for Controllable Generation must contain the feature(s) that we want (we cannot get matcha cookie from if we don't have matcha powder); however, the data now do not need labeling. In both ways, we influence the input by the noise vector $z$, but if we concatenate it with class information before, now we try to directly modify the noise vector.
