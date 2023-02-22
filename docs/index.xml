@@ -10,7 +10,7 @@
 <atom:link href="https://hangenyuu.github.io/h_notes/index.xml" rel="self" type="application/rss+xml"/>
 <description>H&#39;s Notes on Deep Learning</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Sat, 11 Feb 2023 16:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 21 Feb 2023 16:00:00 GMT</lastBuildDate>
 <item>
   <title>Conditional &amp; Controllable GAN</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>
@@ -349,7 +349,7 @@
   <category>code</category>
   <category>GAN</category>
   <guid>https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/index.html</guid>
-  <pubDate>Sat, 11 Feb 2023 16:00:00 GMT</pubDate>
+  <pubDate>Tue, 21 Feb 2023 16:00:00 GMT</pubDate>
   <media:content url="https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/cookie 1.png" medium="image" type="image/png" height="81" width="144"/>
 </item>
 <item>

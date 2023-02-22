@@ -3,7 +3,7 @@ title: "Conditional & Controllable GAN"
 subtitle: "My notes on taking the specialization by deeplearning.ai series"
 author: "Pham Nguyen Hung"
 draft: false
-date: "2023-02-12"
+date: "2023-02-22"
 categories: [code, GAN]
 format:
     html:
