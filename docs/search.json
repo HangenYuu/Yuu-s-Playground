@@ -208,5 +208,12 @@
     "title": "A micro AI tool",
     "section": "Result",
     "text": "Result\nHere is the final demo capture of SumMed\n\n\n\nLeft is the navigation bar displaying the papers. Center is the key information (text and graphics) + Slide maker that is not yet implemented. Right is the chatbox with information on the paper"
+  },
+  {
+    "objectID": "posts/hackathon_report/index.html#whats-next",
+    "href": "posts/hackathon_report/index.html#whats-next",
+    "title": "A micro AI tool",
+    "section": "What’s next",
+    "text": "What’s next\nThere are many things to improve on. I will sample three of them.\n\nRefactor code for LlamaIndex and try options out of OpenAI. We are currently using all the “simple” stuff from LlamaIndex. It works, but not optimal. There are better ways (FAISS) to perform vector search between question and document, and better index data structure (tree for summary) for each task.\nFine-tune the document layout parsing model. Microsoft offers its LayoutLM in HuggingFace Hub, which can be fine-tuned using the 🤗 Transformers module. There are mentions online about the effectiveness of the fine-tuned model.\nEnd-to-end pipeline going straight from PDF to Slides/Infographic. The real big thing. Right now, we settle at the users manually used the extracted information to create slides, but the ideal case is automatically doing so for the users. The other two are technical optimization, this one is putting things all together and finish the job."
   }
 ]

@@ -187,10 +187,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">A micro AI tool</h1>
-            <p class="subtitle lead">A writtent demo (and some reflections now and there) for the project for the Intuition hackathon by the NTU branch of IEEE</p>
+            <p class="subtitle lead">A writtent demo (and some reflections here and there) for the project for the Intuition hackathon by the NTU branch of IEEE</p>
                                 <div class="quarto-categories">
                 <div class="quarto-category">code</div>
-                <div class="quarto-category">engineering_hacking</div>
+                <div class="quarto-category">Engineering/Hacking</div>
               </div>
                   </div>
   </div>
@@ -1105,7 +1105,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#before-summed" id="toc-before-summed" class="nav-link active" data-scroll-target="#before-summed">Before SumMed</a></li>
-  <li><a href="#enter-summed" id="toc-enter-summed" class="nav-link" data-scroll-target="#enter-summed">Enter SumMed</a>
+  <li><a href="#enter-summed" id="toc-enter-summed" class="nav-link" data-scroll-target="#enter-summed">Enter SumMed</a></li>
+  <li><a href="#code-walkthrough" id="toc-code-walkthrough" class="nav-link" data-scroll-target="#code-walkthrough">Code walkthrough</a>
   <ul class="collapse">
   <li><a href="#doclayout.py" id="toc-doclayout.py" class="nav-link" data-scroll-target="#doclayout.py"><code>DocLayout.py</code></a></li>
   <li><a href="#docreader.py" id="toc-docreader.py" class="nav-link" data-scroll-target="#docreader.py"><code>DocReader.py</code></a></li>
@@ -1114,6 +1115,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#client" id="toc-client" class="nav-link" data-scroll-target="#client"><code>client</code></a></li>
   <li><a href="#result" id="toc-result" class="nav-link" data-scroll-target="#result">Result</a></li>
   </ul></li>
+  <li><a href="#aftermath" id="toc-aftermath" class="nav-link" data-scroll-target="#aftermath">Aftermath</a>
+  <ul class="collapse">
+  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next">What’s next</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -1163,6 +1169,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote class="blockquote">
 <p>Note: Apparently, catching wind of this blog post, Hoang has refactored the codes. The codes in the post are <code>DocLayout.py</code>, <code>DocReader.py</code>, <code>DocSummarizer.py</code> in the <code>server</code> folder.</p>
 </blockquote>
+</section>
+<section id="code-walkthrough" class="level1">
+<h1>Code walkthrough</h1>
 <section id="doclayout.py" class="level2">
 <h2 class="anchored" data-anchor-id="doclayout.py"><code>DocLayout.py</code></h2>
 <p>First, the whole file:</p>
@@ -1512,9 +1521,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p></p><figcaption class="figure-caption"><em>Left is the navigation bar displaying the papers. Center is the key information (text and graphics) + Slide maker that is not yet implemented. Right is the chatbox with information on the paper</em></figcaption><p></p>
 </figure>
 </div>
-
-
 </section>
+</section>
+<section id="aftermath" class="level1">
+<h1>Aftermath</h1>
+<p>We nearly choked at the demo. I stored the API in an .env file, and used <code>git add .</code> to commit to GitHub. GitHub found the open key, and proceeded to tell OpenAI to revoke the key automatically. Fun experience. Besides that, we found out just how inexperienced we are in terms of prototyping and pitching. You see, there were UIs that looked so dazzling that I wanted to cry, and tall technology stack from Azure or GCP.</p>
+<p>And we all lost to a team with no prototype (see the above repo), but enough features with a clear demonstration of the tech stack. Inexperience indeed.</p>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s next</h2>
+<p>There are many things to improve on. I will sample three of them.</p>
+<ol type="1">
+<li><strong>Refactor code for LlamaIndex and try options out of OpenAI.</strong> We are currently using all the “simple” stuff from LlamaIndex. It works, but not optimal. There are better ways (FAISS) to perform vector search between question and document, and better index data structure (tree for summary) for each task.</li>
+<li><strong>Fine-tune the document layout parsing model.</strong> Microsoft offers its <a href="https://www.microsoft.com/en-us/research/publication/layoutlm-pre-training-of-text-and-layout-for-document-image-understanding/">LayoutLM</a> in HuggingFace Hub, which can be fine-tuned using the <a href="https://github.com/huggingface/transformers">🤗 Transformers</a> module. There are <a href="https://towardsdatascience.com/fine-tuning-layoutlm-v3-for-invoice-processing-e64f8d2c87cf">mentions</a> online about the effectiveness of the fine-tuned model.</li>
+<li><strong>End-to-end pipeline going straight from PDF to Slides/Infographic.</strong> The real big thing. Right now, we settle at the users manually used the extracted information to create slides, but the ideal case is automatically doing so for the users. The other two are technical optimization, this one is putting things all together and finish the job.</li>
+</ol>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>And that’s it for the hackathon and the tool. It has been a most tiring weekends (5 days later and I can still feel it) with admittedly an anti-climatic ending. But this is not the end. See you at the next hackathon.</p>
+<p><em>I would like to thank Hoang for his all-nighter effort, nagging me to define class instead of function, and various thoughts and experiences that deserve a whole post of them own.</em></p>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -1771,7 +1799,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Blog made with <a href="https://quarto.org/">Quarto</a>, © Copyright 2022 Pham Nguyen Hung. License: GNU General Public License v3.0</div>   
+    <div class="nav-footer-left">Blog made with <a href="https://quarto.org/">Quarto</a>, © Copyright 2022 Pham Nguyen Hung. License: <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3.0</a></div>   
   </div>
 </footer>
 

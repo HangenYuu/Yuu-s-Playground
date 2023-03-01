@@ -60,6 +60,9 @@
 <blockquote class="blockquote">
 <p>Note: Apparently, catching wind of this blog post, Hoang has refactored the codes. The codes in the post are <code>DocLayout.py</code>, <code>DocReader.py</code>, <code>DocSummarizer.py</code> in the <code>server</code> folder.</p>
 </blockquote>
+</section>
+<section id="code-walkthrough" class="level1">
+<h1>Code walkthrough</h1>
 <section id="doclayout.py" class="level2">
 <h2 class="anchored" data-anchor-id="doclayout.py"><code>DocLayout.py</code></h2>
 <p>First, the whole file:</p>
@@ -409,9 +412,28 @@
 <p></p><figcaption class="figure-caption"><em>Left is the navigation bar displaying the papers. Center is the key information (text and graphics) + Slide maker that is not yet implemented. Right is the chatbox with information on the paper</em></figcaption><p></p>
 </figure>
 </div>
-
-
 </section>
+</section>
+<section id="aftermath" class="level1">
+<h1>Aftermath</h1>
+<p>We nearly choked at the demo. I stored the API in an .env file, and used <code>git add .</code> to commit to GitHub. GitHub found the open key, and proceeded to tell OpenAI to revoke the key automatically. Fun experience. Besides that, we found out just how inexperienced we are in terms of prototyping and pitching. You see, there were UIs that looked so dazzling that I wanted to cry, and tall technology stack from Azure or GCP.</p>
+<p>And we all lost to a team with no prototype (see the above repo), but enough features with a clear demonstration of the tech stack. Inexperience indeed.</p>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s next</h2>
+<p>There are many things to improve on. I will sample three of them.</p>
+<ol type="1">
+<li><strong>Refactor code for LlamaIndex and try options out of OpenAI.</strong> We are currently using all the “simple” stuff from LlamaIndex. It works, but not optimal. There are better ways (FAISS) to perform vector search between question and document, and better index data structure (tree for summary) for each task.</li>
+<li><strong>Fine-tune the document layout parsing model.</strong> Microsoft offers its <a href="https://www.microsoft.com/en-us/research/publication/layoutlm-pre-training-of-text-and-layout-for-document-image-understanding/">LayoutLM</a> in HuggingFace Hub, which can be fine-tuned using the <a href="https://github.com/huggingface/transformers">🤗 Transformers</a> module. There are <a href="https://towardsdatascience.com/fine-tuning-layoutlm-v3-for-invoice-processing-e64f8d2c87cf">mentions</a> online about the effectiveness of the fine-tuned model.</li>
+<li><strong>End-to-end pipeline going straight from PDF to Slides/Infographic.</strong> The real big thing. Right now, we settle at the users manually used the extracted information to create slides, but the ideal case is automatically doing so for the users. The other two are technical optimization, this one is putting things all together and finish the job.</li>
+</ol>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>And that’s it for the hackathon and the tool. It has been a most tiring weekends (5 days later and I can still feel it) with admittedly an anti-climatic ending. But this is not the end. See you at the next hackathon.</p>
+<p><em>I would like to thank Hoang for his all-nighter effort, nagging me to define class instead of function, and various thoughts and experiences that deserve a whole post of them own.</em></p>
+
+
 </section>
 
  ]]></description>
