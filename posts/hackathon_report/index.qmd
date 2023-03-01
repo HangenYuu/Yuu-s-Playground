@@ -1,0 +1,432 @@
+---
+title: "A micro AI tool"
+subtitle: "A writtent demo (and some reflections here and there) for the project for the Intuition hackathon by the NTU branch of IEEE"
+author: "Pham Nguyen Hung"
+draft: false
+date: "2023-02-28"
+categories: [code, Engineering/Hacking]
+format:
+    html:
+        toc: true
+        code-fold: false
+jupyter: python3
+---
+On the weekends of 25-26/02 I had the pleasure(?) of attending the [Intuition](https://intuition.ieeentu.com/) hackathon hosted by the NTU branch of IEEE with [Phan Nhat Hoang](https://www.linkedin.com/in/hoang-phan-nhat-8a3892191/) a.k.a John Phan. We did not win any prize this time (yes, there was a last time that we won, which deserved a post of it all, but not today). Consider this post the debrief for the two days.
+
+First, here is the [link](https://intuition-v9-0.devpost.com/project-gallery) to the gallery of the hackathon. Take some time to browse through it and you will notice that at least half of them mentioned GPT-3. Our project, [SumMed](https://devpost.com/software/summed-is-all-you-need), did, too. And we were not alone. After OpenAI released the APIs for their GPT 3.5 (`davinci`) and DALL·E 2 model, there swiftly spawned a generation of pico AI start-ups that made use of the platform to build products that bring in good income. This was mentioned in Data Machina's [Newsletter 190](https://datamachina.substack.com/p/data-machina-190), together with a bag of tools termed "*Modern AI Stack*" by Carlos.
+
+![*Here is the full list for those who wonder. [Source](https://datamachina.substack.com/p/data-machina-190)*](Data Machina 190.png)
+
+It was amazing how quickly people in tech caught on to something interesting. Or perhaps it was the ability to turn almost everything into interesting stuff. Anyway, I want to mention the newsletter first because it was our first mistake. We were not up with the news. Had only we known more about the trend in the field, we could have utilized more tools to save the work. As we were about to see, the biggest regret would be the front-end, which Hoang spent most of his time to write with React.js, while [another team](https://devpost.com/software/archmed) accomplished nearly the same thing and some more with [Streamlit](https://streamlit.io/). And it was also worth mentioning that neither of us know how to use Streamlit - Hoang fell into React.js out of habit. And we just straight up focused on OpenAI technology instead of considering others, with two worth mentioning being [HuggingFace](https://huggingface.co/) and [Colossal-AI](https://www.hpc-ai.tech/blog/colossal-ai-chatgpt). There was no time, and we were not knowledgeable enough to utilize the tools.
+
+Before moving on, it is worth mentioning that the "mistake" I wrote above needs reading as "mistake in the context of a hackathon". When you are in such a rush (<24 hours) and you are not a master learner who can acquire tools and integrate in the project at will (yet), you will need to prepare everything way before the event. I did not do that, because these skills were not the highest in my long-term priority yet (guess so for Hoang). A hackathon seemed big and important on the resume (especially when you are deep into it and do not have any sleep for the past 24 hours), but the long-term vision is always more important and always comes first.
+
+Now that is enough rambling. Onto the actual stuff.
+
+# Before SumMed
+
+The hackathon was divided into 3 [tracks](https://intuition.ieeentu.com/#tracks): Healthcare track, FinTech track, and an Open track that also cover the two. We chose Healthcare track, with the lengthier problem statement.
+
+![](iNTUition v9.0.png)
+
+The requirement was clear: zoom onto "an AI tool that can automatically convert research articles into multimodal formats such as PowerPoint, blogs, and infographic posters." Anybody who caught wind of GPT-3 would think about calling an API together with the paper content to retrieve various summaries for the parts of the paper and create stuff (slides, infographic, or blog post) from them. Well, such was the majority of the submissions. For some reason, we got tunnel vision, did not realize this, and got stuck with a project that resembled everybody else. Eventually, the selection for winner became the selection for the prototype that was closer to the requirements ([here](https://github.com/jiawen3131/Hacknwhack)).
+
+Back to our product, it all started some time ago when Hoang introduced me to the concept of DocumentQA. This started with the discovery of the model to reason *in-context*. This is something that is unique to large language models (LLMs). Simply put, if we feed the model a context i.e. background information *that it has never seen before* together with a format of conversation that we desire, the model can immediately adapt to the format we want, and use the background information as the main source of knowledge to answer our prompt.
+
+![*An example from the [GPT-3 research paper](https://arxiv.org/pdf/2005.14165.pdf)*](GPT 3 SQuADv2.png)
+
+This means that we can take a pre-trained LLM, which will act as a *document reader* and augment it with a *document retriever* to form a DocumentQA pipeline. You ask, the retriever performs preliminary search and takes out the relevant one to feed into the reader together with your question, and the reader answers after reading the document. A most notable example is [DrQA](https://github.com/facebookresearch/DrQA). For the particular case of OpenAI [GPT-3.5](https://platform.openai.com/docs/model-index-for-researchers) (`text-davinci-003`), there exists two applications available as retriever for the model: [LangChain](https://langchain.readthedocs.io/en/latest/) and [LlamaIndex (GPT Index)](https://gpt-index.readthedocs.io/en/latest/). We started simply with a Discord chatbot that used LlamaIndex to read an attachment (PDF, HTML, etc.) and answer a question that you send. I have not created a GitHub repo for it, but here is the [Repl](https://replit.com/@HangenYuu/PoliteWavyReciprocal).
+
+Because of this toy project, we got tunnel vision into creating a chatbot for QA over a research paper, which was far from the point. We shifted gear after a Dr. from MSD set me straight about the project, and came up with SumMed.
+
+# Enter SumMed
+
+SumMed supported 3 features:
+
+1. Extract and display key information about a research paper.
+2. Extract and display all tables, figures, and charts from a research paper.
+3. Of course, a chatbot for QA over a researcher paper.
+
+The diagram of the application is simple
+
+![](SumMed diagram.png)
+
+Hoang was in charge of the intricate detail of the front-end and Flask app, which could be viewed in client folder of repo (again, [here](https://github.com/JohnToro-CZAF/MedSum/tree/main/client)). I was in charge of the model part of the back-end, and I was not a React.js pro, would not try to show you what Hoang had done. Instead, I will walk you through the back-end models: GPT-3.5 and Detectron2.
+
+> Note: Apparently, catching wind of this blog post, Hoang has refactored the codes. The codes in the post are `DocLayout.py`, `DocReader.py`, `DocSummarizer.py` in the `server` folder.
+
+# Code walkthrough
+
+## `DocLayout.py`
+
+First, the whole file:
+```python
+import pdf2image
+import numpy as np
+import layoutparser as lp
+from collections import defaultdict
+
+class DocLayout(object):
+    def __init__(self) -> None:
+        self.model = lp.Detectron2LayoutModel('lp://PubLayNet/mask_rcnn_X_101_32x8d_FPN_3x/config',
+                                    extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", 0.5],
+                                    label_map={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"})
+        self.ocr_agent = lp.TesseractAgent(languages='eng')
+
+    def extract_pdf(self, file_name: str):
+        """ From a local file pdf file, extract the title, text, tables and figures
+        Args:
+            file_name (str): path to the pdf file
+        Returns:
+            title (str): title of the paper
+            Paper (str): text of the paper
+            table_by_page (dict(list)): dictionary of tables by page, each page has a list of tables, represent by 3D numpy array
+            figure_by_page (dict(list)): dictionary of figures by page, each page has a list of figures, represent by 3D numpy array
+        """
+        list_of_pages = pdf2image.convert_from_path(file_name)
+        images = [np.asarray(page) for page in list_of_pages]
+        image_width = len(images[0][0])
+
+        header_blocks, text_blocks, table_blocks, figure_blocks = self._detect_element(images)
+
+        title = self._extract_title(image_width, images, header_blocks)
+        Paper = self._extract_text_info(image_width, images, text_blocks)
+        table_by_page, figure_by_page = self._extract_table_n_figure(image_width, images, table_blocks, figure_blocks)
+        # Currently we dont care about the order of the figures or tables returned
+        tables = self._general_by_table_to_list(table_by_page)
+        figures = self._general_by_table_to_list(figure_by_page)
+        return title, Paper, tables, figures
+    
+    def _general_by_table_to_list(self, general_by_page: dict):
+        return [general for i in general_by_page.keys() for general in general_by_page[i]]
+    
+    def _detect_element(self, images):
+        types = ['Title', 'Text', 'Table', 'Figure']
+        type_blocks = {
+            t: defaultdict(list) for t in types
+        }
+        for i in range(len(images)):
+            layout_result = self.model.detect(images[i])
+            for t in types:
+                type_block = lp.Layout([b for b in layout_result if b.type==t])
+                if len(type_block) != 0:
+                    type_blocks[t][i] = type_block
+        return type_blocks.values()
+    
+    
+    def _extract_title(self, image_width, images, header_blocks):
+        """
+        Extract the title of the article from several headers
+        """
+        first_page = min(header_blocks.keys())
+        segment_title = self._extract_page(first_page, image_width, images, header_blocks)[0]
+        title = self.ocr_agent.detect(segment_title)
+        return title
+    
+    def _extract_text_info(self, image_width, images, text_blocks):
+        """
+        Returns all the text in the article
+        """
+        Paper = ""
+        for page_id in text_blocks:
+            text_block_images = self._extract_page(page_id, image_width, images, text_blocks)
+            for block in text_block_images:
+                text = self.ocr_agent.detect(block).strip()
+                Paper += text + " "
+        return Paper
+
+    def _extract_table_n_figure(self, image_width, images, table_blocks, figure_blocks):
+        """Extract 3D numpy array of tables and figures from deteced layout
+        Args:
+            image_width (int): width of image
+            images (_type_): _description_
+            table_blocks (_type_): _description_
+            figure_blocks (_type_): _description_
+        Returns:
+            table_by_page, figure_by_page (dict(list)): 3D numpy array of tables and figures by page
+        """
+        
+        table_by_page, figure_by_page = defaultdict(list), defaultdict(list)
+        for page_id in table_blocks:
+            results = self._extract_page(page_id, image_width, images, table_blocks )
+            table_by_page[page_id] = results
+        
+        for page_id in figure_blocks:
+            results = self._extract_page(page_id, image_width, images, figure_blocks)
+            figure_by_page[page_id] = results
+        
+        return table_by_page, figure_by_page
+
+    def _extract_page(self, page_id, image_width, images, general_blocks):
+        """ 
+        Get a list of 3D array numpy image of tables and figures, or text from a page
+        """
+        results = []
+        left_interval = lp.Interval(0, image_width/2, axis='x').put_on_canvas(images[page_id])
+        left_blocks = general_blocks[page_id].filter_by(left_interval, center=True)._blocks
+        left_blocks.sort(key = lambda b: b.coordinates[1])
+
+        # Sort element ID of the right column based on y1 coordinate
+        right_blocks = [b for b in general_blocks[page_id] if b not in left_blocks]
+        right_blocks.sort(key = lambda b: b.coordinates[1])
+
+        # Sort the overall element ID starts from left column
+        general_block = lp.Layout([b.set(id = idx) for idx, b in enumerate(left_blocks + right_blocks)])
+
+        # Crop image around the detected layout
+        for block in general_block:
+            segment_image = (block
+                                .pad(left=15, right=15, top=5, bottom=5)
+                                .crop_image(images[page_id]))
+            results.append(segment_image)
+
+        return results
+```
+Let's dissect the codes.
+```python
+import pdf2image
+import numpy as np
+import layoutparser as lp
+from collections import defaultdict
+
+class DocLayout(object):
+    def __init__(self) -> None:
+        self.model = lp.Detectron2LayoutModel('lp://PubLayNet/mask_rcnn_X_101_32x8d_FPN_3x/config',
+                                    extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", 0.5],
+                                    label_map={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"})
+        self.ocr_agent = lp.TesseractAgent(languages='eng')
+```
+The star of the show is [LayoutParser](https://layout-parser.readthedocs.io/en/latest/) module, which employs a host of models from the [Detectron2 platform](https://github.com/facebookresearch/detectron2) for the task of document layout parsing. We used the best configuration suggested by the [docs](https://layout-parser.readthedocs.io/en/latest/notes/modelzoo.html) of [Mark RCNN](https://arxiv.org/pdf/1703.06870.pdf) trained on the [PubLayNet](https://arxiv.org/pdf/1908.07836.pdf) dataset of document layout analysis. As you can see, the model in this case can detect 5 elements in the dictionary `{0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"}`. `pdf2image` and an `ocr_agent` needs importing and creating respectively because the model works on images, so we need to convert the PDF file to image(s) i.e. NumPy array(s) before doing anything.
+```python
+class DocLayout(object):
+    def extract_pdf(self, file_name: str):
+        """ From a local file pdf file, extract the title, text, tables and figures
+        Args:
+            file_name (str): path to the pdf file
+        Returns:
+            title (str): title of the paper
+            Paper (str): text of the paper
+            table_by_page (dict(list)): dictionary of tables by page, each page has a list of tables, represent by 3D numpy array
+            figure_by_page (dict(list)): dictionary of figures by page, each page has a list of figures, represent by 3D numpy array
+        """
+        list_of_pages = pdf2image.convert_from_path(file_name)
+        images = [np.asarray(page) for page in list_of_pages]
+        image_width = len(images[0][0])
+
+        header_blocks, text_blocks, table_blocks, figure_blocks = self._detect_element(images)
+
+        title = self._extract_title(image_width, images, header_blocks)
+        Paper = self._extract_text_info(image_width, images, text_blocks)
+        table_by_page, figure_by_page = self._extract_table_n_figure(image_width, images, table_blocks, figure_blocks)
+        # Currently we dont care about the order of the figures or tables returned
+        tables = self._general_by_table_to_list(table_by_page)
+        figures = self._general_by_table_to_list(figure_by_page)
+        return title, Paper, tables, figures
+
+    def _detect_element(self, images):
+        types = ['Title', 'Text', 'Table', 'Figure']
+        type_blocks = {
+            t: defaultdict(list) for t in types
+        }
+        for i in range(len(images)):
+            layout_result = self.model.detect(images[i])
+            for t in types:
+                type_block = lp.Layout([b for b in layout_result if b.type==t])
+                if len(type_block) != 0:
+                    type_blocks[t][i] = type_block
+        return type_blocks.values()
+```
+`pdf2image.convert_from_path()` returns a list of Pillow image, which needs converting to a list of NumPy arrays before work. Afterwards, in `_detect_element()` method, call `sel.model.detect()` to return a list of bounding boxes (represent by the top-left and right-bottom coordinates with respect to the particular page) with element type. The list of blocks returned will be processed accordingly.
+
+## `DocReader.py`
+```python
+# There are minor differences (by the time of post) from the file in the repo
+from llama_index  import SimpleDirectoryReader, GPTSimpleVectorIndex, LLMPredictor, PromptHelper
+from langchain import OpenAI
+
+class DocReader(object):
+    def __init__(self, directory_path, index_path):
+        self.index_path = index_path
+        self.directory_path = directory_path
+        self.max_input_size = 4096
+        self.num_outputs = 256
+        self.max_chunk_overlap = 20
+        self.chunk_size_limit = 600
+        self.llm_predictor = LLMPredictor(llm=OpenAI(temperature=0.75, model_name="text-davinci-003", max_tokens=self.num_outputs))
+        self.prompt_helper = PromptHelper(self.max_input_size, self.num_outputs, self.max_chunk_overlap, chunk_size_limit=self.chunk_size_limit)
+
+    def construct_index(self):
+        """
+        Reconstruct the index, and save it to the database
+        """
+        documents = SimpleDirectoryReader(self.directory_path).load_data()        
+        index = GPTSimpleVectorIndex(
+            documents, llm_predictor=self.llm_predictor, prompt_helper=self.prompt_helper
+        )
+        index.save_to_disk(self.index_path + '/index.json')
+
+    def predict(self, query):
+        index = GPTSimpleVectorIndex.load_from_disk(self.index_path + '/index.json')
+        response = index.query(query, response_mode="default")
+        return response.response
+```
+A LlamaIndex workflow consists of 4 steps:
+
+1. Initialize an `LLMPredictor()` instance (based on LangChain [`LLM` and `LLMChain`](https://langchain.readthedocs.io/en/latest/modules/llms.html), which supports many other model hubs besides OpenAI). `LLMPredictor()` is a wrapper outside the model we use.
+2. Initialize a [`PromptHelper`](https://gpt-index.readthedocs.io/en/latest/reference/prompt_helper.html) instance that helps to define various parameters for the prompt.
+3. Index the document. There are many ways to achieve this, but the most simple way is calling `SimpleDirectoryReader()` to get the documents and `GPTSimpleVectorIndex()` to get the index that can be saved as a .json file.
+4. Query over the index. There are different, pre-defined response mode in LlamaIndex. Explore the docs for more.
+
+And that's it! Short and simple, yes powerful.
+
+## `DocSummarizer.py`
+```python
+import numpy as np
+from PIL import Image
+import os
+import json
+from DocLayout import DocLayout
+from collections import defaultdict
+
+class DocSummarizer(object):
+    def __init__(self, documents_path: str, resources_path: str):
+        self.documents_path = documents_path
+        self.resources_path = resources_path
+        self.prompt_tail = {
+            'authors': 'Who are the authors of this paper',
+            'summary':"\n\nSummarize the above text, focus on key insights",
+            'keyresults':'''\n\nGive me three key results in the format of "Key results:
+                1.  Key result 1
+                2. Key result 2
+                3. Key result 3"''',
+            'keyword':'\n\nGive me keywords in the format of "Keywords:  Keyword 1, Keyword 2, Keyword 3"',
+            'limitations':'\n\nGive me 3 sentences describing the limitations of the text above.'
+        }
+        self.layout_model = DocLayout()
+        
+    def get_summary(self, file_name: str, reader):
+        """
+        Returns a summary of the document, this document is a pdf file that has been uploaded to the server.
+        And save the summary to the database/resources.
+        """
+        title, Paper, tables, figures = self.layout_model.extract_pdf(self.documents_path + '/' + file_name)
+        authors, summary, keywords, keyresults, limitations = self._read(Paper, reader)
+        response = {
+          'title': title,
+          'authors': authors,
+          'summary': summary,
+          'key_concepts': keywords,
+          'highlights': keyresults,
+          'limitations': limitations,
+          'figures': [],
+          'tables': [],
+        }
+        
+        if not os.path.exists(self.resources_path + '/' + file_name[:-4]):
+            os.mkdir(self.resources_path + '/' + file_name[:-4])
+        
+        with open(self.resources_path + '/' + file_name[:-4] + '/info.json', 'w') as f:
+            json.dump(response, f)
+        
+        with open(self.resources_path + '/' + file_name[:-4] + '/title.txt', 'w') as f:
+            f.write(title)
+        
+        for idx, table in enumerate(tables):
+            im = Image.fromarray(table)
+            local_fn = file_name[:-4] + '*' + str(idx) + '_table.png'
+            table_fn = self.resources_path + '/' + file_name[:-4] + '/' + str(idx) + '_table.png'
+            im.save(table_fn)
+            response['tables'].append(local_fn)
+        
+        for idx, fig in enumerate(figures):
+            im = Image.fromarray(fig)
+            local_fn = file_name[:-4] + '*' + str(idx) + '_fig.png'
+            fig_fn = self.resources_path + '/' + file_name[:-4] + '/' + str(idx) + '_fig.png'
+            im.save(fig_fn)
+            response['figures'].append(local_fn)
+        
+        return response
+
+    def retrieve_summary(self, file_name: str):
+        """
+        Returns a summary of the document (retrieve from resources), this document is a pdf file that already in the server.
+        """
+        if not os.path.exists(self.resources_path + '/' + file_name[:-4]):
+            raise Exception('File not found')
+        
+        response = {
+          'title': None,
+          'authors': None,
+          'summary': None,
+          'key_concepts': None,
+          'highlights': None,
+          'limitations': None,
+          'figures': [],
+          'tables': [],
+        }
+        
+        with open(self.resources_path + '/' + file_name[:-4] + '/title.txt', 'r') as f:
+            response['title'] = f.read()
+        
+        response_js = json.load(open(self.resources_path + '/' + file_name[:-4] + '/info.json'))
+        response['authors'] = response_js['authors']
+        response['summary'] = response_js['summary']
+        response['key_concepts'] = response_js['key_concepts']
+        response['highlights'] = response_js['highlights']
+        response['limitations'] = response_js['limitations']
+          
+        for fn in os.listdir(self.resources_path + '/' + file_name[:-4]):
+            fn = file_name[:-4] + '*' + fn
+            if 'fig' in fn:
+                response['figures'].append(fn)
+            else:
+                response['tables'].append(fn)
+        return response
+    
+    def _read(self, Paper, reader):
+        """
+        Read the text and returns the authors, summary, keywords, keyresults and limitations
+        """
+        # TODO: Currently we use the Doc Reader service to read the text, but we need to implement our own service
+        response = defaultdict(str)
+        for query_type, prompt in self.prompt_tail.items():
+            ans_query = reader.predict(prompt + "".join(Paper[:500].split(" ")[:20]))
+            response[query_type] = ans_query
+        
+        return response['authors'], response['summary'], response['keywords'], response['keyresults'], response['limitations']
+```
+The `DocSummarizer` class continues where the `DocLayout` leaves. The text information retrieved from a document will be concatenated with a suitable prompt tail to send to OpenAI. Notice that each prompt tail is provided with a format for the model to follow (and it did follow!) in the response. For the graphics, they are converted from NumPy arrays to .PNG files in a folders that are accessible from the UI.
+
+## `app.py`
+
+Add some magic from Flask
+
+## `client`
+
+Add some magic from React.js
+
+## Result
+
+Here is the final demo capture of SumMed
+
+![*Left is the navigation bar displaying the papers. Center is the key information (text and graphics) + Slide maker that is not yet implemented. Right is the chatbox with information on the paper*](329814980 859809608651093_535713842991494898.png)
+
+# Aftermath
+
+We nearly choked at the demo. I stored the API in an .env file, and used `git add .` to commit to GitHub. GitHub found the open key, and proceeded to tell OpenAI to revoke the key automatically. Fun experience. Besides that, we found out just how inexperienced we are in terms of prototyping and pitching. You see, there were UIs that looked so dazzling that I wanted to cry, and tall technology stack from Azure or GCP.
+
+And we all lost to a team with no prototype (see the above repo), but enough features with a clear demonstration of the tech stack. Inexperience indeed.
+
+## What's next
+
+There are many things to improve on. I will sample three of them.
+
+1. **Refactor code for LlamaIndex and try options out of OpenAI.** We are currently using all the "simple" stuff from LlamaIndex. It works, but not optimal. There are better ways (FAISS) to perform vector search between question and document, and better index data structure (tree for summary) for each task.
+2. **Fine-tune the document layout parsing model.** Microsoft offers its [LayoutLM](https://www.microsoft.com/en-us/research/publication/layoutlm-pre-training-of-text-and-layout-for-document-image-understanding/) in HuggingFace Hub, which can be fine-tuned using the [🤗 Transformers](https://github.com/huggingface/transformers) module. There are [mentions](https://towardsdatascience.com/fine-tuning-layoutlm-v3-for-invoice-processing-e64f8d2c87cf) online about the effectiveness of the fine-tuned model.
+3. **End-to-end pipeline going straight from PDF to Slides/Infographic.** The real big thing. Right now, we settle at the users manually used the extracted information to create slides, but the ideal case is automatically doing so for the users. The other two are technical optimization, this one is putting things all together and finish the job.
+
+# Conclusion
+
+And that's it for the hackathon and the tool. It has been a most tiring weekends (5 days later and I can still feel it) with admittedly an anti-climatic ending. But this is not the end. See you at the next hackathon.
+
+*I would like to thank Hoang for his all-nighter effort, nagging me to define class instead of function, and various thoughts and experiences that deserve a whole post of them own.*

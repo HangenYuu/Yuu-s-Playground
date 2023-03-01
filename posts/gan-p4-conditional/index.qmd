@@ -4,7 +4,7 @@ subtitle: "My notes on taking the specialization by deeplearning.ai series"
 author: "Pham Nguyen Hung"
 draft: false
 date: "2023-02-22"
-categories: [code, GAN]
+categories: [code, GAN, From scratch]
 format:
     html:
         toc: true
@@ -33,7 +33,8 @@ This is a no-brainer solution. To prevent random category generation (and mode c
 
 Obviously this solution is for when you want to generate examples of one class only. One example would be augmenting data for brain EMR of a certain disease at a certain region. The other ~~trolled~~ example is [GANyu](https://www.kaggle.com/datasets/andy8744/ganyu-genshin-impact-anime-faces-gan-training), a dataset and models fine-tuned on it for the task of generating faces of the Genshin Impact character Ganyu (Check out the [GA(N)Rem](https://www.kaggle.com/datasets/andy8744/rezero-rem-anime-faces-for-gan-training) as well).
 
-> I don't know what is the thing for animes and GANs, but the moment I discovered GANs, I instantly thought of generating anime girls' faces. Is is the same phenomenon as researchers in the 90's instantly thought of classifying cat from everything else the moment they got a decent classifier... - A certain unfamous author on the web
+> I don't know what is the thing for animes and GANs, but the moment I discovered GANs, I instantly thought of generating anime girls' faces. Is is the same phenomenon as researchers in the 90's instantly thought of classifying cat from everything else the moment they got a decent classifier...
+- A certain unfamous author on the web
 
 Moving to more general (and sensible) solution, we must take note of a crucial principle: we cannot generate something that the model has not ever seen before. It's like we need to give matcha powder to our dear friend if we expect him to bake us some matcha cookies. This principle is handy in exploring the two solutions. The two approaches will both involve tampering with the input noise vector $z$. While one focuses on the *class/label* of the generated, the other focuses on the *features* of the generated.
 

@@ -10,7 +10,417 @@
 <atom:link href="https://hangenyuu.github.io/h_notes/index.xml" rel="self" type="application/rss+xml"/>
 <description>H&#39;s Notes on Deep Learning</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Tue, 21 Feb 2023 16:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 27 Feb 2023 16:00:00 GMT</lastBuildDate>
+<item>
+  <title>A micro AI tool</title>
+  <dc:creator>Pham Nguyen Hung</dc:creator>
+  <link>https://hangenyuu.github.io/h_notes/posts/hackathon_report/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>On the weekends of 25-26/02 I had the pleasure(?) of attending the <a href="https://intuition.ieeentu.com/">Intuition</a> hackathon hosted by the NTU branch of IEEE with <a href="https://www.linkedin.com/in/hoang-phan-nhat-8a3892191/">Phan Nhat Hoang</a> a.k.a John Phan. We did not win any prize this time (yes, there was a last time that we won, which deserved a post of it all, but not today). Consider this post the debrief for the two days.</p>
+<p>First, here is the <a href="https://intuition-v9-0.devpost.com/project-gallery">link</a> to the gallery of the hackathon. Take some time to browse through it and you will notice that at least half of them mentioned GPT-3. Our project, <a href="https://devpost.com/software/summed-is-all-you-need">SumMed</a>, did, too. And we were not alone. After OpenAI released the APIs for their GPT 3.5 (<code>davinci</code>) and DALL·E 2 model, there swiftly spawned a generation of pico AI start-ups that made use of the platform to build products that bring in good income. This was mentioned in Data Machina’s <a href="https://datamachina.substack.com/p/data-machina-190">Newsletter 190</a>, together with a bag of tools termed “<em>Modern AI Stack</em>” by Carlos.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hangenyuu.github.io/h_notes/posts/hackathon_report/Data Machina 190.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>Here is the full list for those who wonder. <a href="https://datamachina.substack.com/p/data-machina-190">Source</a></em></figcaption><p></p>
+</figure>
+</div>
+<p>It was amazing how quickly people in tech caught on to something interesting. Or perhaps it was the ability to turn almost everything into interesting stuff. Anyway, I want to mention the newsletter first because it was our first mistake. We were not up with the news. Had only we known more about the trend in the field, we could have utilized more tools to save the work. As we were about to see, the biggest regret would be the front-end, which Hoang spent most of his time to write with React.js, while <a href="https://devpost.com/software/archmed">another team</a> accomplished nearly the same thing and some more with <a href="https://streamlit.io/">Streamlit</a>. And it was also worth mentioning that neither of us know how to use Streamlit - Hoang fell into React.js out of habit. And we just straight up focused on OpenAI technology instead of considering others, with two worth mentioning being <a href="https://huggingface.co/">HuggingFace</a> and <a href="https://www.hpc-ai.tech/blog/colossal-ai-chatgpt">Colossal-AI</a>. There was no time, and we were not knowledgeable enough to utilize the tools.</p>
+<p>Before moving on, it is worth mentioning that the “mistake” I wrote above needs reading as “mistake in the context of a hackathon”. When you are in such a rush (&lt;24 hours) and you are not a master learner who can acquire tools and integrate in the project at will (yet), you will need to prepare everything way before the event. I did not do that, because these skills were not the highest in my long-term priority yet (guess so for Hoang). A hackathon seemed big and important on the resume (especially when you are deep into it and do not have any sleep for the past 24 hours), but the long-term vision is always more important and always comes first.</p>
+<p>Now that is enough rambling. Onto the actual stuff.</p>
+<section id="before-summed" class="level1">
+<h1>Before SumMed</h1>
+<p>The hackathon was divided into 3 <a href="https://intuition.ieeentu.com/#tracks">tracks</a>: Healthcare track, FinTech track, and an Open track that also cover the two. We chose Healthcare track, with the lengthier problem statement.</p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/hackathon_report/iNTUition v9.0.png" class="img-fluid"></p>
+<p>The requirement was clear: zoom onto “an AI tool that can automatically convert research articles into multimodal formats such as PowerPoint, blogs, and infographic posters.” Anybody who caught wind of GPT-3 would think about calling an API together with the paper content to retrieve various summaries for the parts of the paper and create stuff (slides, infographic, or blog post) from them. Well, such was the majority of the submissions. For some reason, we got tunnel vision, did not realize this, and got stuck with a project that resembled everybody else. Eventually, the selection for winner became the selection for the prototype that was closer to the requirements (<a href="https://github.com/jiawen3131/Hacknwhack">here</a>).</p>
+<p>Back to our product, it all started some time ago when Hoang introduced me to the concept of DocumentQA. This started with the discovery of the model to reason <em>in-context</em>. This is something that is unique to large language models (LLMs). Simply put, if we feed the model a context i.e.&nbsp;background information <em>that it has never seen before</em> together with a format of conversation that we desire, the model can immediately adapt to the format we want, and use the background information as the main source of knowledge to answer our prompt.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hangenyuu.github.io/h_notes/posts/hackathon_report/GPT 3 SQuADv2.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>An example from the <a href="https://arxiv.org/pdf/2005.14165.pdf">GPT-3 research paper</a></em></figcaption><p></p>
+</figure>
+</div>
+<p>This means that we can take a pre-trained LLM, which will act as a <em>document reader</em> and augment it with a <em>document retriever</em> to form a DocumentQA pipeline. You ask, the retriever performs preliminary search and takes out the relevant one to feed into the reader together with your question, and the reader answers after reading the document. A most notable example is <a href="https://github.com/facebookresearch/DrQA">DrQA</a>. For the particular case of OpenAI <a href="https://platform.openai.com/docs/model-index-for-researchers">GPT-3.5</a> (<code>text-davinci-003</code>), there exists two applications available as retriever for the model: <a href="https://langchain.readthedocs.io/en/latest/">LangChain</a> and <a href="https://gpt-index.readthedocs.io/en/latest/">LlamaIndex (GPT Index)</a>. We started simply with a Discord chatbot that used LlamaIndex to read an attachment (PDF, HTML, etc.) and answer a question that you send. I have not created a GitHub repo for it, but here is the <a href="https://replit.com/@HangenYuu/PoliteWavyReciprocal">Repl</a>.</p>
+<p>Because of this toy project, we got tunnel vision into creating a chatbot for QA over a research paper, which was far from the point. We shifted gear after a Dr.&nbsp;from MSD set me straight about the project, and came up with SumMed.</p>
+</section>
+<section id="enter-summed" class="level1">
+<h1>Enter SumMed</h1>
+<p>SumMed supported 3 features:</p>
+<ol type="1">
+<li>Extract and display key information about a research paper.</li>
+<li>Extract and display all tables, figures, and charts from a research paper.</li>
+<li>Of course, a chatbot for QA over a researcher paper.</li>
+</ol>
+<p>The diagram of the application is simple</p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/hackathon_report/SumMed diagram.png" class="img-fluid"></p>
+<p>Hoang was in charge of the intricate detail of the front-end and Flask app, which could be viewed in client folder of repo (again, <a href="https://github.com/JohnToro-CZAF/MedSum/tree/main/client">here</a>). I was in charge of the model part of the back-end, and I was not a React.js pro, would not try to show you what Hoang had done. Instead, I will walk you through the back-end models: GPT-3.5 and Detectron2.</p>
+<blockquote class="blockquote">
+<p>Note: Apparently, catching wind of this blog post, Hoang has refactored the codes. The codes in the post are <code>DocLayout.py</code>, <code>DocReader.py</code>, <code>DocSummarizer.py</code> in the <code>server</code> folder.</p>
+</blockquote>
+<section id="doclayout.py" class="level2">
+<h2 class="anchored" data-anchor-id="doclayout.py"><code>DocLayout.py</code></h2>
+<p>First, the whole file:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;">import</span> pdf2image</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;">import</span> numpy <span class="im" style="color: #00769E;">as</span> np</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;">import</span> layoutparser <span class="im" style="color: #00769E;">as</span> lp</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;">from</span> collections <span class="im" style="color: #00769E;">import</span> defaultdict</span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="kw" style="color: #003B4F;">class</span> DocLayout(<span class="bu" style="color: null;">object</span>):</span>
+<span id="cb1-7">    <span class="kw" style="color: #003B4F;">def</span> <span class="fu" style="color: #4758AB;">__init__</span>(<span class="va" style="color: #111111;">self</span>) <span class="op" style="color: #5E5E5E;">-&gt;</span> <span class="va" style="color: #111111;">None</span>:</span>
+<span id="cb1-8">        <span class="va" style="color: #111111;">self</span>.model <span class="op" style="color: #5E5E5E;">=</span> lp.Detectron2LayoutModel(<span class="st" style="color: #20794D;">'lp://PubLayNet/mask_rcnn_X_101_32x8d_FPN_3x/config'</span>,</span>
+<span id="cb1-9">                                    extra_config<span class="op" style="color: #5E5E5E;">=</span>[<span class="st" style="color: #20794D;">"MODEL.ROI_HEADS.SCORE_THRESH_TEST"</span>, <span class="fl" style="color: #AD0000;">0.5</span>],</span>
+<span id="cb1-10">                                    label_map<span class="op" style="color: #5E5E5E;">=</span>{<span class="dv" style="color: #AD0000;">0</span>: <span class="st" style="color: #20794D;">"Text"</span>, <span class="dv" style="color: #AD0000;">1</span>: <span class="st" style="color: #20794D;">"Title"</span>, <span class="dv" style="color: #AD0000;">2</span>: <span class="st" style="color: #20794D;">"List"</span>, <span class="dv" style="color: #AD0000;">3</span>:<span class="st" style="color: #20794D;">"Table"</span>, <span class="dv" style="color: #AD0000;">4</span>:<span class="st" style="color: #20794D;">"Figure"</span>})</span>
+<span id="cb1-11">        <span class="va" style="color: #111111;">self</span>.ocr_agent <span class="op" style="color: #5E5E5E;">=</span> lp.TesseractAgent(languages<span class="op" style="color: #5E5E5E;">=</span><span class="st" style="color: #20794D;">'eng'</span>)</span>
+<span id="cb1-12"></span>
+<span id="cb1-13">    <span class="kw" style="color: #003B4F;">def</span> extract_pdf(<span class="va" style="color: #111111;">self</span>, file_name: <span class="bu" style="color: null;">str</span>):</span>
+<span id="cb1-14">        <span class="co" style="color: #5E5E5E;">""" From a local file pdf file, extract the title, text, tables and figures</span></span>
+<span id="cb1-15"><span class="co" style="color: #5E5E5E;">        Args:</span></span>
+<span id="cb1-16"><span class="co" style="color: #5E5E5E;">            file_name (str): path to the pdf file</span></span>
+<span id="cb1-17"><span class="co" style="color: #5E5E5E;">        Returns:</span></span>
+<span id="cb1-18"><span class="co" style="color: #5E5E5E;">            title (str): title of the paper</span></span>
+<span id="cb1-19"><span class="co" style="color: #5E5E5E;">            Paper (str): text of the paper</span></span>
+<span id="cb1-20"><span class="co" style="color: #5E5E5E;">            table_by_page (dict(list)): dictionary of tables by page, each page has a list of tables, represent by 3D numpy array</span></span>
+<span id="cb1-21"><span class="co" style="color: #5E5E5E;">            figure_by_page (dict(list)): dictionary of figures by page, each page has a list of figures, represent by 3D numpy array</span></span>
+<span id="cb1-22"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb1-23">        list_of_pages <span class="op" style="color: #5E5E5E;">=</span> pdf2image.convert_from_path(file_name)</span>
+<span id="cb1-24">        images <span class="op" style="color: #5E5E5E;">=</span> [np.asarray(page) <span class="cf" style="color: #003B4F;">for</span> page <span class="kw" style="color: #003B4F;">in</span> list_of_pages]</span>
+<span id="cb1-25">        image_width <span class="op" style="color: #5E5E5E;">=</span> <span class="bu" style="color: null;">len</span>(images[<span class="dv" style="color: #AD0000;">0</span>][<span class="dv" style="color: #AD0000;">0</span>])</span>
+<span id="cb1-26"></span>
+<span id="cb1-27">        header_blocks, text_blocks, table_blocks, figure_blocks <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._detect_element(images)</span>
+<span id="cb1-28"></span>
+<span id="cb1-29">        title <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_title(image_width, images, header_blocks)</span>
+<span id="cb1-30">        Paper <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_text_info(image_width, images, text_blocks)</span>
+<span id="cb1-31">        table_by_page, figure_by_page <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_table_n_figure(image_width, images, table_blocks, figure_blocks)</span>
+<span id="cb1-32">        <span class="co" style="color: #5E5E5E;"># Currently we dont care about the order of the figures or tables returned</span></span>
+<span id="cb1-33">        tables <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._general_by_table_to_list(table_by_page)</span>
+<span id="cb1-34">        figures <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._general_by_table_to_list(figure_by_page)</span>
+<span id="cb1-35">        <span class="cf" style="color: #003B4F;">return</span> title, Paper, tables, figures</span>
+<span id="cb1-36">    </span>
+<span id="cb1-37">    <span class="kw" style="color: #003B4F;">def</span> _general_by_table_to_list(<span class="va" style="color: #111111;">self</span>, general_by_page: <span class="bu" style="color: null;">dict</span>):</span>
+<span id="cb1-38">        <span class="cf" style="color: #003B4F;">return</span> [general <span class="cf" style="color: #003B4F;">for</span> i <span class="kw" style="color: #003B4F;">in</span> general_by_page.keys() <span class="cf" style="color: #003B4F;">for</span> general <span class="kw" style="color: #003B4F;">in</span> general_by_page[i]]</span>
+<span id="cb1-39">    </span>
+<span id="cb1-40">    <span class="kw" style="color: #003B4F;">def</span> _detect_element(<span class="va" style="color: #111111;">self</span>, images):</span>
+<span id="cb1-41">        types <span class="op" style="color: #5E5E5E;">=</span> [<span class="st" style="color: #20794D;">'Title'</span>, <span class="st" style="color: #20794D;">'Text'</span>, <span class="st" style="color: #20794D;">'Table'</span>, <span class="st" style="color: #20794D;">'Figure'</span>]</span>
+<span id="cb1-42">        type_blocks <span class="op" style="color: #5E5E5E;">=</span> {</span>
+<span id="cb1-43">            t: defaultdict(<span class="bu" style="color: null;">list</span>) <span class="cf" style="color: #003B4F;">for</span> t <span class="kw" style="color: #003B4F;">in</span> types</span>
+<span id="cb1-44">        }</span>
+<span id="cb1-45">        <span class="cf" style="color: #003B4F;">for</span> i <span class="kw" style="color: #003B4F;">in</span> <span class="bu" style="color: null;">range</span>(<span class="bu" style="color: null;">len</span>(images)):</span>
+<span id="cb1-46">            layout_result <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>.model.detect(images[i])</span>
+<span id="cb1-47">            <span class="cf" style="color: #003B4F;">for</span> t <span class="kw" style="color: #003B4F;">in</span> types:</span>
+<span id="cb1-48">                type_block <span class="op" style="color: #5E5E5E;">=</span> lp.Layout([b <span class="cf" style="color: #003B4F;">for</span> b <span class="kw" style="color: #003B4F;">in</span> layout_result <span class="cf" style="color: #003B4F;">if</span> b.<span class="bu" style="color: null;">type</span><span class="op" style="color: #5E5E5E;">==</span>t])</span>
+<span id="cb1-49">                <span class="cf" style="color: #003B4F;">if</span> <span class="bu" style="color: null;">len</span>(type_block) <span class="op" style="color: #5E5E5E;">!=</span> <span class="dv" style="color: #AD0000;">0</span>:</span>
+<span id="cb1-50">                    type_blocks[t][i] <span class="op" style="color: #5E5E5E;">=</span> type_block</span>
+<span id="cb1-51">        <span class="cf" style="color: #003B4F;">return</span> type_blocks.values()</span>
+<span id="cb1-52">    </span>
+<span id="cb1-53">    </span>
+<span id="cb1-54">    <span class="kw" style="color: #003B4F;">def</span> _extract_title(<span class="va" style="color: #111111;">self</span>, image_width, images, header_blocks):</span>
+<span id="cb1-55">        <span class="co" style="color: #5E5E5E;">"""</span></span>
+<span id="cb1-56"><span class="co" style="color: #5E5E5E;">        Extract the title of the article from several headers</span></span>
+<span id="cb1-57"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb1-58">        first_page <span class="op" style="color: #5E5E5E;">=</span> <span class="bu" style="color: null;">min</span>(header_blocks.keys())</span>
+<span id="cb1-59">        segment_title <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_page(first_page, image_width, images, header_blocks)[<span class="dv" style="color: #AD0000;">0</span>]</span>
+<span id="cb1-60">        title <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>.ocr_agent.detect(segment_title)</span>
+<span id="cb1-61">        <span class="cf" style="color: #003B4F;">return</span> title</span>
+<span id="cb1-62">    </span>
+<span id="cb1-63">    <span class="kw" style="color: #003B4F;">def</span> _extract_text_info(<span class="va" style="color: #111111;">self</span>, image_width, images, text_blocks):</span>
+<span id="cb1-64">        <span class="co" style="color: #5E5E5E;">"""</span></span>
+<span id="cb1-65"><span class="co" style="color: #5E5E5E;">        Returns all the text in the article</span></span>
+<span id="cb1-66"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb1-67">        Paper <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">""</span></span>
+<span id="cb1-68">        <span class="cf" style="color: #003B4F;">for</span> page_id <span class="kw" style="color: #003B4F;">in</span> text_blocks:</span>
+<span id="cb1-69">            text_block_images <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_page(page_id, image_width, images, text_blocks)</span>
+<span id="cb1-70">            <span class="cf" style="color: #003B4F;">for</span> block <span class="kw" style="color: #003B4F;">in</span> text_block_images:</span>
+<span id="cb1-71">                text <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>.ocr_agent.detect(block).strip()</span>
+<span id="cb1-72">                Paper <span class="op" style="color: #5E5E5E;">+=</span> text <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">" "</span></span>
+<span id="cb1-73">        <span class="cf" style="color: #003B4F;">return</span> Paper</span>
+<span id="cb1-74"></span>
+<span id="cb1-75">    <span class="kw" style="color: #003B4F;">def</span> _extract_table_n_figure(<span class="va" style="color: #111111;">self</span>, image_width, images, table_blocks, figure_blocks):</span>
+<span id="cb1-76">        <span class="co" style="color: #5E5E5E;">"""Extract 3D numpy array of tables and figures from deteced layout</span></span>
+<span id="cb1-77"><span class="co" style="color: #5E5E5E;">        Args:</span></span>
+<span id="cb1-78"><span class="co" style="color: #5E5E5E;">            image_width (int): width of image</span></span>
+<span id="cb1-79"><span class="co" style="color: #5E5E5E;">            images (_type_): _description_</span></span>
+<span id="cb1-80"><span class="co" style="color: #5E5E5E;">            table_blocks (_type_): _description_</span></span>
+<span id="cb1-81"><span class="co" style="color: #5E5E5E;">            figure_blocks (_type_): _description_</span></span>
+<span id="cb1-82"><span class="co" style="color: #5E5E5E;">        Returns:</span></span>
+<span id="cb1-83"><span class="co" style="color: #5E5E5E;">            table_by_page, figure_by_page (dict(list)): 3D numpy array of tables and figures by page</span></span>
+<span id="cb1-84"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb1-85">        </span>
+<span id="cb1-86">        table_by_page, figure_by_page <span class="op" style="color: #5E5E5E;">=</span> defaultdict(<span class="bu" style="color: null;">list</span>), defaultdict(<span class="bu" style="color: null;">list</span>)</span>
+<span id="cb1-87">        <span class="cf" style="color: #003B4F;">for</span> page_id <span class="kw" style="color: #003B4F;">in</span> table_blocks:</span>
+<span id="cb1-88">            results <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_page(page_id, image_width, images, table_blocks )</span>
+<span id="cb1-89">            table_by_page[page_id] <span class="op" style="color: #5E5E5E;">=</span> results</span>
+<span id="cb1-90">        </span>
+<span id="cb1-91">        <span class="cf" style="color: #003B4F;">for</span> page_id <span class="kw" style="color: #003B4F;">in</span> figure_blocks:</span>
+<span id="cb1-92">            results <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_page(page_id, image_width, images, figure_blocks)</span>
+<span id="cb1-93">            figure_by_page[page_id] <span class="op" style="color: #5E5E5E;">=</span> results</span>
+<span id="cb1-94">        </span>
+<span id="cb1-95">        <span class="cf" style="color: #003B4F;">return</span> table_by_page, figure_by_page</span>
+<span id="cb1-96"></span>
+<span id="cb1-97">    <span class="kw" style="color: #003B4F;">def</span> _extract_page(<span class="va" style="color: #111111;">self</span>, page_id, image_width, images, general_blocks):</span>
+<span id="cb1-98">        <span class="co" style="color: #5E5E5E;">""" </span></span>
+<span id="cb1-99"><span class="co" style="color: #5E5E5E;">        Get a list of 3D array numpy image of tables and figures, or text from a page</span></span>
+<span id="cb1-100"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb1-101">        results <span class="op" style="color: #5E5E5E;">=</span> []</span>
+<span id="cb1-102">        left_interval <span class="op" style="color: #5E5E5E;">=</span> lp.Interval(<span class="dv" style="color: #AD0000;">0</span>, image_width<span class="op" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">2</span>, axis<span class="op" style="color: #5E5E5E;">=</span><span class="st" style="color: #20794D;">'x'</span>).put_on_canvas(images[page_id])</span>
+<span id="cb1-103">        left_blocks <span class="op" style="color: #5E5E5E;">=</span> general_blocks[page_id].filter_by(left_interval, center<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">True</span>)._blocks</span>
+<span id="cb1-104">        left_blocks.sort(key <span class="op" style="color: #5E5E5E;">=</span> <span class="kw" style="color: #003B4F;">lambda</span> b: b.coordinates[<span class="dv" style="color: #AD0000;">1</span>])</span>
+<span id="cb1-105"></span>
+<span id="cb1-106">        <span class="co" style="color: #5E5E5E;"># Sort element ID of the right column based on y1 coordinate</span></span>
+<span id="cb1-107">        right_blocks <span class="op" style="color: #5E5E5E;">=</span> [b <span class="cf" style="color: #003B4F;">for</span> b <span class="kw" style="color: #003B4F;">in</span> general_blocks[page_id] <span class="cf" style="color: #003B4F;">if</span> b <span class="kw" style="color: #003B4F;">not</span> <span class="kw" style="color: #003B4F;">in</span> left_blocks]</span>
+<span id="cb1-108">        right_blocks.sort(key <span class="op" style="color: #5E5E5E;">=</span> <span class="kw" style="color: #003B4F;">lambda</span> b: b.coordinates[<span class="dv" style="color: #AD0000;">1</span>])</span>
+<span id="cb1-109"></span>
+<span id="cb1-110">        <span class="co" style="color: #5E5E5E;"># Sort the overall element ID starts from left column</span></span>
+<span id="cb1-111">        general_block <span class="op" style="color: #5E5E5E;">=</span> lp.Layout([b.<span class="bu" style="color: null;">set</span>(<span class="bu" style="color: null;">id</span> <span class="op" style="color: #5E5E5E;">=</span> idx) <span class="cf" style="color: #003B4F;">for</span> idx, b <span class="kw" style="color: #003B4F;">in</span> <span class="bu" style="color: null;">enumerate</span>(left_blocks <span class="op" style="color: #5E5E5E;">+</span> right_blocks)])</span>
+<span id="cb1-112"></span>
+<span id="cb1-113">        <span class="co" style="color: #5E5E5E;"># Crop image around the detected layout</span></span>
+<span id="cb1-114">        <span class="cf" style="color: #003B4F;">for</span> block <span class="kw" style="color: #003B4F;">in</span> general_block:</span>
+<span id="cb1-115">            segment_image <span class="op" style="color: #5E5E5E;">=</span> (block</span>
+<span id="cb1-116">                                .pad(left<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">15</span>, right<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">15</span>, top<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">5</span>, bottom<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">5</span>)</span>
+<span id="cb1-117">                                .crop_image(images[page_id]))</span>
+<span id="cb1-118">            results.append(segment_image)</span>
+<span id="cb1-119"></span>
+<span id="cb1-120">        <span class="cf" style="color: #003B4F;">return</span> results</span></code></pre></div>
+<p>Let’s dissect the codes.</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;">import</span> pdf2image</span>
+<span id="cb2-2"><span class="im" style="color: #00769E;">import</span> numpy <span class="im" style="color: #00769E;">as</span> np</span>
+<span id="cb2-3"><span class="im" style="color: #00769E;">import</span> layoutparser <span class="im" style="color: #00769E;">as</span> lp</span>
+<span id="cb2-4"><span class="im" style="color: #00769E;">from</span> collections <span class="im" style="color: #00769E;">import</span> defaultdict</span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="kw" style="color: #003B4F;">class</span> DocLayout(<span class="bu" style="color: null;">object</span>):</span>
+<span id="cb2-7">    <span class="kw" style="color: #003B4F;">def</span> <span class="fu" style="color: #4758AB;">__init__</span>(<span class="va" style="color: #111111;">self</span>) <span class="op" style="color: #5E5E5E;">-&gt;</span> <span class="va" style="color: #111111;">None</span>:</span>
+<span id="cb2-8">        <span class="va" style="color: #111111;">self</span>.model <span class="op" style="color: #5E5E5E;">=</span> lp.Detectron2LayoutModel(<span class="st" style="color: #20794D;">'lp://PubLayNet/mask_rcnn_X_101_32x8d_FPN_3x/config'</span>,</span>
+<span id="cb2-9">                                    extra_config<span class="op" style="color: #5E5E5E;">=</span>[<span class="st" style="color: #20794D;">"MODEL.ROI_HEADS.SCORE_THRESH_TEST"</span>, <span class="fl" style="color: #AD0000;">0.5</span>],</span>
+<span id="cb2-10">                                    label_map<span class="op" style="color: #5E5E5E;">=</span>{<span class="dv" style="color: #AD0000;">0</span>: <span class="st" style="color: #20794D;">"Text"</span>, <span class="dv" style="color: #AD0000;">1</span>: <span class="st" style="color: #20794D;">"Title"</span>, <span class="dv" style="color: #AD0000;">2</span>: <span class="st" style="color: #20794D;">"List"</span>, <span class="dv" style="color: #AD0000;">3</span>:<span class="st" style="color: #20794D;">"Table"</span>, <span class="dv" style="color: #AD0000;">4</span>:<span class="st" style="color: #20794D;">"Figure"</span>})</span>
+<span id="cb2-11">        <span class="va" style="color: #111111;">self</span>.ocr_agent <span class="op" style="color: #5E5E5E;">=</span> lp.TesseractAgent(languages<span class="op" style="color: #5E5E5E;">=</span><span class="st" style="color: #20794D;">'eng'</span>)</span></code></pre></div>
+<p>The star of the show is <a href="https://layout-parser.readthedocs.io/en/latest/">LayoutParser</a> module, which employs a host of models from the <a href="https://github.com/facebookresearch/detectron2">Detectron2 platform</a> for the task of document layout parsing. We used the best configuration suggested by the <a href="https://layout-parser.readthedocs.io/en/latest/notes/modelzoo.html">docs</a> of <a href="https://arxiv.org/pdf/1703.06870.pdf">Mark RCNN</a> trained on the <a href="https://arxiv.org/pdf/1908.07836.pdf">PubLayNet</a> dataset of document layout analysis. As you can see, the model in this case can detect 5 elements in the dictionary <code>{0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"}</code>. <code>pdf2image</code> and an <code>ocr_agent</code> needs importing and creating respectively because the model works on images, so we need to convert the PDF file to image(s) i.e.&nbsp;NumPy array(s) before doing anything.</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;">class</span> DocLayout(<span class="bu" style="color: null;">object</span>):</span>
+<span id="cb3-2">    <span class="kw" style="color: #003B4F;">def</span> extract_pdf(<span class="va" style="color: #111111;">self</span>, file_name: <span class="bu" style="color: null;">str</span>):</span>
+<span id="cb3-3">        <span class="co" style="color: #5E5E5E;">""" From a local file pdf file, extract the title, text, tables and figures</span></span>
+<span id="cb3-4"><span class="co" style="color: #5E5E5E;">        Args:</span></span>
+<span id="cb3-5"><span class="co" style="color: #5E5E5E;">            file_name (str): path to the pdf file</span></span>
+<span id="cb3-6"><span class="co" style="color: #5E5E5E;">        Returns:</span></span>
+<span id="cb3-7"><span class="co" style="color: #5E5E5E;">            title (str): title of the paper</span></span>
+<span id="cb3-8"><span class="co" style="color: #5E5E5E;">            Paper (str): text of the paper</span></span>
+<span id="cb3-9"><span class="co" style="color: #5E5E5E;">            table_by_page (dict(list)): dictionary of tables by page, each page has a list of tables, represent by 3D numpy array</span></span>
+<span id="cb3-10"><span class="co" style="color: #5E5E5E;">            figure_by_page (dict(list)): dictionary of figures by page, each page has a list of figures, represent by 3D numpy array</span></span>
+<span id="cb3-11"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb3-12">        list_of_pages <span class="op" style="color: #5E5E5E;">=</span> pdf2image.convert_from_path(file_name)</span>
+<span id="cb3-13">        images <span class="op" style="color: #5E5E5E;">=</span> [np.asarray(page) <span class="cf" style="color: #003B4F;">for</span> page <span class="kw" style="color: #003B4F;">in</span> list_of_pages]</span>
+<span id="cb3-14">        image_width <span class="op" style="color: #5E5E5E;">=</span> <span class="bu" style="color: null;">len</span>(images[<span class="dv" style="color: #AD0000;">0</span>][<span class="dv" style="color: #AD0000;">0</span>])</span>
+<span id="cb3-15"></span>
+<span id="cb3-16">        header_blocks, text_blocks, table_blocks, figure_blocks <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._detect_element(images)</span>
+<span id="cb3-17"></span>
+<span id="cb3-18">        title <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_title(image_width, images, header_blocks)</span>
+<span id="cb3-19">        Paper <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_text_info(image_width, images, text_blocks)</span>
+<span id="cb3-20">        table_by_page, figure_by_page <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._extract_table_n_figure(image_width, images, table_blocks, figure_blocks)</span>
+<span id="cb3-21">        <span class="co" style="color: #5E5E5E;"># Currently we dont care about the order of the figures or tables returned</span></span>
+<span id="cb3-22">        tables <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._general_by_table_to_list(table_by_page)</span>
+<span id="cb3-23">        figures <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._general_by_table_to_list(figure_by_page)</span>
+<span id="cb3-24">        <span class="cf" style="color: #003B4F;">return</span> title, Paper, tables, figures</span>
+<span id="cb3-25"></span>
+<span id="cb3-26">    <span class="kw" style="color: #003B4F;">def</span> _detect_element(<span class="va" style="color: #111111;">self</span>, images):</span>
+<span id="cb3-27">        types <span class="op" style="color: #5E5E5E;">=</span> [<span class="st" style="color: #20794D;">'Title'</span>, <span class="st" style="color: #20794D;">'Text'</span>, <span class="st" style="color: #20794D;">'Table'</span>, <span class="st" style="color: #20794D;">'Figure'</span>]</span>
+<span id="cb3-28">        type_blocks <span class="op" style="color: #5E5E5E;">=</span> {</span>
+<span id="cb3-29">            t: defaultdict(<span class="bu" style="color: null;">list</span>) <span class="cf" style="color: #003B4F;">for</span> t <span class="kw" style="color: #003B4F;">in</span> types</span>
+<span id="cb3-30">        }</span>
+<span id="cb3-31">        <span class="cf" style="color: #003B4F;">for</span> i <span class="kw" style="color: #003B4F;">in</span> <span class="bu" style="color: null;">range</span>(<span class="bu" style="color: null;">len</span>(images)):</span>
+<span id="cb3-32">            layout_result <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>.model.detect(images[i])</span>
+<span id="cb3-33">            <span class="cf" style="color: #003B4F;">for</span> t <span class="kw" style="color: #003B4F;">in</span> types:</span>
+<span id="cb3-34">                type_block <span class="op" style="color: #5E5E5E;">=</span> lp.Layout([b <span class="cf" style="color: #003B4F;">for</span> b <span class="kw" style="color: #003B4F;">in</span> layout_result <span class="cf" style="color: #003B4F;">if</span> b.<span class="bu" style="color: null;">type</span><span class="op" style="color: #5E5E5E;">==</span>t])</span>
+<span id="cb3-35">                <span class="cf" style="color: #003B4F;">if</span> <span class="bu" style="color: null;">len</span>(type_block) <span class="op" style="color: #5E5E5E;">!=</span> <span class="dv" style="color: #AD0000;">0</span>:</span>
+<span id="cb3-36">                    type_blocks[t][i] <span class="op" style="color: #5E5E5E;">=</span> type_block</span>
+<span id="cb3-37">        <span class="cf" style="color: #003B4F;">return</span> type_blocks.values()</span></code></pre></div>
+<p><code>pdf2image.convert_from_path()</code> returns a list of Pillow image, which needs converting to a list of NumPy arrays before work. Afterwards, in <code>_detect_element()</code> method, call <code>sel.model.detect()</code> to return a list of bounding boxes (represent by the top-left and right-bottom coordinates with respect to the particular page) with element type. The list of blocks returned will be processed accordingly.</p>
+</section>
+<section id="docreader.py" class="level2">
+<h2 class="anchored" data-anchor-id="docreader.py"><code>DocReader.py</code></h2>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;"># There are minor differences (by the time of post) from the file in the repo</span></span>
+<span id="cb4-2"><span class="im" style="color: #00769E;">from</span> llama_index  <span class="im" style="color: #00769E;">import</span> SimpleDirectoryReader, GPTSimpleVectorIndex, LLMPredictor, PromptHelper</span>
+<span id="cb4-3"><span class="im" style="color: #00769E;">from</span> langchain <span class="im" style="color: #00769E;">import</span> OpenAI</span>
+<span id="cb4-4"></span>
+<span id="cb4-5"><span class="kw" style="color: #003B4F;">class</span> DocReader(<span class="bu" style="color: null;">object</span>):</span>
+<span id="cb4-6">    <span class="kw" style="color: #003B4F;">def</span> <span class="fu" style="color: #4758AB;">__init__</span>(<span class="va" style="color: #111111;">self</span>, directory_path, index_path):</span>
+<span id="cb4-7">        <span class="va" style="color: #111111;">self</span>.index_path <span class="op" style="color: #5E5E5E;">=</span> index_path</span>
+<span id="cb4-8">        <span class="va" style="color: #111111;">self</span>.directory_path <span class="op" style="color: #5E5E5E;">=</span> directory_path</span>
+<span id="cb4-9">        <span class="va" style="color: #111111;">self</span>.max_input_size <span class="op" style="color: #5E5E5E;">=</span> <span class="dv" style="color: #AD0000;">4096</span></span>
+<span id="cb4-10">        <span class="va" style="color: #111111;">self</span>.num_outputs <span class="op" style="color: #5E5E5E;">=</span> <span class="dv" style="color: #AD0000;">256</span></span>
+<span id="cb4-11">        <span class="va" style="color: #111111;">self</span>.max_chunk_overlap <span class="op" style="color: #5E5E5E;">=</span> <span class="dv" style="color: #AD0000;">20</span></span>
+<span id="cb4-12">        <span class="va" style="color: #111111;">self</span>.chunk_size_limit <span class="op" style="color: #5E5E5E;">=</span> <span class="dv" style="color: #AD0000;">600</span></span>
+<span id="cb4-13">        <span class="va" style="color: #111111;">self</span>.llm_predictor <span class="op" style="color: #5E5E5E;">=</span> LLMPredictor(llm<span class="op" style="color: #5E5E5E;">=</span>OpenAI(temperature<span class="op" style="color: #5E5E5E;">=</span><span class="fl" style="color: #AD0000;">0.75</span>, model_name<span class="op" style="color: #5E5E5E;">=</span><span class="st" style="color: #20794D;">"text-davinci-003"</span>, max_tokens<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">self</span>.num_outputs))</span>
+<span id="cb4-14">        <span class="va" style="color: #111111;">self</span>.prompt_helper <span class="op" style="color: #5E5E5E;">=</span> PromptHelper(<span class="va" style="color: #111111;">self</span>.max_input_size, <span class="va" style="color: #111111;">self</span>.num_outputs, <span class="va" style="color: #111111;">self</span>.max_chunk_overlap, chunk_size_limit<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">self</span>.chunk_size_limit)</span>
+<span id="cb4-15"></span>
+<span id="cb4-16">    <span class="kw" style="color: #003B4F;">def</span> construct_index(<span class="va" style="color: #111111;">self</span>):</span>
+<span id="cb4-17">        <span class="co" style="color: #5E5E5E;">"""</span></span>
+<span id="cb4-18"><span class="co" style="color: #5E5E5E;">        Reconstruct the index, and save it to the database</span></span>
+<span id="cb4-19"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb4-20">        documents <span class="op" style="color: #5E5E5E;">=</span> SimpleDirectoryReader(<span class="va" style="color: #111111;">self</span>.directory_path).load_data()        </span>
+<span id="cb4-21">        index <span class="op" style="color: #5E5E5E;">=</span> GPTSimpleVectorIndex(</span>
+<span id="cb4-22">            documents, llm_predictor<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">self</span>.llm_predictor, prompt_helper<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">self</span>.prompt_helper</span>
+<span id="cb4-23">        )</span>
+<span id="cb4-24">        index.save_to_disk(<span class="va" style="color: #111111;">self</span>.index_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/index.json'</span>)</span>
+<span id="cb4-25"></span>
+<span id="cb4-26">    <span class="kw" style="color: #003B4F;">def</span> predict(<span class="va" style="color: #111111;">self</span>, query):</span>
+<span id="cb4-27">        index <span class="op" style="color: #5E5E5E;">=</span> GPTSimpleVectorIndex.load_from_disk(<span class="va" style="color: #111111;">self</span>.index_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/index.json'</span>)</span>
+<span id="cb4-28">        response <span class="op" style="color: #5E5E5E;">=</span> index.query(query, response_mode<span class="op" style="color: #5E5E5E;">=</span><span class="st" style="color: #20794D;">"default"</span>)</span>
+<span id="cb4-29">        <span class="cf" style="color: #003B4F;">return</span> response.response</span></code></pre></div>
+<p>A LlamaIndex workflow consists of 4 steps:</p>
+<ol type="1">
+<li>Initialize an <code>LLMPredictor()</code> instance (based on LangChain <a href="https://langchain.readthedocs.io/en/latest/modules/llms.html"><code>LLM</code> and <code>LLMChain</code></a>, which supports many other model hubs besides OpenAI). <code>LLMPredictor()</code> is a wrapper outside the model we use.</li>
+<li>Initialize a <a href="https://gpt-index.readthedocs.io/en/latest/reference/prompt_helper.html"><code>PromptHelper</code></a> instance that helps to define various parameters for the prompt.</li>
+<li>Index the document. There are many ways to achieve this, but the most simple way is calling <code>SimpleDirectoryReader()</code> to get the documents and <code>GPTSimpleVectorIndex()</code> to get the index that can be saved as a .json file.</li>
+<li>Query over the index. There are different, pre-defined response mode in LlamaIndex. Explore the docs for more.</li>
+</ol>
+<p>And that’s it! Short and simple, yes powerful.</p>
+</section>
+<section id="docsummarizer.py" class="level2">
+<h2 class="anchored" data-anchor-id="docsummarizer.py"><code>DocSummarizer.py</code></h2>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;">import</span> numpy <span class="im" style="color: #00769E;">as</span> np</span>
+<span id="cb5-2"><span class="im" style="color: #00769E;">from</span> PIL <span class="im" style="color: #00769E;">import</span> Image</span>
+<span id="cb5-3"><span class="im" style="color: #00769E;">import</span> os</span>
+<span id="cb5-4"><span class="im" style="color: #00769E;">import</span> json</span>
+<span id="cb5-5"><span class="im" style="color: #00769E;">from</span> DocLayout <span class="im" style="color: #00769E;">import</span> DocLayout</span>
+<span id="cb5-6"><span class="im" style="color: #00769E;">from</span> collections <span class="im" style="color: #00769E;">import</span> defaultdict</span>
+<span id="cb5-7"></span>
+<span id="cb5-8"><span class="kw" style="color: #003B4F;">class</span> DocSummarizer(<span class="bu" style="color: null;">object</span>):</span>
+<span id="cb5-9">    <span class="kw" style="color: #003B4F;">def</span> <span class="fu" style="color: #4758AB;">__init__</span>(<span class="va" style="color: #111111;">self</span>, documents_path: <span class="bu" style="color: null;">str</span>, resources_path: <span class="bu" style="color: null;">str</span>):</span>
+<span id="cb5-10">        <span class="va" style="color: #111111;">self</span>.documents_path <span class="op" style="color: #5E5E5E;">=</span> documents_path</span>
+<span id="cb5-11">        <span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">=</span> resources_path</span>
+<span id="cb5-12">        <span class="va" style="color: #111111;">self</span>.prompt_tail <span class="op" style="color: #5E5E5E;">=</span> {</span>
+<span id="cb5-13">            <span class="st" style="color: #20794D;">'authors'</span>: <span class="st" style="color: #20794D;">'Who are the authors of this paper'</span>,</span>
+<span id="cb5-14">            <span class="st" style="color: #20794D;">'summary'</span>:<span class="st" style="color: #20794D;">"</span><span class="ch" style="color: #20794D;">\n\n</span><span class="st" style="color: #20794D;">Summarize the above text, focus on key insights"</span>,</span>
+<span id="cb5-15">            <span class="st" style="color: #20794D;">'keyresults'</span>:<span class="st" style="color: #20794D;">'''</span><span class="ch" style="color: #20794D;">\n\n</span><span class="st" style="color: #20794D;">Give me three key results in the format of "Key results:</span></span>
+<span id="cb5-16"><span class="st" style="color: #20794D;">                1.  Key result 1</span></span>
+<span id="cb5-17"><span class="st" style="color: #20794D;">                2. Key result 2</span></span>
+<span id="cb5-18"><span class="st" style="color: #20794D;">                3. Key result 3"'''</span>,</span>
+<span id="cb5-19">            <span class="st" style="color: #20794D;">'keyword'</span>:<span class="st" style="color: #20794D;">'</span><span class="ch" style="color: #20794D;">\n\n</span><span class="st" style="color: #20794D;">Give me keywords in the format of "Keywords:  Keyword 1, Keyword 2, Keyword 3"'</span>,</span>
+<span id="cb5-20">            <span class="st" style="color: #20794D;">'limitations'</span>:<span class="st" style="color: #20794D;">'</span><span class="ch" style="color: #20794D;">\n\n</span><span class="st" style="color: #20794D;">Give me 3 sentences describing the limitations of the text above.'</span></span>
+<span id="cb5-21">        }</span>
+<span id="cb5-22">        <span class="va" style="color: #111111;">self</span>.layout_model <span class="op" style="color: #5E5E5E;">=</span> DocLayout()</span>
+<span id="cb5-23">        </span>
+<span id="cb5-24">    <span class="kw" style="color: #003B4F;">def</span> get_summary(<span class="va" style="color: #111111;">self</span>, file_name: <span class="bu" style="color: null;">str</span>, reader):</span>
+<span id="cb5-25">        <span class="co" style="color: #5E5E5E;">"""</span></span>
+<span id="cb5-26"><span class="co" style="color: #5E5E5E;">        Returns a summary of the document, this document is a pdf file that has been uploaded to the server.</span></span>
+<span id="cb5-27"><span class="co" style="color: #5E5E5E;">        And save the summary to the database/resources.</span></span>
+<span id="cb5-28"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb5-29">        title, Paper, tables, figures <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>.layout_model.extract_pdf(<span class="va" style="color: #111111;">self</span>.documents_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name)</span>
+<span id="cb5-30">        authors, summary, keywords, keyresults, limitations <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>._read(Paper, reader)</span>
+<span id="cb5-31">        response <span class="op" style="color: #5E5E5E;">=</span> {</span>
+<span id="cb5-32">          <span class="st" style="color: #20794D;">'title'</span>: title,</span>
+<span id="cb5-33">          <span class="st" style="color: #20794D;">'authors'</span>: authors,</span>
+<span id="cb5-34">          <span class="st" style="color: #20794D;">'summary'</span>: summary,</span>
+<span id="cb5-35">          <span class="st" style="color: #20794D;">'key_concepts'</span>: keywords,</span>
+<span id="cb5-36">          <span class="st" style="color: #20794D;">'highlights'</span>: keyresults,</span>
+<span id="cb5-37">          <span class="st" style="color: #20794D;">'limitations'</span>: limitations,</span>
+<span id="cb5-38">          <span class="st" style="color: #20794D;">'figures'</span>: [],</span>
+<span id="cb5-39">          <span class="st" style="color: #20794D;">'tables'</span>: [],</span>
+<span id="cb5-40">        }</span>
+<span id="cb5-41">        </span>
+<span id="cb5-42">        <span class="cf" style="color: #003B4F;">if</span> <span class="kw" style="color: #003B4F;">not</span> os.path.exists(<span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>]):</span>
+<span id="cb5-43">            os.mkdir(<span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>])</span>
+<span id="cb5-44">        </span>
+<span id="cb5-45">        <span class="cf" style="color: #003B4F;">with</span> <span class="bu" style="color: null;">open</span>(<span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/info.json'</span>, <span class="st" style="color: #20794D;">'w'</span>) <span class="im" style="color: #00769E;">as</span> f:</span>
+<span id="cb5-46">            json.dump(response, f)</span>
+<span id="cb5-47">        </span>
+<span id="cb5-48">        <span class="cf" style="color: #003B4F;">with</span> <span class="bu" style="color: null;">open</span>(<span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/title.txt'</span>, <span class="st" style="color: #20794D;">'w'</span>) <span class="im" style="color: #00769E;">as</span> f:</span>
+<span id="cb5-49">            f.write(title)</span>
+<span id="cb5-50">        </span>
+<span id="cb5-51">        <span class="cf" style="color: #003B4F;">for</span> idx, table <span class="kw" style="color: #003B4F;">in</span> <span class="bu" style="color: null;">enumerate</span>(tables):</span>
+<span id="cb5-52">            im <span class="op" style="color: #5E5E5E;">=</span> Image.fromarray(table)</span>
+<span id="cb5-53">            local_fn <span class="op" style="color: #5E5E5E;">=</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'*'</span> <span class="op" style="color: #5E5E5E;">+</span> <span class="bu" style="color: null;">str</span>(idx) <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'_table.png'</span></span>
+<span id="cb5-54">            table_fn <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> <span class="bu" style="color: null;">str</span>(idx) <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'_table.png'</span></span>
+<span id="cb5-55">            im.save(table_fn)</span>
+<span id="cb5-56">            response[<span class="st" style="color: #20794D;">'tables'</span>].append(local_fn)</span>
+<span id="cb5-57">        </span>
+<span id="cb5-58">        <span class="cf" style="color: #003B4F;">for</span> idx, fig <span class="kw" style="color: #003B4F;">in</span> <span class="bu" style="color: null;">enumerate</span>(figures):</span>
+<span id="cb5-59">            im <span class="op" style="color: #5E5E5E;">=</span> Image.fromarray(fig)</span>
+<span id="cb5-60">            local_fn <span class="op" style="color: #5E5E5E;">=</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'*'</span> <span class="op" style="color: #5E5E5E;">+</span> <span class="bu" style="color: null;">str</span>(idx) <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'_fig.png'</span></span>
+<span id="cb5-61">            fig_fn <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> <span class="bu" style="color: null;">str</span>(idx) <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'_fig.png'</span></span>
+<span id="cb5-62">            im.save(fig_fn)</span>
+<span id="cb5-63">            response[<span class="st" style="color: #20794D;">'figures'</span>].append(local_fn)</span>
+<span id="cb5-64">        </span>
+<span id="cb5-65">        <span class="cf" style="color: #003B4F;">return</span> response</span>
+<span id="cb5-66"></span>
+<span id="cb5-67">    <span class="kw" style="color: #003B4F;">def</span> retrieve_summary(<span class="va" style="color: #111111;">self</span>, file_name: <span class="bu" style="color: null;">str</span>):</span>
+<span id="cb5-68">        <span class="co" style="color: #5E5E5E;">"""</span></span>
+<span id="cb5-69"><span class="co" style="color: #5E5E5E;">        Returns a summary of the document (retrieve from resources), this document is a pdf file that already in the server.</span></span>
+<span id="cb5-70"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb5-71">        <span class="cf" style="color: #003B4F;">if</span> <span class="kw" style="color: #003B4F;">not</span> os.path.exists(<span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>]):</span>
+<span id="cb5-72">            <span class="cf" style="color: #003B4F;">raise</span> <span class="pp" style="color: #AD0000;">Exception</span>(<span class="st" style="color: #20794D;">'File not found'</span>)</span>
+<span id="cb5-73">        </span>
+<span id="cb5-74">        response <span class="op" style="color: #5E5E5E;">=</span> {</span>
+<span id="cb5-75">          <span class="st" style="color: #20794D;">'title'</span>: <span class="va" style="color: #111111;">None</span>,</span>
+<span id="cb5-76">          <span class="st" style="color: #20794D;">'authors'</span>: <span class="va" style="color: #111111;">None</span>,</span>
+<span id="cb5-77">          <span class="st" style="color: #20794D;">'summary'</span>: <span class="va" style="color: #111111;">None</span>,</span>
+<span id="cb5-78">          <span class="st" style="color: #20794D;">'key_concepts'</span>: <span class="va" style="color: #111111;">None</span>,</span>
+<span id="cb5-79">          <span class="st" style="color: #20794D;">'highlights'</span>: <span class="va" style="color: #111111;">None</span>,</span>
+<span id="cb5-80">          <span class="st" style="color: #20794D;">'limitations'</span>: <span class="va" style="color: #111111;">None</span>,</span>
+<span id="cb5-81">          <span class="st" style="color: #20794D;">'figures'</span>: [],</span>
+<span id="cb5-82">          <span class="st" style="color: #20794D;">'tables'</span>: [],</span>
+<span id="cb5-83">        }</span>
+<span id="cb5-84">        </span>
+<span id="cb5-85">        <span class="cf" style="color: #003B4F;">with</span> <span class="bu" style="color: null;">open</span>(<span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/title.txt'</span>, <span class="st" style="color: #20794D;">'r'</span>) <span class="im" style="color: #00769E;">as</span> f:</span>
+<span id="cb5-86">            response[<span class="st" style="color: #20794D;">'title'</span>] <span class="op" style="color: #5E5E5E;">=</span> f.read()</span>
+<span id="cb5-87">        </span>
+<span id="cb5-88">        response_js <span class="op" style="color: #5E5E5E;">=</span> json.load(<span class="bu" style="color: null;">open</span>(<span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/info.json'</span>))</span>
+<span id="cb5-89">        response[<span class="st" style="color: #20794D;">'authors'</span>] <span class="op" style="color: #5E5E5E;">=</span> response_js[<span class="st" style="color: #20794D;">'authors'</span>]</span>
+<span id="cb5-90">        response[<span class="st" style="color: #20794D;">'summary'</span>] <span class="op" style="color: #5E5E5E;">=</span> response_js[<span class="st" style="color: #20794D;">'summary'</span>]</span>
+<span id="cb5-91">        response[<span class="st" style="color: #20794D;">'key_concepts'</span>] <span class="op" style="color: #5E5E5E;">=</span> response_js[<span class="st" style="color: #20794D;">'key_concepts'</span>]</span>
+<span id="cb5-92">        response[<span class="st" style="color: #20794D;">'highlights'</span>] <span class="op" style="color: #5E5E5E;">=</span> response_js[<span class="st" style="color: #20794D;">'highlights'</span>]</span>
+<span id="cb5-93">        response[<span class="st" style="color: #20794D;">'limitations'</span>] <span class="op" style="color: #5E5E5E;">=</span> response_js[<span class="st" style="color: #20794D;">'limitations'</span>]</span>
+<span id="cb5-94">          </span>
+<span id="cb5-95">        <span class="cf" style="color: #003B4F;">for</span> fn <span class="kw" style="color: #003B4F;">in</span> os.listdir(<span class="va" style="color: #111111;">self</span>.resources_path <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'/'</span> <span class="op" style="color: #5E5E5E;">+</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>]):</span>
+<span id="cb5-96">            fn <span class="op" style="color: #5E5E5E;">=</span> file_name[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">'*'</span> <span class="op" style="color: #5E5E5E;">+</span> fn</span>
+<span id="cb5-97">            <span class="cf" style="color: #003B4F;">if</span> <span class="st" style="color: #20794D;">'fig'</span> <span class="kw" style="color: #003B4F;">in</span> fn:</span>
+<span id="cb5-98">                response[<span class="st" style="color: #20794D;">'figures'</span>].append(fn)</span>
+<span id="cb5-99">            <span class="cf" style="color: #003B4F;">else</span>:</span>
+<span id="cb5-100">                response[<span class="st" style="color: #20794D;">'tables'</span>].append(fn)</span>
+<span id="cb5-101">        <span class="cf" style="color: #003B4F;">return</span> response</span>
+<span id="cb5-102">    </span>
+<span id="cb5-103">    <span class="kw" style="color: #003B4F;">def</span> _read(<span class="va" style="color: #111111;">self</span>, Paper, reader):</span>
+<span id="cb5-104">        <span class="co" style="color: #5E5E5E;">"""</span></span>
+<span id="cb5-105"><span class="co" style="color: #5E5E5E;">        Read the text and returns the authors, summary, keywords, keyresults and limitations</span></span>
+<span id="cb5-106"><span class="co" style="color: #5E5E5E;">        """</span></span>
+<span id="cb5-107">        <span class="co" style="color: #5E5E5E;"># </span><span class="al" style="color: #AD0000;">TODO</span><span class="co" style="color: #5E5E5E;">: Currently we use the Doc Reader service to read the text, but we need to implement our own service</span></span>
+<span id="cb5-108">        response <span class="op" style="color: #5E5E5E;">=</span> defaultdict(<span class="bu" style="color: null;">str</span>)</span>
+<span id="cb5-109">        <span class="cf" style="color: #003B4F;">for</span> query_type, prompt <span class="kw" style="color: #003B4F;">in</span> <span class="va" style="color: #111111;">self</span>.prompt_tail.items():</span>
+<span id="cb5-110">            ans_query <span class="op" style="color: #5E5E5E;">=</span> reader.predict(prompt <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">""</span>.join(Paper[:<span class="dv" style="color: #AD0000;">500</span>].split(<span class="st" style="color: #20794D;">" "</span>)[:<span class="dv" style="color: #AD0000;">20</span>]))</span>
+<span id="cb5-111">            response[query_type] <span class="op" style="color: #5E5E5E;">=</span> ans_query</span>
+<span id="cb5-112">        </span>
+<span id="cb5-113">        <span class="cf" style="color: #003B4F;">return</span> response[<span class="st" style="color: #20794D;">'authors'</span>], response[<span class="st" style="color: #20794D;">'summary'</span>], response[<span class="st" style="color: #20794D;">'keywords'</span>], response[<span class="st" style="color: #20794D;">'keyresults'</span>], response[<span class="st" style="color: #20794D;">'limitations'</span>]</span></code></pre></div>
+<p>The <code>DocSummarizer</code> class continues where the <code>DocLayout</code> leaves. The text information retrieved from a document will be concatenated with a suitable prompt tail to send to OpenAI. Notice that each prompt tail is provided with a format for the model to follow (and it did follow!) in the response. For the graphics, they are converted from NumPy arrays to .PNG files in a folders that are accessible from the UI.</p>
+</section>
+<section id="app.py" class="level2">
+<h2 class="anchored" data-anchor-id="app.py"><code>app.py</code></h2>
+<p>Add some magic from Flask</p>
+</section>
+<section id="client" class="level2">
+<h2 class="anchored" data-anchor-id="client"><code>client</code></h2>
+<p>Add some magic from React.js</p>
+</section>
+<section id="result" class="level2">
+<h2 class="anchored" data-anchor-id="result">Result</h2>
+<p>Here is the final demo capture of SumMed</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hangenyuu.github.io/h_notes/posts/hackathon_report/329814980 859809608651093_535713842991494898.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>Left is the navigation bar displaying the papers. Center is the key information (text and graphics) + Slide maker that is not yet implemented. Right is the chatbox with information on the paper</em></figcaption><p></p>
+</figure>
+</div>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>code</category>
+  <category>Engineering/Hacking</category>
+  <guid>https://hangenyuu.github.io/h_notes/posts/hackathon_report/index.html</guid>
+  <pubDate>Mon, 27 Feb 2023 16:00:00 GMT</pubDate>
+  <media:content url="https://datamachina.substack.com/p/data-machina-190" medium="image"/>
+</item>
 <item>
   <title>Conditional &amp; Controllable GAN</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>
@@ -348,6 +758,7 @@
  ]]></description>
   <category>code</category>
   <category>GAN</category>
+  <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/index.html</guid>
   <pubDate>Tue, 21 Feb 2023 16:00:00 GMT</pubDate>
   <media:content url="https://hangenyuu.github.io/h_notes/posts/gan-p4-conditional/cookie 1.png" medium="image" type="image/png" height="81" width="144"/>
@@ -535,6 +946,7 @@
  ]]></description>
   <category>code</category>
   <category>GAN</category>
+  <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h_notes/posts/gan-p3/index.html</guid>
   <pubDate>Mon, 23 Jan 2023 16:00:00 GMT</pubDate>
   <media:content url="https://github.com/generic-github-user/xkcd-Generator/" medium="image"/>
@@ -579,7 +991,7 @@
 <p>First rule: always, always look at the data first. Now, KMNIST is a dataset inspired by the MNIST dataset of 10 hand-written digits. Here, we have 10 hand-written Kanji characters. Look at the provided examples, the handwriting surely looks messy, some almost unrecognizable from the modern version.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/kmnist%20examples.png" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/kmnist examples.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>The 10 classes of Kuzushiji-MNIST, with the first column showing each character’s modern hiragana counterpart. <a href="https://github.com/rois-codh/kmnist#the-dataset">Source</a></em></figcaption><p></p>
 </figure>
 </div>
@@ -836,8 +1248,8 @@
 </section>
 <section id="results" class="level1">
 <h1>Results:</h1>
-<p>After training for 100 epochs with the settings, I received the final results. <img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/Screenshot%202023-01-23%20175133.png" class="img-fluid" alt="The above were the generated images, and the below were the real images."></p>
-<p>One definitely can still discern which kanji characters were real and which were fake. However, one must admit that the model did manage to learn some of the intricate features of Japanese calligraphy. Then, after another 100 epochs… <img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/Screenshot%202023-01-23%20183057.png" class="img-fluid"></p>
+<p>After training for 100 epochs with the settings, I received the final results. <img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/Screenshot 2023-01-23 175133.png" class="img-fluid" alt="The above were the generated images, and the below were the real images."></p>
+<p>One definitely can still discern which kanji characters were real and which were fake. However, one must admit that the model did manage to learn some of the intricate features of Japanese calligraphy. Then, after another 100 epochs… <img src="https://hangenyuu.github.io/h_notes/posts/gan_p2/Screenshot 2023-01-23 183057.png" class="img-fluid"></p>
 <p>While it is still not yet indistinguishables, the Generator has gotten very close. The third image in the first row or the one at bottom left corner could definitely be passed off as real ones.</p>
 </section>
 <section id="end-of-part-2" class="level1">
@@ -851,6 +1263,7 @@
  ]]></description>
   <category>code</category>
   <category>GAN</category>
+  <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h_notes/posts/gan_p2/index.html</guid>
   <pubDate>Sun, 22 Jan 2023 16:00:00 GMT</pubDate>
   <media:content url="https://hangenyuu.github.io/h_notes/posts/gan_p2/GAN-p2-1.png" medium="image" type="image/png" height="44" width="144"/>
@@ -871,7 +1284,7 @@
 <p>Back in 2014, computer vision had witnessed the power of deep learning. One must not look no further than the entries for the ImageNet challenge, with the introduction of very deep models from <a href="https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">AlexNet</a> to <a href="https://ar5iv.labs.arxiv.org/html/1409.1556">VGG</a>. (Not to mention <a href="https://ar5iv.labs.arxiv.org/html/1512.03385">ResNet</a> in 2015, an architecture with so interesting an idea that I had to <a href="https://github.com/HangenYuu/vision_learner/tree/main/ARCHITECTURE/CNN/Paper">make a project</a> for it.) However, as discerning and mature as these models could get in classification, they were nascent in generating data: results were blurry images or with weird artifact. “Complex statistical analysis of the elements that make up a photograph” was proposed but would not work. We needed a simpler, more elegant way of solving the problem. And the solution arrived in Goodfellow’s seminal paper, <a href="https://ar5iv.labs.arxiv.org/html/1406.2661">Generative Adversarial Nets</a>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p1/Screenshot%202023-01-20%20at%2019-53-43%20Generative%20Dog%20Images%20Kaggle.png" class="img-fluid figure-img"></p>
+<p><img src="https://hangenyuu.github.io/h_notes/posts/gan_p1/Screenshot 2023-01-20 at 19-53-43 Generative Dog Images Kaggle.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption"><em>The image was not from the era, but was representative of what you got from the model at that time (and still now with GANs, if your model was trained poorly or prematurely). <a href="https://www.kaggle.com/c/generative-dog-images/discussion/97753">Source</a></em></figcaption><p></p>
 </figure>
 </div>
@@ -984,6 +1397,7 @@
  ]]></description>
   <category>code</category>
   <category>GAN</category>
+  <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h_notes/posts/gan_p1/index.html</guid>
   <pubDate>Fri, 20 Jan 2023 16:00:00 GMT</pubDate>
   <media:content url="https://www.kaggle.com/c/generative-dog-images/discussion/97753" medium="image"/>

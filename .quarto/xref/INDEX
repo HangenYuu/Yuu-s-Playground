@@ -58,5 +58,8 @@
   },
   "posts/gan-p4-conditional/index.qmd": {
     "index.html": "4e7e21df"
+  },
+  "posts/hackathon_report/index.qmd": {
+    "index.html": "480c781f"
   }
 }

@@ -4,7 +4,7 @@ subtitle: "My notes on taking the specialization by deeplearning.ai series"
 author: "Pham Nguyen Hung"
 draft: false
 date: "2023-01-23"
-categories: [code, GAN]
+categories: [code, GAN, From scratch]
 format:
     html:
         toc: true

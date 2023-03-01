@@ -18,6 +18,8 @@ website:
         href: https://www.linkedin.com/in/phnghung/
       - icon: twitter
         href: https://twitter.com/HangenYuu
+  page-footer:
+    left: "Blog made with [Quarto](https://quarto.org/), © Copyright 2022 Pham Nguyen Hung. License: GNU General Public License v3.0"
 comments:
   giscus: 
     repo: HangenYuu/h_notes
