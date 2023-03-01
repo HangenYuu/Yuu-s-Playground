@@ -19,7 +19,7 @@ website:
       - icon: twitter
         href: https://twitter.com/HangenYuu
   page-footer:
-    left: "Blog made with [Quarto](https://quarto.org/), © Copyright 2022 Pham Nguyen Hung. License: GNU General Public License v3.0"
+    left: "Blog made with [Quarto](https://quarto.org/), © Copyright 2022 Pham Nguyen Hung. License: [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)"
 comments:
   giscus: 
     repo: HangenYuu/h_notes
