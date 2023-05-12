@@ -61,5 +61,17 @@
   },
   "posts/hackathon_report/index.qmd": {
     "index.html": "480c781f"
+  },
+  "posts/fastai2-p1/index.qmd": {
+    "index.html": "ec26bb15"
+  },
+  "posts/gan-p1/index.qmd": {
+    "index.html": "5c201990"
+  },
+  "posts/gan-p2/index.qmd": {
+    "index.html": "80997e40"
+  },
+  "posts/hackathon-report/index.qmd": {
+    "index.html": "43d0f4cd"
   }
 }

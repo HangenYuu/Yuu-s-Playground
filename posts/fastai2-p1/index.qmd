@@ -1,0 +1,89 @@
+---
+title: "Deep Learning from the ground up - From tensor to multi-layer perceptron"
+subtitle: "Lesson 9 - 14 of fast.ai course, part 2"
+author: "Pham Nguyen Hung"
+draft: false
+date: last-modified
+categories: [code, From scratch]
+format:
+    html:
+        toc: true
+        code-fold: false
+jupyter:
+    kernelspec:
+        name: "cb0494"
+        language: "python"
+        display_name: "cb0494"
+---
+I have finished and fallen in love with fast.ai course 1. It has been very informative. It showed me the rope about PyTorch and two important building blocks of deep learning: Embedding and Convolution. I was excited to learn that there was a part 2. In this part, Jeremy will dive deeper into the design of a deep learning framework, and implement one from the scratch the way PyTorch was designed. Here were my (verbose) writtent version for it.
+
+# Rules
+
+- Permitted at the beginning: Python and all standard libraries, matplotlib, Jupyter Notebook and nbdev.
+- After deriving something, we can use the implemented version for that.
+
+# Get the data
+The first thing you need to do is getting the data and visualize it in some way. The data we use is the good ol' MNIST, available from the Internet. Based on good practice, let's assign the URL to a variable, and prepare a directory to store the data.
+```{python}
+from pathlib import Path
+import pickle, gzip, math, os, time, shutil, matplotlib as mpl, matplotlib.pyplot as plt
+
+MNIST_URL='https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/data/mnist.pkl.gz?raw=true'
+path_data = Path('data')
+path_data.mkdir(exist_ok=True)
+path_gz = path_data/'mnist.pkl.gz'
+```
+`pathlib.Path` is a handy object as you can do special operations with string to receive a new `Path`, such as the division above. It is more readable than just raw strings.
+
+To get the data, let's use `urllib.request.urlretrieve`
+```{python}
+from urllib.request import urlretrieve
+if not path_gz.exists(): urlretrieve(MNIST_URL, path_gz)
+```
+The data is compressed in the `.pkl.gz` format, which can be decompressed sequentially with `gzip` and `pickle`.
+```{python}
+with gzip.open(path_gz, 'rb') as f:
+    ((x_train, y_train), (x_valid, y_valid), (x_test, y_test)) = pickle.load(f, encoding='latin-1')
+```
+# Visualize the data
+
+Great, we have decompressed the data, but what exactly are stored inside these variables?
+```{python}
+x_train, x_valid, x_test
+```
+Okay, they are `numpy.ndarray`. We are not allowed to use `numpy` yet, so we will need to convert it to list. Yep, very sorry about that. But first, uh, let's cheat a bit by checking the shape of the arrays.
+```{python}
+x_train.shape, x_valid.shape, x_test.shape
+```
+Okay, it seems that the $28 \times 28 $ images are flattened into 784-element arrays. Convert any of the `x`s to a list will yield a big list of lists. It is unnecessary, so let's just take 1 data point.
+```{python}
+x = list(x_train[0])
+x[:10], len(x)
+```
+To visualize `x`, we need to convert it into a list of 28 lists, each with 28 elements. Is there a way to do that in Python? I said "No", but Jeremy showed that there are at least two ways
+
+Firstly, we can make use of the `yield` keyword, which is used to generate iterators in Python. We want to generate 28 iterators, each containing 28 elements, from `x`. In Python, it is as simple as
+```{python}
+def chunks(x, size):
+    max_size = len(x)
+    for i in range(0, max_size, size): yield x[i:min(max_size, i+size)]
+
+mpl.rcParams['image.cmap'] = 'gray'
+plt.imshow(list(chunks(x, 28)));
+```
+Secondly, we can use `itertools.islice`.
+```{python}
+from itertools import islice
+
+it = iter(x[:10])
+print('First',  list(islice(it, 5)))
+print('Second', list(islice(it, 5)))
+print('Third',  list(islice(it, 5)))
+```
+Simply, `islice(iterable, stop)` will return a new iterator from the iterable (which can be another iterator), stop at `stop`. Paired with default `start` and `step` of 0 and 1 respectively, it means that `islice(it, 5)` will return an iterator containing the first 5 values of `it`. Now we realize that doing so will also exhaust these first 5 values of `it`, so the next call will call the next 5 values of `it`. Paired with a loop, it works exactly like `chunks()` defined above.
+```{python}
+it = iter(x)
+img = list(iter(lambda: list(islice(it, 28)), []))
+plt.imshow(img);
+```
+Work like a charm. A note: that empty list passed in after the lambda function is for the sentinel argument of `iter()`, instructing `iter()` to stop when it encounters the sentinel.

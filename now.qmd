@@ -4,16 +4,13 @@ date: "2023-01-20"
 ---
 # What's I am currently doing now:
 ## Studying for my bachelor's degree at NTU
-My major is chemical engineering, but I want to be a deep learning practitioner.
+My major is chemical engineering, but I love programming.
 
-## Learning the Deep Learning and GAN Specializations from deeplearning.ai
-I studied it on Coursera. Two courses were released at different times, so there was a mismatched in module used (TensorFlow vs PyTorch), but that means that I can learn from both worlds. I often encountered champions for PyTorch, such as Jeremy Howard, who praised the module over TensorFlow, but I feel like I need to experience both to judge.
+## Studying the part 2 of fast.ai course
+We are creating PyTorch from the ground up! It yields many understanding about Python and PyTorch. It yields many understandings about the design of the framework.
 
 ## Documenting my notes here on H's Notes
 Just go to a blog post and see one of my entry.
 
 ## Working on projects to deepen my understanding
-You can see them at my [Github repo](https://tinyurl.com/VisLe). For the philosophy of project-based and just-in-time learning, check out this [post](https://medium.com/@init_27/how-not-to-do-fast-ai-or-any-ml-mooc-3d34a7e0ab8c) or this [post](https://eugeneyan.com/writing/you-dont-need-another-mooc/).
-
-## Looking for summer internship in Singapore
-It is not an easy market that I come into, with the news about tech layoffs in Singapore this 2023. Still, I do what I can do and have to do. My deadline is 29/01/2023, when the career fair at my school starts.
+You can see them at my [Github repo](https://tinyurl.com/VisLe). For the philosophy of project-based and just-in-time learning, see  this [post](https://medium.com/@init_27/how-not-to-do-fast-ai-or-any-ml-mooc-3d34a7e0ab8c).

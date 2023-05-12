@@ -2,11 +2,12 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/hackathon_report/index.html",
+      "/posts/fastai2-p1/index.html",
+      "/posts/hackathon-report/index.html",
       "/posts/gan-p4-conditional/index.html",
       "/posts/gan-p3/index.html",
-      "/posts/gan_p2/index.html",
-      "/posts/gan_p1/index.html",
+      "/posts/gan-p2/index.html",
+      "/posts/gan-p1/index.html",
       "/posts/hello_world/index.html"
     ]
   }

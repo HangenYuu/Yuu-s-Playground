@@ -1,1 +1,1 @@
-Sitemap: https://hangenyuu.github.io/h_notes/sitemap.xml
+Sitemap: https://hangenyuu.github.io/h-notes/sitemap.xml
