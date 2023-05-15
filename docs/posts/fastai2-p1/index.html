@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Pham Nguyen Hung">
-<meta name="dcterms.date" content="2023-05-12">
+<meta name="dcterms.date" content="2023-05-15">
 
 <title>H’s notes - Deep Learning from the ground up - From tensor to multi-layer perceptron</title>
 <style>
@@ -179,7 +179,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 12, 2023</p>
+        <p class="date">May 15, 2023</p>
       </div>
     </div>
     
@@ -1078,6 +1078,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#rules" id="toc-rules" class="nav-link active" data-scroll-target="#rules">Rules</a></li>
   <li><a href="#get-the-data" id="toc-get-the-data" class="nav-link" data-scroll-target="#get-the-data">Get the data</a></li>
   <li><a href="#visualize-the-data" id="toc-visualize-the-data" class="nav-link" data-scroll-target="#visualize-the-data">Visualize the data</a></li>
+  <li><a href="#tensor-matrix" id="toc-tensor-matrix" class="nav-link" data-scroll-target="#tensor-matrix">Tensor, Matrix</a></li>
+  <li><a href="#linear-algebra-matrix-multiplication" id="toc-linear-algebra-matrix-multiplication" class="nav-link" data-scroll-target="#linear-algebra-matrix-multiplication">Linear Algebra: Matrix multiplication</a>
+  <ul class="collapse">
+  <li><a href="#brute-force" id="toc-brute-force" class="nav-link" data-scroll-target="#brute-force">Brute-force</a></li>
+  <li><a href="#speed-up-dot-product" id="toc-speed-up-dot-product" class="nav-link" data-scroll-target="#speed-up-dot-product">Speed-up: Dot product</a></li>
+  <li><a href="#speed-up-broadcasting" id="toc-speed-up-broadcasting" class="nav-link" data-scroll-target="#speed-up-broadcasting">Speed-up: Broadcasting</a></li>
+  <li><a href="#einstein-summation" id="toc-einstein-summation" class="nav-link" data-scroll-target="#einstein-summation">Einstein summation</a></li>
+  </ul></li>
+  <li><a href="#calculus-differentiation-and-chain-rule" id="toc-calculus-differentiation-and-chain-rule" class="nav-link" data-scroll-target="#calculus-differentiation-and-chain-rule">Calculus: Differentiation and Chain Rule</a></li>
   </ul>
 </nav>
     </div>
@@ -1116,23 +1125,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The data is compressed in the <code>.pkl.gz</code> format, which can be decompressed sequentially with <code>gzip</code> and <code>pickle</code>.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> gzip.<span class="bu">open</span>(path_gz, <span class="st">'rb'</span>) <span class="im">as</span> f:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    ((x_train, y_train), (x_valid, y_valid), (x_test, y_test)) <span class="op">=</span> pickle.load(f, encoding<span class="op">=</span><span class="st">'latin-1'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Omit test set for simplicity</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    ((x_train, y_train), (x_valid, y_valid), _) <span class="op">=</span> pickle.load(f, encoding<span class="op">=</span><span class="st">'latin-1'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="visualize-the-data" class="level1">
 <h1>Visualize the data</h1>
 <p>Great, we have decompressed the data, but what exactly are stored inside these variables?</p>
 <div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x_train, x_valid, x_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x_train, x_valid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>(array([[0., 0., 0., ..., 0., 0., 0.],
-        [0., 0., 0., ..., 0., 0., 0.],
-        [0., 0., 0., ..., 0., 0., 0.],
-        ...,
-        [0., 0., 0., ..., 0., 0., 0.],
-        [0., 0., 0., ..., 0., 0., 0.],
-        [0., 0., 0., ..., 0., 0., 0.]], dtype=float32),
- array([[0., 0., 0., ..., 0., 0., 0.],
         [0., 0., 0., ..., 0., 0., 0.],
         [0., 0., 0., ..., 0., 0., 0.],
         ...,
@@ -1150,9 +1153,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Okay, they are <code>numpy.ndarray</code>. We are not allowed to use <code>numpy</code> yet, so we will need to convert it to list. Yep, very sorry about that. But first, uh, let’s cheat a bit by checking the shape of the arrays.</p>
 <div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x_train.shape, x_valid.shape, x_test.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x_train.shape, x_valid.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
-<pre><code>((50000, 784), (10000, 784), (10000, 784))</code></pre>
+<pre><code>((50000, 784), (10000, 784))</code></pre>
 </div>
 </div>
 <p>Okay, it seems that the $28 $ images are flattened into 784-element arrays. Convert any of the <code>x</code>s to a list will yield a big list of lists. It is unnecessary, so let’s just take 1 data point.</p>
@@ -1200,6 +1203,301 @@ Third []</code></pre>
 </div>
 </div>
 <p>Work like a charm. A note: that empty list passed in after the lambda function is for the sentinel argument of <code>iter()</code>, instructing <code>iter()</code> to stop when it encounters the sentinel.</p>
+</section>
+<section id="tensor-matrix" class="level1">
+<h1>Tensor, Matrix</h1>
+<p>Okay. Now we need a way to represent data that is <em>machine-readable</em>. And the machine only knows number. So we need to represent the data as numbers. We are actually already there, with our list of lists of data, each element representing the intensity of the corresponding pixel of the image. So why the need for a different representation?</p>
+<p>The simplest answer is <em>efficiency</em>. Python list was designed to be a generic, dynamic data structure, hence memory and operation overhead. Machine learning requires doing linear algebra and calculus (read: matrix multiplication, one way or another, and differentiation) on the data, which is not inherently supported. There arises the need for something more specialized. And that thing was <em>tensor</em>.</p>
+<p>Simply put, tensor is the generalized matrix, expanding to as many dimensions as it needs to be. It first proved to be an excellent way of representing data in physics, where it was the core of <a href="https://en.wikipedia.org/wiki/Tensor_calculus">tensor analysis</a> (yep, Albert Einstein used that). Tensor made it way into computer firstly with the development of <a href="https://en.wikipedia.org/wiki/APL_(programming_language)">APL</a> (A Programming Language) by Kenneth E. Iverson, where the central data structure is multidimensional array (yes, <code>numpy.ndarray</code> borrowed this). NumPy was most famous project to bring this to Python, paving the way for easy and flexible data analysis in Python (Pandas, sci-kitlearn, etc.). Deep Learning frameworks such as TensorFlow, JAX, or PyTorch all took from this design, with its own tensor the core data structure.</p>
+<p>Anthropic’s Claude summarized the key differences as follow:</p>
+<blockquote class="blockquote">
+<p>Prompt: What is the different between Python list and Torch.tensor?</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Here are the main differences between Python list and Torch.tensor:</p>
+</blockquote>
+<blockquote class="blockquote">
+<ol type="1">
+<li>Data type: Python lists can contain elements of different data types, while Tensors have a single data type. All elements of a Tensor must be floats, ints, etc.</li>
+</ol>
+</blockquote>
+<blockquote class="blockquote">
+<ol start="2" type="1">
+<li>Operations: Python lists support basic operations like insert, append, pop, etc. Tensors support tensor operations like sum, mean, transpose, dot product, etc.</li>
+</ol>
+</blockquote>
+<blockquote class="blockquote">
+<ol start="3" type="1">
+<li>Memory management: Python lists are managed by the Python memory manager while Tensors are managed by the PyTorch library. This makes Tensors more optimized for machine learning tasks.</li>
+</ol>
+</blockquote>
+<blockquote class="blockquote">
+<ol start="4" type="1">
+<li>Shape: Python lists don’t have a fixed shape, they can have any number of elements. Tensors have a defined shape, usually 2D or higher.</li>
+</ol>
+</blockquote>
+<blockquote class="blockquote">
+<ol start="5" type="1">
+<li>Parallelism: Operations on Tensors can take advantage of GPUs and multiple CPU cores, while list operations are sequential.</li>
+</ol>
+</blockquote>
+<blockquote class="blockquote">
+<ol start="6" type="1">
+<li>Gradient tracking: Only Tensors can track gradients to enable backpropagation in neural networks.</li>
+</ol>
+</blockquote>
+<blockquote class="blockquote">
+<p>So in summary, Python lists are more general purpose data structures while Torch Tensors are specialized data structures optimized for machine learning and neural network tasks. Tensors provide the functionality needed for training deep learning models.</p>
+</blockquote>
+<p>For our case, let’s start with matrix first. We will implement a minimal object to allow the usual tensor indexing on Python list. This requires us to define the dunder method <code>__getitem__()</code></p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Matrix:</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, data) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.data <span class="op">=</span> data</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idxs):</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.data[idxs[<span class="dv">0</span>]][idxs[<span class="dv">1</span>]]</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> Matrix(img)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>m[<span class="dv">20</span>,<span class="dv">15</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>0.98828125</code></pre>
+</div>
+</div>
+<p>Okay, cool. Now we are allowed to use <code>torch.tensor</code>. Let’s quickly convert our data to tensor with <code>map</code> and reshape an image for visualization it. Notice how easily we could do so with PyTorch.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> tensor</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>torch.set_printoptions(precision<span class="op">=</span><span class="dv">2</span>, linewidth<span class="op">=</span><span class="dv">140</span>, sci_mode<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>x_train,y_train,x_valid,y_valid <span class="op">=</span> <span class="bu">map</span>(tensor, (x_train,y_train,x_valid,y_valid))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Notice the shape:'</span>, x_train.shape)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Notice the type:'</span>, x_train.<span class="bu">type</span>())</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>imgs <span class="op">=</span> x_train.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">28</span>,<span class="dv">28</span>))</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>plt.imshow(imgs[<span class="dv">0</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Notice the shape: torch.Size([50000, 784])
+Notice the type: torch.FloatTensor</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-12-output-2.png" width="415" height="411"></p>
+</div>
+</div>
+<p>The mapping was successfully. The shape and data type all becomes PyTorch’s built-in ones. The whole <code>x_train</code> dataset can be reshaped into 10000 $28 $ quickly with <code>.reshape()</code> method and -1 indexing.</p>
+<p>We now have matrix. Let’s do matrix multiplication.</p>
+</section>
+<section id="linear-algebra-matrix-multiplication" class="level1">
+<h1>Linear Algebra: Matrix multiplication</h1>
+<section id="brute-force" class="level2">
+<h2 class="anchored" data-anchor-id="brute-force">Brute-force</h2>
+<p>To get to multilayer perceptron, we need to able to do matrix multiplication. Let’s start from the basic first, with pen and paper.</p>
+<p>Here’s an example:</p>
+<p><img src="matmul 1.png" class="img-fluid"></p>
+<p>Let’s zoom in at one cell of the result matrix:</p>
+<p><img src="matmul 2.png" class="img-fluid"></p>
+<p>To summarize, for each element in the result matrix, we get it by summing the product of each element in the corresponding row of the left matrix and each element in the corresponding column of the right matrix. In codes, this is translated into three nested loops:</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(<span class="dv">1</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Randomly initialize weights and biases as in a real layer</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> torch.randn(<span class="dv">784</span>,<span class="dv">10</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>bias <span class="op">=</span> torch.zeros(<span class="dv">10</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Work with a batch of 5 first - a 3 nested loops should be slow.</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> x_valid[:<span class="dv">5</span>]</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>m2 <span class="op">=</span> weights</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>m1.shape,m2.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>(torch.Size([5, 784]), torch.Size([784, 10]))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Store the number of rows and columns of each matrix</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>ar,ac <span class="op">=</span> m1.shape</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>br,bc <span class="op">=</span> m2.shape</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># t1 is the placeholder result matrix</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> torch.zeros(ar, bc)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(ar):         <span class="co"># 5</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(bc):     <span class="co"># 10</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(ac): <span class="co"># 784</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>            t1[i,j] <span class="op">+=</span> m1[i,k] <span class="op">*</span> m2[k,j]</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>t1, t1.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>(tensor([[-10.94,  -0.68,  -7.00,  -4.01,  -2.09,  -3.36,   3.91,  -3.44, -11.47,  -2.12],
+         [ 14.54,   6.00,   2.89,  -4.08,   6.59, -14.74,  -9.28,   2.16, -15.28,  -2.68],
+         [  2.22,  -3.22,  -4.80,  -6.05,  14.17,  -8.98,  -4.79,  -5.44, -20.68,  13.57],
+         [ -6.71,   8.90,  -7.46,  -7.90,   2.70,  -4.73, -11.03, -12.98,  -6.44,   3.64],
+         [ -2.44,  -6.40,  -2.40,  -9.04,  11.18,  -5.77,  -8.92,  -3.79,  -8.98,   5.28]]),
+ torch.Size([5, 10]))</code></pre>
+</div>
+</div>
+<p>Let’s package this into a function:</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> matmul(a,b):</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    (ar,ac),(br,bc) <span class="op">=</span> a.shape,b.shape</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> torch.zeros(ar, bc)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(ar):</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(bc):</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(ac): c[i,j] <span class="op">+=</span> a[i,k] <span class="op">*</span> b[k,j]</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> c</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1.11 s ± 5.27 ms per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+</div>
+</div>
+</section>
+<section id="speed-up-dot-product" class="level2">
+<h2 class="anchored" data-anchor-id="speed-up-dot-product">Speed-up: Dot product</h2>
+<p>I want to get the objective clear: removing all of the three loops sequentially to speed things up. The first clue to do that is with dot product of two vectors. From the illustration, it is clear that each cell in result matrix is the result of the dot product between the left row vector and the right column vector. Unfortunately, we cannot use <code>torch.dot</code> yet. However, we can use <em>element-wise operation</em>, the trademark of tensor</p>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> matmul(a,b):</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    (ar,ac),(br,bc) <span class="op">=</span> a.shape,b.shape</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> torch.zeros(ar, bc)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(ar):</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(bc): c[i,j] <span class="op">=</span> (a[i,:] <span class="op">*</span> b[:,j]).<span class="bu">sum</span>()</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> c</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1.97 ms ± 417 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+</div>
+</div>
+<p>Okay, now <code>torch.dot</code> is free:</p>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> matmul(a,b):</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    (ar,ac),(br,bc) <span class="op">=</span> a.shape,b.shape</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> torch.zeros(ar, bc)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(ar):</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(bc): c[i,j] <span class="op">=</span> torch.dot(a[i,:], b[:,j])</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> c</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1.82 ms ± 644 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+</div>
+</div>
+</section>
+<section id="speed-up-broadcasting" class="level2">
+<h2 class="anchored" data-anchor-id="speed-up-broadcasting">Speed-up: Broadcasting</h2>
+<p>The next clue is another trademark of tensor: <strong>broadcasting</strong>, which allows tensors of different shapes to be multiplied together. This is the trademark of tensors, so make some time to familiarize yourself with the rules from <a href="https://numpy.org/doc/stable/user/basics.broadcasting.html">NumPy documentation</a>.</p>
+<p>For demonstration, it is better to refer to the <a href="https://nbviewer.org/github/fastai/course22p2/blob/master/nbs/">original notebook</a>. I just want to mention two things. Firstly, <code>.unsqueeze()</code> and <code>None</code> indexing. Simply put, we can create a <em>unit dimension</em> in an array by using <code>.unsqueeze()</code> or passing in the special keyword <code>None</code> inside the indexing brackets.</p>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> tensor([<span class="fl">10.</span>,<span class="dv">20</span>,<span class="dv">30</span>])</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The first dimension:'</span>, c.unsqueeze(<span class="dv">0</span>), c[<span class="va">None</span>, :])</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The second dimension:'</span>, c.unsqueeze(<span class="dv">1</span>), c[:, <span class="va">None</span>])</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'We can skip trailing ":"'</span>, c[<span class="va">None</span>])</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'We can also pass in "..."'</span>, c[..., <span class="va">None</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The first dimension: tensor([[10., 20., 30.]]) tensor([[10., 20., 30.]])
+The second dimension: tensor([[10.],
+        [20.],
+        [30.]]) tensor([[10.],
+        [20.],
+        [30.]])
+We can skip trailing ":" tensor([[10., 20., 30.]])
+We can also pass in "..." tensor([[10.],
+        [20.],
+        [30.]])</code></pre>
+</div>
+</div>
+<p>Secondly, that broadcasting compare array dimensions from <em>right to left</em>. This can lead to behavior such as this:</p>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>c[<span class="va">None</span>,:] <span class="op">*</span> c[:,<span class="va">None</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>tensor([[100., 200., 300.],
+        [200., 400., 600.],
+        [300., 600., 900.]])</code></pre>
+</div>
+</div>
+<p><img src="matmul 3.png" class="img-fluid"></p>
+<p>Anyway, with broadcasting, we can now calculate the result matrix one row at a time and skip another loop:</p>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> matmul(a,b):</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    (ar,ac),(br,bc) <span class="op">=</span> a.shape,b.shape</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> torch.zeros(ar, bc)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(ar):</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>        c[i]   <span class="op">=</span> (a[i,:,<span class="va">None</span>] <span class="op">*</span> b).<span class="bu">sum</span>(dim<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> c</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>344 µs ± 115 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+</div>
+</div>
+<p>At this point, we basically arrive at matrix multiplication. However, let’s up the amp a bit and (re)introduce Einstein.</p>
+</section>
+<section id="einstein-summation" class="level2">
+<h2 class="anchored" data-anchor-id="einstein-summation">Einstein summation</h2>
+<blockquote class="blockquote">
+<p><a href="https://ajcr.net/Basic-guide-to-einsum/">Einstein summation</a> (<code>einsum</code>) is a compact representation for combining products and sums in a general way. The key rules are: - Repeating letters between input arrays means that values along those axes will be multiplied together. - Omitting a letter from the output means that values along that axis will be summed.</p>
+</blockquote>
+<p>Example:</p>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>m1.shape, m2.shape</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>mr <span class="op">=</span> torch.einsum(<span class="st">'ik,kj-&gt;ikj'</span>, m1, m2)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>mr.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>torch.Size([5, 784, 10])</code></pre>
+</div>
+</div>
+<p>To use <code>torch.einsum</code>, we need to pass in a string telling the operation we want to achieve. The string above means “multiplying each column of <code>m1</code> by <code>m2</code>”. Notice that we can sum the result matrix along the first dimension to get the result matrix.</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>mr.<span class="bu">sum</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>tensor([[-10.94,  -0.68,  -7.00,  -4.01,  -2.09,  -3.36,   3.91,  -3.44, -11.47,  -2.12],
+        [ 14.54,   6.00,   2.89,  -4.08,   6.59, -14.74,  -9.28,   2.16, -15.28,  -2.68],
+        [  2.22,  -3.22,  -4.80,  -6.05,  14.17,  -8.98,  -4.79,  -5.44, -20.68,  13.57],
+        [ -6.71,   8.90,  -7.46,  -7.90,   2.70,  -4.73, -11.03, -12.98,  -6.44,   3.64],
+        [ -2.44,  -6.40,  -2.40,  -9.04,  11.18,  -5.77,  -8.92,  -3.79,  -8.98,   5.28]])</code></pre>
+</div>
+</div>
+<p>This is equivalent to the notation of matrix multiplication</p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>torch.einsum(<span class="st">'ik,kj-&gt;ij'</span>, m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>tensor([[-10.94,  -0.68,  -7.00,  -4.01,  -2.09,  -3.36,   3.91,  -3.44, -11.47,  -2.12],
+        [ 14.54,   6.00,   2.89,  -4.08,   6.59, -14.74,  -9.28,   2.16, -15.28,  -2.68],
+        [  2.22,  -3.22,  -4.80,  -6.05,  14.17,  -8.98,  -4.79,  -5.44, -20.68,  13.57],
+        [ -6.71,   8.90,  -7.46,  -7.90,   2.70,  -4.73, -11.03, -12.98,  -6.44,   3.64],
+        [ -2.44,  -6.40,  -2.40,  -9.04,  11.18,  -5.77,  -8.92,  -3.79,  -8.98,   5.28]])</code></pre>
+</div>
+</div>
+<p>So we can replace everything with a <code>torch.einsum</code> call:</p>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> matmul(a,b): <span class="cf">return</span> torch.einsum(<span class="st">'ik,kj-&gt;ij'</span>, a, b)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The slowest run took 4.28 times longer than the fastest. This could mean that an intermediate result is being cached.
+65 µs ± 38 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+</div>
+</div>
+<p>Having come to this point, let’s introduce <code>torch</code> predefined operations:</p>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> torch.matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The slowest run took 12.71 times longer than the fastest. This could mean that an intermediate result is being cached.
+26.1 µs ± 39.2 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> m1<span class="op">@</span>m2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The slowest run took 17.55 times longer than the fastest. This could mean that an intermediate result is being cached.
+28.2 µs ± 47 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="calculus-differentiation-and-chain-rule" class="level1">
+<h1>Calculus: Differentiation and Chain Rule</h1>
+<p>Okay, great. We have built the linear algebra needed for</p>
 
 
 </section>
@@ -1558,7 +1856,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Blog made with <a href="https://quarto.org/">Quarto</a>, © Copyright 2022 Pham Nguyen Hung. License: <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3.0</a></div>   
+    <div class="nav-footer-left">Blog made with <a href="https://quarto.org/">Quarto</a>, © Copyright 2022-23 Pham Nguyen Hung. License: <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3.0</a></div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>

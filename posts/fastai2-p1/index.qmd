@@ -43,17 +43,18 @@ if not path_gz.exists(): urlretrieve(MNIST_URL, path_gz)
 The data is compressed in the `.pkl.gz` format, which can be decompressed sequentially with `gzip` and `pickle`.
 ```{python}
 with gzip.open(path_gz, 'rb') as f:
-    ((x_train, y_train), (x_valid, y_valid), (x_test, y_test)) = pickle.load(f, encoding='latin-1')
+    # Omit test set for simplicity
+    ((x_train, y_train), (x_valid, y_valid), _) = pickle.load(f, encoding='latin-1')
 ```
 # Visualize the data
 
 Great, we have decompressed the data, but what exactly are stored inside these variables?
 ```{python}
-x_train, x_valid, x_test
+x_train, x_valid
 ```
 Okay, they are `numpy.ndarray`. We are not allowed to use `numpy` yet, so we will need to convert it to list. Yep, very sorry about that. But first, uh, let's cheat a bit by checking the shape of the arrays.
 ```{python}
-x_train.shape, x_valid.shape, x_test.shape
+x_train.shape, x_valid.shape
 ```
 Okay, it seems that the $28 \times 28 $ images are flattened into 784-element arrays. Convert any of the `x`s to a list will yield a big list of lists. It is unnecessary, so let's just take 1 data point.
 ```{python}
@@ -87,3 +88,211 @@ img = list(iter(lambda: list(islice(it, 28)), []))
 plt.imshow(img);
 ```
 Work like a charm. A note: that empty list passed in after the lambda function is for the sentinel argument of `iter()`, instructing `iter()` to stop when it encounters the sentinel.
+
+# Tensor, Matrix
+Okay. Now we need a way to represent data that is *machine-readable*. And the machine only knows number. So we need to represent the data as numbers. We are actually already there, with our list of lists of data, each element representing the intensity of the corresponding pixel of the image. So why the need for a different representation?
+
+The simplest answer is *efficiency*. Python list was designed to be a generic, dynamic data structure, hence memory and operation overhead. Machine learning requires doing linear algebra and calculus (read: matrix multiplication, one way or another, and differentiation) on the data, which is not inherently supported. There arises the need for something more specialized. And that thing was *tensor*.
+
+Simply put, tensor is the generalized matrix, expanding to as many dimensions as it needs to be. It first proved to be an excellent way of representing data in physics, where it was the core of [tensor analysis](https://en.wikipedia.org/wiki/Tensor_calculus) (yep, Albert Einstein used that). Tensor made it way into computer firstly with the development of [APL](https://en.wikipedia.org/wiki/APL_(programming_language)) (A Programming Language) by Kenneth E. Iverson, where the central data structure is  multidimensional array (yes, `numpy.ndarray` borrowed this). NumPy was most famous project to bring this to Python, paving the way for easy and flexible data analysis in Python (Pandas, sci-kitlearn, etc.). Deep Learning frameworks such as TensorFlow, JAX, or PyTorch all took from this design, with its own tensor the core data structure.
+
+Anthropic's Claude summarized the key differences as follow:
+
+> Prompt: What is the different between Python list and Torch.tensor?
+
+> Here are the main differences between Python list and Torch.tensor:
+
+> 1. Data type: Python lists can contain elements of different data types, while Tensors have a single data type. All elements of a Tensor must be floats, ints, etc.
+
+> 2. Operations: Python lists support basic operations like insert, append, pop, etc. Tensors support tensor operations like sum, mean, transpose, dot product, etc.
+
+> 3. Memory management: Python lists are managed by the Python memory manager while Tensors are managed by the PyTorch library. This makes Tensors more optimized for machine learning tasks.
+
+> 4. Shape: Python lists don't have a fixed shape, they can have any number of elements. Tensors have a defined shape, usually 2D or higher.
+
+> 5. Parallelism: Operations on Tensors can take advantage of GPUs and multiple CPU cores, while list operations are sequential.
+
+> 6. Gradient tracking: Only Tensors can track gradients to enable backpropagation in neural networks.
+
+> So in summary, Python lists are more general purpose data structures while Torch Tensors are specialized data structures optimized for machine learning and neural network tasks. Tensors provide the functionality needed for training deep learning models.
+
+For our case, let's start with matrix first. We will implement a minimal object to allow the usual tensor indexing on Python list. This requires us to define the dunder method `__getitem__()`
+```{python}
+class Matrix:
+    def __init__(self, data) -> None:
+        self.data = data
+    def __getitem__(self, idxs):
+        return self.data[idxs[0]][idxs[1]]
+
+m = Matrix(img)
+m[20,15]
+```
+Okay, cool. Now we are allowed to use `torch.tensor`. Let's quickly convert our data to tensor with `map` and reshape an image for visualization it. Notice how easily we could do so with PyTorch.
+```{python}
+import torch
+from torch import tensor
+torch.set_printoptions(precision=2, linewidth=140, sci_mode=False)
+
+x_train,y_train,x_valid,y_valid = map(tensor, (x_train,y_train,x_valid,y_valid))
+
+print('Notice the shape:', x_train.shape)
+print('Notice the type:', x_train.type())
+
+imgs = x_train.reshape((-1,28,28))
+plt.imshow(imgs[0]);
+```
+The mapping was successfully. The shape and data type all becomes PyTorch's built-in ones. The whole `x_train` dataset can be reshaped into 10000 $28 \times 28 $ quickly with `.reshape()` method and -1 indexing. 
+
+We now have matrix. Let's do matrix multiplication.
+
+# Linear Algebra: Matrix multiplication
+
+## Brute-force
+
+To get to multilayer perceptron, we need to able to do matrix multiplication. Let's start from the basic first, with pen and paper.
+
+Here's an example:
+
+![](matmul 1.png)
+
+Let's zoom in at one cell of the result matrix:
+
+![](matmul 2.png)
+
+To summarize, for each element in the result matrix, we get it by summing the product of each element in the corresponding row of the left matrix and each element in the corresponding column of the right matrix. In codes, this is translated into three nested loops:
+```{python}
+torch.manual_seed(1)
+# Randomly initialize weights and biases as in a real layer
+weights = torch.randn(784,10)
+bias = torch.zeros(10)
+
+# Work with a batch of 5 first - a 3 nested loops should be slow.
+m1 = x_valid[:5]
+m2 = weights
+
+m1.shape,m2.shape
+```
+```{python}
+# Store the number of rows and columns of each matrix
+ar,ac = m1.shape
+br,bc = m2.shape
+
+# t1 is the placeholder result matrix
+t1 = torch.zeros(ar, bc)
+
+for i in range(ar):         # 5
+    for j in range(bc):     # 10
+        for k in range(ac): # 784
+            t1[i,j] += m1[i,k] * m2[k,j]
+
+t1, t1.shape
+```
+Let's package this into a function:
+```{python}
+def matmul(a,b):
+    (ar,ac),(br,bc) = a.shape,b.shape
+    c = torch.zeros(ar, bc)
+    for i in range(ar):
+        for j in range(bc):
+            for k in range(ac): c[i,j] += a[i,k] * b[k,j]
+    return c
+
+%timeit -n 5 matmul(m1, m2)
+```
+## Speed-up: Dot product
+
+I want to get the objective clear: removing all of the three loops sequentially to speed things up. The first clue to do that is with dot product of two vectors. From the illustration, it is clear that each cell in result matrix is the result of the dot product between the left row vector and the right column vector. Unfortunately, we cannot use `torch.dot` yet. However, we can use *element-wise operation*, the trademark of tensor  
+```{python}
+def matmul(a,b):
+    (ar,ac),(br,bc) = a.shape,b.shape
+    c = torch.zeros(ar, bc)
+    for i in range(ar):
+        for j in range(bc): c[i,j] = (a[i,:] * b[:,j]).sum()
+    return c
+
+%timeit -n 5 matmul(m1, m2)
+```
+Okay, now `torch.dot` is free:
+```{python}
+def matmul(a,b):
+    (ar,ac),(br,bc) = a.shape,b.shape
+    c = torch.zeros(ar, bc)
+    for i in range(ar):
+        for j in range(bc): c[i,j] = torch.dot(a[i,:], b[:,j])
+    return c
+
+%timeit -n 5 matmul(m1, m2)
+```
+## Speed-up: Broadcasting
+
+The next clue is another trademark of tensor: **broadcasting**, which allows tensors of different shapes to be multiplied together. This is the trademark of tensors, so make some time to familiarize yourself with the rules from [NumPy documentation](https://numpy.org/doc/stable/user/basics.broadcasting.html).
+
+For demonstration, it is better to refer to the [original notebook](https://nbviewer.org/github/fastai/course22p2/blob/master/nbs/). I just want to mention two things. Firstly, `.unsqueeze()` and `None` indexing. Simply put, we can create a *unit dimension* in an array by using `.unsqueeze()` or passing in the special keyword `None` inside the indexing brackets.
+```{python}
+c = tensor([10.,20,30])
+
+print('The first dimension:', c.unsqueeze(0), c[None, :])
+print('The second dimension:', c.unsqueeze(1), c[:, None])
+print('We can skip trailing ":"', c[None])
+print('We can also pass in "..."', c[..., None])
+```
+Secondly, that broadcasting compare array dimensions from *right to left*. This can lead to behavior such as this:
+```{python}
+c[None,:] * c[:,None]
+```
+![](matmul 3.png)
+
+Anyway, with broadcasting, we can now calculate the result matrix one row at a time and skip another loop:
+```{python}
+def matmul(a,b):
+    (ar,ac),(br,bc) = a.shape,b.shape
+    c = torch.zeros(ar, bc)
+    for i in range(ar):
+        c[i]   = (a[i,:,None] * b).sum(dim=0)
+    return c
+
+%timeit -n 5 matmul(m1, m2)
+```
+At this point, we basically arrive at matrix multiplication. However, let's up the amp a bit and (re)introduce Einstein.
+
+## Einstein summation
+
+> [Einstein summation](https://ajcr.net/Basic-guide-to-einsum/) (`einsum`) is a compact representation for combining products and sums in a general way. The key rules are:
+> - Repeating letters between input arrays means that values along those axes will be multiplied together.
+> - Omitting a letter from the output means that values along that axis will be summed.
+
+Example:
+```{python}
+m1.shape, m2.shape
+
+mr = torch.einsum('ik,kj->ikj', m1, m2)
+mr.shape
+```
+To use `torch.einsum`, we need to pass in a string telling the operation we want to achieve. The string above means "multiplying each column of `m1` by `m2`". Notice that we can sum the result matrix along the first dimension to get the result matrix.
+```{python}
+mr.sum(1)
+```
+This is equivalent to the notation of matrix multiplication
+```{python}
+torch.einsum('ik,kj->ij', m1, m2)
+```
+So we can replace everything with a `torch.einsum` call:
+```{python}
+def matmul(a,b): return torch.einsum('ik,kj->ij', a, b)
+%timeit -n 5 _=matmul(m1, m2)
+```
+Having come to this point, let's introduce `torch` predefined operations:
+```{python}
+%timeit -n 5 _=torch.matmul(m1, m2)
+```
+```{python}
+%timeit -n 5 _=m1@m2
+```
+# Calculus: Differentiation and Chain Rule
+Okay, great. We have built the linear algebra needed for deep learning, specifically, for the forward pass. For the backward pass, we need to do some calculus - calculating the differentiation.
+
+Great! But the differentation *of what with respect to what*?
+
+At this point, it is best if we agree on a general answer to *What's exactly is a (machine learning) model?*
+
+Simply, we have a black box, or a "magic API" as Jeremy called it, where we pass inputs in and receive outputs out close to the way we want. Now this box has a metric measuring how well (or badly) it is doing.
