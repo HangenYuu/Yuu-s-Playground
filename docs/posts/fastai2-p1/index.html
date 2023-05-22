@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Pham Nguyen Hung">
-<meta name="dcterms.date" content="2023-05-15">
+<meta name="dcterms.date" content="2023-05-22">
 
 <title>H’s notes - Deep Learning from the ground up - From tensor to multi-layer perceptron</title>
 <style>
@@ -97,6 +97,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -179,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 15, 2023</p>
+        <p class="date">May 22, 2023</p>
       </div>
     </div>
     
@@ -1086,7 +1088,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#speed-up-broadcasting" id="toc-speed-up-broadcasting" class="nav-link" data-scroll-target="#speed-up-broadcasting">Speed-up: Broadcasting</a></li>
   <li><a href="#einstein-summation" id="toc-einstein-summation" class="nav-link" data-scroll-target="#einstein-summation">Einstein summation</a></li>
   </ul></li>
-  <li><a href="#calculus-differentiation-and-chain-rule" id="toc-calculus-differentiation-and-chain-rule" class="nav-link" data-scroll-target="#calculus-differentiation-and-chain-rule">Calculus: Differentiation and Chain Rule</a></li>
+  <li><a href="#calculus-differentiation-and-chain-rule" id="toc-calculus-differentiation-and-chain-rule" class="nav-link" data-scroll-target="#calculus-differentiation-and-chain-rule">Calculus: Differentiation and Chain Rule</a>
+  <ul class="collapse">
+  <li><a href="#forward-pass" id="toc-forward-pass" class="nav-link" data-scroll-target="#forward-pass">Forward pass</a></li>
+  <li><a href="#backward-pass" id="toc-backward-pass" class="nav-link" data-scroll-target="#backward-pass">Backward pass</a>
+  <ul class="collapse">
+  <li><a href="#gradient-of-mse-loss" id="toc-gradient-of-mse-loss" class="nav-link" data-scroll-target="#gradient-of-mse-loss">Gradient of MSE loss</a></li>
+  <li><a href="#gradient-of-linear-layer" id="toc-gradient-of-linear-layer" class="nav-link" data-scroll-target="#gradient-of-linear-layer">Gradient of linear layer</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -1347,7 +1357,7 @@ Notice the type: torch.FloatTensor</code></pre>
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.11 s ± 5.27 ms per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>1.02 s ± 10 ms per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 </section>
@@ -1364,7 +1374,7 @@ Notice the type: torch.FloatTensor</code></pre>
 <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.97 ms ± 417 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>1.67 ms ± 319 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <p>Okay, now <code>torch.dot</code> is free:</p>
@@ -1378,7 +1388,7 @@ Notice the type: torch.FloatTensor</code></pre>
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.82 ms ± 644 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>1.27 ms ± 251 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 </section>
@@ -1427,7 +1437,7 @@ We can also pass in "..." tensor([[10.],
 <span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>344 µs ± 115 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>357 µs ± 141 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <p>At this point, we basically arrive at matrix multiplication. However, let’s up the amp a bit and (re)introduce Einstein.</p>
@@ -1435,7 +1445,11 @@ We can also pass in "..." tensor([[10.],
 <section id="einstein-summation" class="level2">
 <h2 class="anchored" data-anchor-id="einstein-summation">Einstein summation</h2>
 <blockquote class="blockquote">
-<p><a href="https://ajcr.net/Basic-guide-to-einsum/">Einstein summation</a> (<code>einsum</code>) is a compact representation for combining products and sums in a general way. The key rules are: - Repeating letters between input arrays means that values along those axes will be multiplied together. - Omitting a letter from the output means that values along that axis will be summed.</p>
+<p><a href="https://ajcr.net/Basic-guide-to-einsum/">Einstein summation</a> (<code>einsum</code>) is a compact representation for combining products and sums in a general way. The key rules are:</p>
+<ul>
+<li><p>Repeating letters between input arrays means that values along those axes will be multiplied together.</p></li>
+<li><p>Omitting a letter from the output means that values along that axis will be summed.</p></li>
+</ul>
 </blockquote>
 <p>Example:</p>
 <div class="cell" data-execution_count="20">
@@ -1472,34 +1486,203 @@ We can also pass in "..." tensor([[10.],
 <p>So we can replace everything with a <code>torch.einsum</code> call:</p>
 <div class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> matmul(a,b): <span class="cf">return</span> torch.einsum(<span class="st">'ik,kj-&gt;ij'</span>, a, b)</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> _<span class="op">=</span>matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The slowest run took 4.28 times longer than the fastest. This could mean that an intermediate result is being cached.
-65 µs ± 38 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>The slowest run took 4.03 times longer than the fastest. This could mean that an intermediate result is being cached.
+51.5 µs ± 32.5 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <p>Having come to this point, let’s introduce <code>torch</code> predefined operations:</p>
 <div class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> torch.matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> _<span class="op">=</span>torch.matmul(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The slowest run took 12.71 times longer than the fastest. This could mean that an intermediate result is being cached.
-26.1 µs ± 39.2 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>The slowest run took 11.13 times longer than the fastest. This could mean that an intermediate result is being cached.
+16.5 µs ± 22.8 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> m1<span class="op">@</span>m2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="op">-</span>n <span class="dv">5</span> _<span class="op">=</span>m1<span class="op">@</span>m2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The slowest run took 17.55 times longer than the fastest. This could mean that an intermediate result is being cached.
-28.2 µs ± 47 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>The slowest run took 17.03 times longer than the fastest. This could mean that an intermediate result is being cached.
+31.6 µs ± 42.8 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 </section>
 </section>
 <section id="calculus-differentiation-and-chain-rule" class="level1">
 <h1>Calculus: Differentiation and Chain Rule</h1>
-<p>Okay, great. We have built the linear algebra needed for</p>
+<p>Okay, great. We have built the linear algebra needed for deep learning, specifically, for the forward pass. For the backward pass, we need to do some calculus - calculating the differentiation.</p>
+<p>Great! But <em>why differentiation in the first place</em>?</p>
+<p>At this point, it is best if we agree on a general answer to <em>What’s exactly is a (machine learning) model?</em></p>
+<p>Simply, we have a black box, or a “magic API” as Jeremy called it, where we pass inputs in and receive outputs out close to the way we want. But more often than not, we will not know the perfect parameters for the model, so we will need to start with random parameters and update them along. But what is the corect direction to do so? We will need a <em>metric</em> to measure progress. Hence, the loss function is introduced. But well, how do we construct such a function?</p>
+<p>This is the time I introduce the topic of <em>Optimization problem</em>, where the goal is to find the maximum or minimum value of a variable. A technique, or even <em>the</em> technique that we can use is <a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton method</a>. It was first used to solve some equation <span class="math inline">\(f(x)=0\)</span>. Let’s say <span class="math inline">\(f(x)\)</span> is complex so it is tedious to solve direcly. We can guess the initial and then iteratively calculate a better one with the formula: <span class="math display">\[x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}\]</span></p>
+<p>The intuition is that for a(n infinitesimally) small range around any value, the function can be approximated to be linear (within some error). For each iteration of Newton’s method, we approximate the function as a linear one. Of course, for guesses far from a true root, it wil be incorrect. However, following the gradient, we will get to the next guess that is closer to the root than before. If we keep repeating, we will eventually get to the real root, or a very close approximation. And there it is!</p>
+<p><img src="NewtonIteration_Ani.gif" class="img-fluid"></p>
+<p>For optimization problem, it is not <span class="math inline">\(f(x)=0\)</span>, but <span class="math inline">\(f'(x)=0\)</span>. We can use the same technique, but modify the equation to. <span class="math display">\[x_{n+1} = x_n - \frac{f'(x_n)}{f''(x_n)}\]</span></p>
+<p>Going to multidimensional matrix, the equation becomes: <span class="math display">\[x_{n+1} = x_n - H^{-1} \nabla f(x_n)\]</span></p>
+<p>where <span class="math inline">\(H\)</span> is the Hessian matrix, the second derivative of <span class="math inline">\(f(x)\)</span>. This is the core of Newton’s method. However, it is not used in practice because of the computational cost of <em>calculating the Hessian matrix</em> and then <em>inverse it</em> (trust me, it’s not a pleasant experience, and I tried with just two dimensions). Instead, we use a parameter called <em>learning rate</em> in gradient descent, which is essentially a small constant to replace the Hessian. The equation becomes: <span class="math display">\[x_{n+1} = x_n - \alpha \nabla f(x_n)\]</span></p>
+<p>Yes, we are using a constant to estimate the Hessian. It is not as accurate, but it is much faster and more straightforward to implement. And with the introduction of momentums, regularizations, learning rate scheduler, etc., we can achieve great result <a href="https://arxiv.org/abs/1708.07120">fast</a> without the need for the Hessian.</p>
+<p>Enough with the history and theory.</p>
+<section id="forward-pass" class="level2">
+<h2 class="anchored" data-anchor-id="forward-pass">Forward pass</h2>
+<p>Let’s start with a simple model: 2 linear layers, 1 ReLU activation. Ignore the softmax for now.</p>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>batch_size, feature <span class="op">=</span> x_train.shape</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> y_train.<span class="bu">max</span>() <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>num_hidden <span class="op">=</span> <span class="dv">50</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>w1 <span class="op">=</span> torch.randn(feature,num_hidden)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>b1 <span class="op">=</span> torch.zeros(num_hidden)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>w2 <span class="op">=</span> torch.randn(num_hidden,<span class="dv">1</span>)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>b2 <span class="op">=</span> torch.zeros(<span class="dv">1</span>)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lin(x, w, b):</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x<span class="op">@</span>w <span class="op">+</span> b</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> relu(x):</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x.clamp_min(<span class="fl">0.</span>)</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model(xb):</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    l1 <span class="op">=</span> lin(xb, w1, b1)</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>    l2 <span class="op">=</span> relu(l1)</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> lin(l2, w2, b2)</span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>yhat_train <span class="op">=</span> model(x_train)</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>yhat_train.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>torch.Size([50000, 1])</code></pre>
+</div>
+</div>
+<p>Perfect! Now we need something to measure the performance of the model. Ideally, this number should involve the final output of the model and the true label to use in the backward pass later. The most straightforward is MSE loss.</p>
+<p>The formula for this case is: <span class="math display">\[\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y_i})^2\]</span></p>
+<p>where <span class="math inline">\(n\)</span> is the number of samples, <span class="math inline">\(y_i\)</span> is the true label, and <span class="math inline">\(\hat{y_i}\)</span> is the predicted label.</p>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>(yhat_train<span class="op">-</span>y_train).shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>torch.Size([50000, 50000])</code></pre>
+</div>
+</div>
+<p>Huh? The shape received is incorrect. We are expecting <code>torch.Size([50000])</code> but receive <code>torch.Size([50000, 50000])</code> instead. The likeliest cause is a difference in dimension. Let’s check the shape of <code>yhat_train</code> and <code>y_train</code>:</p>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>yhat_train.shape, y_train.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<pre><code>(torch.Size([50000, 1]), torch.Size([50000]))</code></pre>
+</div>
+</div>
+<p>Aha! There is a trailing dimension in <code>yhat_train</code>. We can fix this by using <code>squeeze</code>:</p>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>yhat_train[:,<span class="dv">0</span>].shape, yhat_train.squeeze().shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<pre><code>(torch.Size([50000]), torch.Size([50000]))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>(yhat_train.squeeze()<span class="op">-</span>y_train).shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<pre><code>torch.Size([50000])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mse(yhat, y):</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (yhat.squeeze(<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> y).<span class="bu">pow</span>(<span class="dv">2</span>).mean()</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>mse(yhat_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<pre><code>tensor(922.41)</code></pre>
+</div>
+</div>
+</section>
+<section id="backward-pass" class="level2">
+<h2 class="anchored" data-anchor-id="backward-pass">Backward pass</h2>
+<p>To do backward pass, we need to calculate gradient. This example is easy - I can do it with pen and paper and code the formulae in. However, to scale up to bigger network, we need a more general way called <em>computational graph</em>.</p>
+<p>A framework such as PyTorch will have mechanism (<code>autograd</code>) behind the scene to keep track of the computational graph. Afterwards, it will calculate the gradient of the parameters to the loss function. The gradient is not calculated at once, but <em>sequentially</em> in the reverse order of the forward pass, making use of the chain rule to reduce operations for each parameter. This is called <em>backpropagation</em>. To emphasize, yes, the coolest term in the history of deep learning is just <em>using chain rule to calculate gradient sequentially in the reverse order</em>.</p>
+<blockquote class="blockquote">
+<p>To find out more about backpropagation, the most complete resource is a lecture from a university such as Michigan or Stanford (e.g., <a href="https://youtu.be/d14TUNcbn1k">video</a>, <a href="https://cs231n.github.io/optimization-2/">notes</a>). You may also want to check the PyTorch documentation for <a href="https://pytorch.org/docs/stable/notes/autograd.html">autograd</a>.</p>
+</blockquote>
+<p>Anyway, we are yet to have an autograd framework, so for this example, let’s use pen and paper. We will calculate the gradient of the loss function with respect to each parameter.</p>
+<p><strong>Note:</strong> The whole phrase is “gradient of the loss function with respect to a parameter <span class="math inline">\(x\)</span>”, which is usually referred to just as “gradient of <span class="math inline">\(x\)</span>”. This seems to be an implicit rule in the field, so I will follow.</p>
+<section id="gradient-of-mse-loss" class="level3">
+<h3 class="anchored" data-anchor-id="gradient-of-mse-loss">Gradient of MSE loss</h3>
+<p>From <span class="math display">\[
+J = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y_i})^2,
+\]</span> <span class="math display">\[
+\frac{\partial J}{\partial \hat{y}} = \frac{2}{n} (y - \hat{y})
+\]</span> with <span class="math inline">\(y\)</span> and <span class="math inline">\(\hat{y}\)</span> matrices.</p>
+<p>This will give the first gradient for the backward pass. We will use this to calculate the gradient of the next layer. Recall that <span class="math inline">\(\hat{y_i}\)</span> is also the activation of the last linear layer (say, <span class="math inline">\(n\)</span>): <span class="math inline">\(\hat{y} = a^j = w^j \times a^{j-1} + w^j\)</span>. Generally, <em>the input to the next layer is the activation of the current layer</em>. The formula we will derive shortly shows that we will need the output of the layer to calculate the gradient of the input to the layer (which happens to be the activation of the previous layer, hence required to calculate the graidnet of the input to the previous layer (which happens to be…)…).</p>
+</section>
+<section id="gradient-of-linear-layer" class="level3">
+<h3 class="anchored" data-anchor-id="gradient-of-linear-layer">Gradient of linear layer</h3>
+<p>From <span class="math display">\[
+a^j = w^j \times a^{j-1} + b^j, \\
+\]</span> The gradients are: <span class="math display">\[
+\frac{\partial J}{\partial w^j} = \frac{\partial J}{\partial a^j} \times \frac{\partial a^j}{\partial w^j} = \frac{\partial J}{\partial a^j} \times a^{j-1},
+\]</span> <span class="math display">\[
+\frac{\partial J}{\partial a^{j-1}} = \frac{\partial J}{\partial a^j} \times \frac{\partial a^j}{\partial a^{j-1}} = \frac{\partial J}{\partial a^j} \times w^{j},
+\]</span> <span class="math display">\[
+\frac{\partial J}{\partial b^{j}} = \frac{\partial J}{\partial a^j} \times \frac{\partial a^j}{\partial b^{j}} = \frac{\partial J}{\partial a^j}
+\]</span> In Python, we will store the gradient as an attribute of the matrix itself. This is similar to PyTorch’s behaviors. The attribute <code>grad</code> is taken, so let’s use <code>g</code> instead.</p>
+<div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lin_grad(inp, out, w, b):</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># .g must have the same shape as the original matrix</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># inp has shape (i, j), w has shape (j, k), so out has shape (i, k)</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to get back to (i, j) from (i, k), we need shape (k, j), so we transpose w</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This analysis based on shape is not correct as I obviously do not care</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># about actual values here, but is often enought to get the correct answer </span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    inp.g <span class="op">=</span> out.g <span class="op">@</span> w.t()</span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For w.g, it is getting (j, k) from (i, j) and (i, k)</span></span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Besides einsum, from broadcasting rule, we need to add a unit axis at the</span></span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># end of inp and at axis 1 (zero-indexing) of out, multiply to get (i, j, k),</span></span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># and sum along the first axis</span></span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># w.g = (inp.unsqueeze(-1) * out.g.unsqueeze(1)).sum(0)</span></span>
+<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>    w.g <span class="op">=</span> torch.einsum(<span class="st">'ij,ik-&gt;jk'</span>, inp, out.g)</span>
+<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For b.g, the shape is just (k) because of broadcasting, so sum out.g along</span></span>
+<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the first axis.</span></span>
+<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a>    b.g <span class="op">=</span> out.g.<span class="bu">sum</span>(<span class="dv">0</span>)</span>
+<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> forward_and_backward(inp, targ):</span>
+<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># forward pass:</span></span>
+<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a>    l1 <span class="op">=</span> lin(inp, w1, b1)</span>
+<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a>    l2 <span class="op">=</span> relu(l1)</span>
+<span id="cb59-22"><a href="#cb59-22" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> lin(l2, w2, b2)</span>
+<span id="cb59-23"><a href="#cb59-23" aria-hidden="true" tabindex="-1"></a>    diff <span class="op">=</span> out[:,<span class="dv">0</span>]<span class="op">-</span>targ</span>
+<span id="cb59-24"><a href="#cb59-24" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> diff.<span class="bu">pow</span>(<span class="dv">2</span>).mean()</span>
+<span id="cb59-25"><a href="#cb59-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb59-26"><a href="#cb59-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># backward pass:</span></span>
+<span id="cb59-27"><a href="#cb59-27" aria-hidden="true" tabindex="-1"></a>    out.g <span class="op">=</span> <span class="fl">2.</span><span class="op">*</span>diff[:,<span class="va">None</span>] <span class="op">/</span> inp.shape[<span class="dv">0</span>]</span>
+<span id="cb59-28"><a href="#cb59-28" aria-hidden="true" tabindex="-1"></a>    lin_grad(l2, out, w2, b2)</span>
+<span id="cb59-29"><a href="#cb59-29" aria-hidden="true" tabindex="-1"></a>    l1.g <span class="op">=</span> (l1<span class="op">&gt;</span><span class="dv">0</span>).<span class="bu">float</span>() <span class="op">*</span> l2.g</span>
+<span id="cb59-30"><a href="#cb59-30" aria-hidden="true" tabindex="-1"></a>    lin_grad(inp, l1, w1, b1)</span>
+<span id="cb59-31"><a href="#cb59-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-32"><a href="#cb59-32" aria-hidden="true" tabindex="-1"></a>forward_and_backward(x_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing - from Jeremy</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.test <span class="im">import</span> test_close</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_grad(x): <span class="cf">return</span> x.g.clone()</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>chks <span class="op">=</span> w1,w2,b1,b2,x_train</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>grads <span class="op">=</span> w1g,w2g,b1g,b2g,ig <span class="op">=</span> <span class="bu">tuple</span>(<span class="bu">map</span>(get_grad, chks))</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mkgrad(x): <span class="cf">return</span> x.clone().requires_grad_(<span class="va">True</span>)</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>ptgrads <span class="op">=</span> w12,w22,b12,b22,xt2 <span class="op">=</span> <span class="bu">tuple</span>(<span class="bu">map</span>(mkgrad, chks))</span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> forward(inp, targ):</span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>    l1 <span class="op">=</span> lin(inp, w12, b12)</span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>    l2 <span class="op">=</span> relu(l1)</span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> lin(l2, w22, b22)</span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mse(out, targ)</span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> forward(xt2, y_train)</span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>loss.backward()</span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a,b <span class="kw">in</span> <span class="bu">zip</span>(grads, ptgrads): test_close(a, b.grad, eps<span class="op">=</span><span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>No expeption was raised, which means that our codes worked correctly! We successfully created an MLP!</p>
+<p><em>The formulae for the optimization problems were referenced from Chapra, &amp; Canale, R. P. (2015). Numerical methods for engineers (Seventh edition.). McGraw-Hill Education</em></p>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

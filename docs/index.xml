@@ -10,7 +10,7 @@
 <atom:link href="https://hangenyuu.github.io/h-notes/index.xml" rel="self" type="application/rss+xml"/>
 <description>H&#39;s Notes on Deep Learning</description>
 <generator>quarto-1.3.340</generator>
-<lastBuildDate>Mon, 15 May 2023 07:03:29 GMT</lastBuildDate>
+<lastBuildDate>Mon, 22 May 2023 09:24:18 GMT</lastBuildDate>
 <item>
   <title>Deep Learning from the ground up - From tensor to multi-layer perceptron</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>
@@ -595,7 +595,7 @@ font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.11 s ± 5.27 ms per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>1.02 s ± 10 ms per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 </section>
@@ -644,7 +644,7 @@ font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.97 ms ± 417 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>1.67 ms ± 319 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <p>Okay, now <code>torch.dot</code> is free:</p>
@@ -686,7 +686,7 @@ font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.82 ms ± 644 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>1.27 ms ± 251 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 </section>
@@ -809,7 +809,7 @@ font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>344 µs ± 115 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>357 µs ± 141 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <p>At this point, we basically arrive at matrix multiplication. However, let’s up the amp a bit and (re)introduce Einstein.</p>
@@ -817,7 +817,11 @@ font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
 <section id="einstein-summation" class="level2">
 <h2 class="anchored" data-anchor-id="einstein-summation">Einstein summation</h2>
 <blockquote class="blockquote">
-<p><a href="https://ajcr.net/Basic-guide-to-einsum/">Einstein summation</a> (<code>einsum</code>) is a compact representation for combining products and sums in a general way. The key rules are: - Repeating letters between input arrays means that values along those axes will be multiplied together. - Omitting a letter from the output means that values along that axis will be summed.</p>
+<p><a href="https://ajcr.net/Basic-guide-to-einsum/">Einstein summation</a> (<code>einsum</code>) is a compact representation for combining products and sums in a general way. The key rules are:</p>
+<ul>
+<li><p>Repeating letters between input arrays means that values along those axes will be multiplied together.</p></li>
+<li><p>Omitting a letter from the output means that values along that axis will be summed.</p></li>
+</ul>
 </blockquote>
 <p>Example:</p>
 <div class="cell" data-execution_count="20">
@@ -876,10 +880,12 @@ font-style: inherit;">%</span>timeit <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
+font-style: inherit;">5</span> _<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The slowest run took 4.28 times longer than the fastest. This could mean that an intermediate result is being cached.
-65 µs ± 38 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>The slowest run took 4.03 times longer than the fastest. This could mean that an intermediate result is being cached.
+51.5 µs ± 32.5 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <p>Having come to this point, let’s introduce <code>torch</code> predefined operations:</p>
@@ -890,10 +896,12 @@ font-style: inherit;">%</span>timeit <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">5</span> torch.matmul(m1, m2)</span></code></pre></div>
+font-style: inherit;">5</span> _<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>torch.matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The slowest run took 12.71 times longer than the fastest. This could mean that an intermediate result is being cached.
-26.1 µs ± 39.2 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>The slowest run took 11.13 times longer than the fastest. This could mean that an intermediate result is being cached.
+16.5 µs ± 22.8 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="25">
@@ -903,28 +911,399 @@ font-style: inherit;">%</span>timeit <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">5</span> m1<span class="op" style="color: #5E5E5E;
+font-style: inherit;">5</span> _<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>m1<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">@</span>m2</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The slowest run took 17.55 times longer than the fastest. This could mean that an intermediate result is being cached.
-28.2 µs ± 47 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>The slowest run took 17.03 times longer than the fastest. This could mean that an intermediate result is being cached.
+31.6 µs ± 42.8 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 </section>
 </section>
 <section id="calculus-differentiation-and-chain-rule" class="level1">
 <h1>Calculus: Differentiation and Chain Rule</h1>
-<p>Okay, great. We have built the linear algebra needed for</p>
+<p>Okay, great. We have built the linear algebra needed for deep learning, specifically, for the forward pass. For the backward pass, we need to do some calculus - calculating the differentiation.</p>
+<p>Great! But <em>why differentiation in the first place</em>?</p>
+<p>At this point, it is best if we agree on a general answer to <em>What’s exactly is a (machine learning) model?</em></p>
+<p>Simply, we have a black box, or a “magic API” as Jeremy called it, where we pass inputs in and receive outputs out close to the way we want. But more often than not, we will not know the perfect parameters for the model, so we will need to start with random parameters and update them along. But what is the corect direction to do so? We will need a <em>metric</em> to measure progress. Hence, the loss function is introduced. But well, how do we construct such a function?</p>
+<p>This is the time I introduce the topic of <em>Optimization problem</em>, where the goal is to find the maximum or minimum value of a variable. A technique, or even <em>the</em> technique that we can use is <a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton method</a>. It was first used to solve some equation <img src="https://latex.codecogs.com/png.latex?f(x)=0">. Let’s say <img src="https://latex.codecogs.com/png.latex?f(x)"> is complex so it is tedious to solve direcly. We can guess the initial and then iteratively calculate a better one with the formula: <img src="https://latex.codecogs.com/png.latex?x_%7Bn+1%7D%20=%20x_n%20-%20%5Cfrac%7Bf(x_n)%7D%7Bf'(x_n)%7D"></p>
+<p>The intuition is that for a(n infinitesimally) small range around any value, the function can be approximated to be linear (within some error). For each iteration of Newton’s method, we approximate the function as a linear one. Of course, for guesses far from a true root, it wil be incorrect. However, following the gradient, we will get to the next guess that is closer to the root than before. If we keep repeating, we will eventually get to the real root, or a very close approximation. And there it is!</p>
+<p><img src="https://hangenyuu.github.io/h-notes/posts/fastai2-p1/NewtonIteration_Ani.gif" class="img-fluid"></p>
+<p>For optimization problem, it is not <img src="https://latex.codecogs.com/png.latex?f(x)=0">, but <img src="https://latex.codecogs.com/png.latex?f'(x)=0">. We can use the same technique, but modify the equation to. <img src="https://latex.codecogs.com/png.latex?x_%7Bn+1%7D%20=%20x_n%20-%20%5Cfrac%7Bf'(x_n)%7D%7Bf''(x_n)%7D"></p>
+<p>Going to multidimensional matrix, the equation becomes: <img src="https://latex.codecogs.com/png.latex?x_%7Bn+1%7D%20=%20x_n%20-%20H%5E%7B-1%7D%20%5Cnabla%20f(x_n)"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?H"> is the Hessian matrix, the second derivative of <img src="https://latex.codecogs.com/png.latex?f(x)">. This is the core of Newton’s method. However, it is not used in practice because of the computational cost of <em>calculating the Hessian matrix</em> and then <em>inverse it</em> (trust me, it’s not a pleasant experience, and I tried with just two dimensions). Instead, we use a parameter called <em>learning rate</em> in gradient descent, which is essentially a small constant to replace the Hessian. The equation becomes: <img src="https://latex.codecogs.com/png.latex?x_%7Bn+1%7D%20=%20x_n%20-%20%5Calpha%20%5Cnabla%20f(x_n)"></p>
+<p>Yes, we are using a constant to estimate the Hessian. It is not as accurate, but it is much faster and more straightforward to implement. And with the introduction of momentums, regularizations, learning rate scheduler, etc., we can achieve great result <a href="https://arxiv.org/abs/1708.07120">fast</a> without the need for the Hessian.</p>
+<p>Enough with the history and theory.</p>
+<section id="forward-pass" class="level2">
+<h2 class="anchored" data-anchor-id="forward-pass">Forward pass</h2>
+<p>Let’s start with a simple model: 2 linear layers, 1 ReLU activation. Ignore the softmax for now.</p>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb46" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1">batch_size, feature <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x_train.shape</span>
+<span id="cb46-2">classes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> y_train.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb46-3">num_hidden <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span> </span></code></pre></div>
+</div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb47" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1">w1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.randn(feature,num_hidden)</span>
+<span id="cb47-2">b1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros(num_hidden)</span>
+<span id="cb47-3">w2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.randn(num_hidden,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb47-4">b2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb47-5"></span>
+<span id="cb47-6"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> lin(x, w, b):</span>
+<span id="cb47-7">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span>w <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b</span>
+<span id="cb47-8"></span>
+<span id="cb47-9"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> relu(x):</span>
+<span id="cb47-10">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> x.clamp_min(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.</span>)</span>
+<span id="cb47-11"></span>
+<span id="cb47-12"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> model(xb):</span>
+<span id="cb47-13">    l1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> lin(xb, w1, b1)</span>
+<span id="cb47-14">    l2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> relu(l1)</span>
+<span id="cb47-15">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> lin(l2, w2, b2)</span>
+<span id="cb47-16"></span>
+<span id="cb47-17">yhat_train <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> model(x_train)</span>
+<span id="cb47-18">yhat_train.shape</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>torch.Size([50000, 1])</code></pre>
+</div>
+</div>
+<p>Perfect! Now we need something to measure the performance of the model. Ideally, this number should involve the final output of the model and the true label to use in the backward pass later. The most straightforward is MSE loss.</p>
+<p>The formula for this case is: <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20(y_i%20-%20%5Chat%7By_i%7D)%5E2"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?n"> is the number of samples, <img src="https://latex.codecogs.com/png.latex?y_i"> is the true label, and <img src="https://latex.codecogs.com/png.latex?%5Chat%7By_i%7D"> is the predicted label.</p>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb49" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1">(yhat_train<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>y_train).shape</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>torch.Size([50000, 50000])</code></pre>
+</div>
+</div>
+<p>Huh? The shape received is incorrect. We are expecting <code>torch.Size([50000])</code> but receive <code>torch.Size([50000, 50000])</code> instead. The likeliest cause is a difference in dimension. Let’s check the shape of <code>yhat_train</code> and <code>y_train</code>:</p>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb51" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1">yhat_train.shape, y_train.shape</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<pre><code>(torch.Size([50000, 1]), torch.Size([50000]))</code></pre>
+</div>
+</div>
+<p>Aha! There is a trailing dimension in <code>yhat_train</code>. We can fix this by using <code>squeeze</code>:</p>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb53" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1">yhat_train[:,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].shape, yhat_train.squeeze().shape</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<pre><code>(torch.Size([50000]), torch.Size([50000]))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb55" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1">(yhat_train.squeeze()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>y_train).shape</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<pre><code>torch.Size([50000])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb57" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> mse(yhat, y):</span>
+<span id="cb57-2">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> (yhat.squeeze(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> y).<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">pow</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>).mean()</span>
+<span id="cb57-3">mse(yhat_train, y_train)</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<pre><code>tensor(922.41)</code></pre>
+</div>
+</div>
+</section>
+<section id="backward-pass" class="level2">
+<h2 class="anchored" data-anchor-id="backward-pass">Backward pass</h2>
+<p>To do backward pass, we need to calculate gradient. This example is easy - I can do it with pen and paper and code the formulae in. However, to scale up to bigger network, we need a more general way called <em>computational graph</em>.</p>
+<p>A framework such as PyTorch will have mechanism (<code>autograd</code>) behind the scene to keep track of the computational graph. Afterwards, it will calculate the gradient of the parameters to the loss function. The gradient is not calculated at once, but <em>sequentially</em> in the reverse order of the forward pass, making use of the chain rule to reduce operations for each parameter. This is called <em>backpropagation</em>. To emphasize, yes, the coolest term in the history of deep learning is just <em>using chain rule to calculate gradient sequentially in the reverse order</em>.</p>
+<blockquote class="blockquote">
+<p>To find out more about backpropagation, the most complete resource is a lecture from a university such as Michigan or Stanford (e.g., <a href="https://youtu.be/d14TUNcbn1k">video</a>, <a href="https://cs231n.github.io/optimization-2/">notes</a>). You may also want to check the PyTorch documentation for <a href="https://pytorch.org/docs/stable/notes/autograd.html">autograd</a>.</p>
+</blockquote>
+<p>Anyway, we are yet to have an autograd framework, so for this example, let’s use pen and paper. We will calculate the gradient of the loss function with respect to each parameter.</p>
+<p><strong>Note:</strong> The whole phrase is “gradient of the loss function with respect to a parameter <img src="https://latex.codecogs.com/png.latex?x">”, which is usually referred to just as “gradient of <img src="https://latex.codecogs.com/png.latex?x">”. This seems to be an implicit rule in the field, so I will follow.</p>
+<section id="gradient-of-mse-loss" class="level3">
+<h3 class="anchored" data-anchor-id="gradient-of-mse-loss">Gradient of MSE loss</h3>
+<p>From <img src="https://latex.codecogs.com/png.latex?%0AJ%20=%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5E%7Bn%7D%20(y_i%20-%20%5Chat%7By_i%7D)%5E2,%0A"> <img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20%5Chat%7By%7D%7D%20=%20%5Cfrac%7B2%7D%7Bn%7D%20(y%20-%20%5Chat%7By%7D)%0A"> with <img src="https://latex.codecogs.com/png.latex?y"> and <img src="https://latex.codecogs.com/png.latex?%5Chat%7By%7D"> matrices.</p>
+<p>This will give the first gradient for the backward pass. We will use this to calculate the gradient of the next layer. Recall that <img src="https://latex.codecogs.com/png.latex?%5Chat%7By_i%7D"> is also the activation of the last linear layer (say, <img src="https://latex.codecogs.com/png.latex?n">): <img src="https://latex.codecogs.com/png.latex?%5Chat%7By%7D%20=%20a%5Ej%20=%20w%5Ej%20%5Ctimes%20a%5E%7Bj-1%7D%20+%20w%5Ej">. Generally, <em>the input to the next layer is the activation of the current layer</em>. The formula we will derive shortly shows that we will need the output of the layer to calculate the gradient of the input to the layer (which happens to be the activation of the previous layer, hence required to calculate the graidnet of the input to the previous layer (which happens to be…)…).</p>
+</section>
+<section id="gradient-of-linear-layer" class="level3">
+<h3 class="anchored" data-anchor-id="gradient-of-linear-layer">Gradient of linear layer</h3>
+<p>From <img src="https://latex.codecogs.com/png.latex?%0Aa%5Ej%20=%20w%5Ej%20%5Ctimes%20a%5E%7Bj-1%7D%20+%20b%5Ej,%20%5C%5C%0A"> The gradients are: <img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20w%5Ej%7D%20=%20%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20a%5Ej%7D%20%5Ctimes%20%5Cfrac%7B%5Cpartial%20a%5Ej%7D%7B%5Cpartial%20w%5Ej%7D%20=%20%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20a%5Ej%7D%20%5Ctimes%20a%5E%7Bj-1%7D,%0A"> <img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20a%5E%7Bj-1%7D%7D%20=%20%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20a%5Ej%7D%20%5Ctimes%20%5Cfrac%7B%5Cpartial%20a%5Ej%7D%7B%5Cpartial%20a%5E%7Bj-1%7D%7D%20=%20%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20a%5Ej%7D%20%5Ctimes%20w%5E%7Bj%7D,%0A"> <img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20b%5E%7Bj%7D%7D%20=%20%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20a%5Ej%7D%20%5Ctimes%20%5Cfrac%7B%5Cpartial%20a%5Ej%7D%7B%5Cpartial%20b%5E%7Bj%7D%7D%20=%20%5Cfrac%7B%5Cpartial%20J%7D%7B%5Cpartial%20a%5Ej%7D%0A"> In Python, we will store the gradient as an attribute of the matrix itself. This is similar to PyTorch’s behaviors. The attribute <code>grad</code> is taken, so let’s use <code>g</code> instead.</p>
+<div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb59" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> lin_grad(inp, out, w, b):</span>
+<span id="cb59-2">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># .g must have the same shape as the original matrix</span></span>
+<span id="cb59-3">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># inp has shape (i, j), w has shape (j, k), so out has shape (i, k)</span></span>
+<span id="cb59-4">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to get back to (i, j) from (i, k), we need shape (k, j), so we transpose w</span></span>
+<span id="cb59-5">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This analysis based on shape is not correct as I obviously do not care</span></span>
+<span id="cb59-6">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># about actual values here, but is often enought to get the correct answer </span></span>
+<span id="cb59-7">    inp.g <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> out.g <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> w.t()</span>
+<span id="cb59-8">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># For w.g, it is getting (j, k) from (i, j) and (i, k)</span></span>
+<span id="cb59-9">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Besides einsum, from broadcasting rule, we need to add a unit axis at the</span></span>
+<span id="cb59-10">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># end of inp and at axis 1 (zero-indexing) of out, multiply to get (i, j, k),</span></span>
+<span id="cb59-11">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># and sum along the first axis</span></span>
+<span id="cb59-12">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># w.g = (inp.unsqueeze(-1) * out.g.unsqueeze(1)).sum(0)</span></span>
+<span id="cb59-13">    w.g <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.einsum(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ij,ik-&gt;jk'</span>, inp, out.g)</span>
+<span id="cb59-14">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># For b.g, the shape is just (k) because of broadcasting, so sum out.g along</span></span>
+<span id="cb59-15">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># the first axis.</span></span>
+<span id="cb59-16">    b.g <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> out.g.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb59-17"></span>
+<span id="cb59-18"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> forward_and_backward(inp, targ):</span>
+<span id="cb59-19">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># forward pass:</span></span>
+<span id="cb59-20">    l1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> lin(inp, w1, b1)</span>
+<span id="cb59-21">    l2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> relu(l1)</span>
+<span id="cb59-22">    out <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> lin(l2, w2, b2)</span>
+<span id="cb59-23">    diff <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> out[:,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>targ</span>
+<span id="cb59-24">    loss <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> diff.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">pow</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>).mean()</span>
+<span id="cb59-25">    </span>
+<span id="cb59-26">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># backward pass:</span></span>
+<span id="cb59-27">    out.g <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>diff[:,<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> inp.shape[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]</span>
+<span id="cb59-28">    lin_grad(l2, out, w2, b2)</span>
+<span id="cb59-29">    l1.g <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (l1<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>).<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> l2.g</span>
+<span id="cb59-30">    lin_grad(inp, l1, w1, b1)</span>
+<span id="cb59-31"></span>
+<span id="cb59-32">forward_and_backward(x_train, y_train)</span></code></pre></div>
+</div>
+<div class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb60" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Testing - from Jeremy</span></span>
+<span id="cb60-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> fastcore.test <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> test_close</span>
+<span id="cb60-3"></span>
+<span id="cb60-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> get_grad(x): <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> x.g.clone()</span>
+<span id="cb60-5">chks <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> w1,w2,b1,b2,x_train</span>
+<span id="cb60-6">grads <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> w1g,w2g,b1g,b2g,ig <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">map</span>(get_grad, chks))</span>
+<span id="cb60-7"></span>
+<span id="cb60-8"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> mkgrad(x): <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> x.clone().requires_grad_(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb60-9">ptgrads <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> w12,w22,b12,b22,xt2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">tuple</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">map</span>(mkgrad, chks))</span>
+<span id="cb60-10"></span>
+<span id="cb60-11"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> forward(inp, targ):</span>
+<span id="cb60-12">    l1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> lin(inp, w12, b12)</span>
+<span id="cb60-13">    l2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> relu(l1)</span>
+<span id="cb60-14">    out <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> lin(l2, w22, b22)</span>
+<span id="cb60-15">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> mse(out, targ)</span>
+<span id="cb60-16"></span>
+<span id="cb60-17">loss <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> forward(xt2, y_train)</span>
+<span id="cb60-18">loss.backward()</span>
+<span id="cb60-19"></span>
+<span id="cb60-20"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> a,b <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">zip</span>(grads, ptgrads): test_close(a, b.grad, eps<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>)</span></code></pre></div>
+</div>
+<p>No expeption was raised, which means that our codes worked correctly! We successfully created an MLP!</p>
+<p><em>The formulae for the optimization problems were referenced from Chapra, &amp; Canale, R. P. (2015). Numerical methods for engineers (Seventh edition.). McGraw-Hill Education</em></p>
 
 
+</section>
+</section>
 </section>
 
  ]]></description>
   <category>code</category>
   <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h-notes/posts/fastai2-p1/index.html</guid>
-  <pubDate>Mon, 15 May 2023 07:03:29 GMT</pubDate>
+  <pubDate>Mon, 22 May 2023 09:24:18 GMT</pubDate>
 </item>
 <item>
   <title>A micro AI tool</title>

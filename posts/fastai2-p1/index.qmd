@@ -258,7 +258,9 @@ At this point, we basically arrive at matrix multiplication. However, let's up t
 ## Einstein summation
 
 > [Einstein summation](https://ajcr.net/Basic-guide-to-einsum/) (`einsum`) is a compact representation for combining products and sums in a general way. The key rules are:
+>
 > - Repeating letters between input arrays means that values along those axes will be multiplied together.
+> 
 > - Omitting a letter from the output means that values along that axis will be summed.
 
 Example:
@@ -291,8 +293,183 @@ Having come to this point, let's introduce `torch` predefined operations:
 # Calculus: Differentiation and Chain Rule
 Okay, great. We have built the linear algebra needed for deep learning, specifically, for the forward pass. For the backward pass, we need to do some calculus - calculating the differentiation.
 
-Great! But the differentation *of what with respect to what*?
+Great! But *why differentiation in the first place*?
 
 At this point, it is best if we agree on a general answer to *What's exactly is a (machine learning) model?*
 
-Simply, we have a black box, or a "magic API" as Jeremy called it, where we pass inputs in and receive outputs out close to the way we want. Now this box has a metric measuring how well (or badly) it is doing.
+Simply, we have a black box, or a "magic API" as Jeremy called it, where we pass inputs in and receive outputs out close to the way we want. But more often than not, we will not know the perfect parameters for the model, so we will need to start with random parameters and update them along. But what is the corect direction to do so? We will need a *metric* to measure progress. Hence, the loss function is introduced. But well, how do we construct such a function?
+
+This is the time I introduce the topic of *Optimization problem*, where the goal is to find the maximum or minimum value of a variable. A technique, or even *the* technique that we can use is [Newton method](https://en.wikipedia.org/wiki/Newton%27s_method). It was first used to solve some equation $f(x)=0$. Let's say $f(x)$ is complex so it is tedious to solve direcly. We can guess the initial and then iteratively calculate a better one with the formula:
+$$x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$$
+
+The intuition is that for a(n infinitesimally) small range around any value, the function can be approximated to be linear (within some error). For each iteration of Newton's method, we approximate the function as a linear one. Of course, for guesses far from a true root, it wil be incorrect. However, following the gradient, we will get to the next guess that is closer to the root than before. If we keep repeating, we will eventually get to the real root, or a very close approximation. And there it is!
+
+![](NewtonIteration_Ani.gif)
+
+For optimization problem, it is not $f(x)=0$, but $f'(x)=0$. We can use the same technique, but modify the equation to.
+$$x_{n+1} = x_n - \frac{f'(x_n)}{f''(x_n)}$$
+
+Going to multidimensional matrix, the equation becomes:
+$$x_{n+1} = x_n - H^{-1} \nabla f(x_n)$$
+
+where $H$ is the Hessian matrix, the second derivative of $f(x)$. This is the core of Newton's method. However, it is not used in practice because of the computational cost of *calculating the Hessian matrix* and then *inverse it* (trust me, it's not a pleasant experience, and I tried with just two dimensions). Instead, we use a parameter called *learning rate* in gradient descent, which is essentially a small constant to replace the Hessian. The equation becomes:
+$$x_{n+1} = x_n - \alpha \nabla f(x_n)$$
+
+Yes, we are using a constant to estimate the Hessian. It is not as accurate, but it is much faster and more straightforward to implement. And with the introduction of momentums, regularizations, learning rate scheduler, etc., we can achieve great result [fast](https://arxiv.org/abs/1708.07120) without the need for the Hessian.
+
+Enough with the history and theory.
+
+## Forward pass
+
+Let's start with a simple model: 2 linear layers, 1 ReLU activation. Ignore the softmax for now.
+```{python}
+batch_size, feature = x_train.shape
+classes = y_train.max() + 1
+num_hidden = 50 
+```
+```{python}
+w1 = torch.randn(feature,num_hidden)
+b1 = torch.zeros(num_hidden)
+w2 = torch.randn(num_hidden,1)
+b2 = torch.zeros(1)
+
+def lin(x, w, b):
+    return x@w + b
+
+def relu(x):
+    return x.clamp_min(0.)
+
+def model(xb):
+    l1 = lin(xb, w1, b1)
+    l2 = relu(l1)
+    return lin(l2, w2, b2)
+
+yhat_train = model(x_train)
+yhat_train.shape
+```
+Perfect! Now we need something to measure the performance of the model. Ideally, this number should involve the final output of the model and the true label to use in the backward pass later. The most straightforward is MSE loss.
+
+The formula for this case is:
+$$\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y_i})^2$$
+
+where $n$ is the number of samples, $y_i$ is the true label, and $\hat{y_i}$ is the predicted label.
+```{python}
+(yhat_train-y_train).shape
+```
+Huh? The shape received is incorrect. We are expecting `torch.Size([50000])` but receive `torch.Size([50000, 50000])` instead. The likeliest cause is a difference in dimension. Let's check the shape of `yhat_train` and `y_train`:
+```{python}
+yhat_train.shape, y_train.shape
+```
+Aha! There is a trailing dimension in `yhat_train`. We can fix this by using `squeeze`:
+```{python}
+yhat_train[:,0].shape, yhat_train.squeeze().shape
+```
+```{python}
+(yhat_train.squeeze()-y_train).shape
+```
+```{python}
+def mse(yhat, y):
+    return (yhat.squeeze(-1) - y).pow(2).mean()
+mse(yhat_train, y_train)
+```
+## Backward pass
+
+To do backward pass, we need to calculate gradient. This example is easy - I can do it with pen and paper and code the formulae in. However, to scale up to bigger network, we need a more general way called *computational graph*.
+
+A framework such as PyTorch will have mechanism (`autograd`) behind the scene to keep track of the computational graph. Afterwards, it will calculate the gradient of the parameters to the loss function. The gradient is not calculated at once, but *sequentially*  in the reverse order of the forward pass, making use of the chain rule to reduce operations for each parameter. This is called *backpropagation*. To emphasize, yes, the coolest term in the history of deep learning is just *using chain rule to calculate gradient sequentially in the reverse order*.
+
+> To find out more about backpropagation, the most complete resource is a lecture from a university such as Michigan or Stanford (e.g., [video](https://youtu.be/d14TUNcbn1k), [notes](https://cs231n.github.io/optimization-2/)). You may also want to check the PyTorch documentation for [autograd](https://pytorch.org/docs/stable/notes/autograd.html).
+
+Anyway, we are yet to have an autograd framework, so for this example, let's use pen and paper. We will calculate the gradient of the loss function with respect to each parameter.
+
+**Note:** The whole phrase is "gradient of the loss function with respect to a parameter $x$", which is usually referred to just as "gradient of $x$". This seems to be an implicit rule in the field, so I will follow.
+
+### Gradient of MSE loss
+From
+$$
+J = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y_i})^2,
+$$
+$$
+\frac{\partial J}{\partial \hat{y}} = \frac{2}{n} (y - \hat{y})
+$$
+with $y$ and $\hat{y}$ matrices.
+
+This will give the first gradient for the backward pass. We will use this to calculate the gradient of the next layer. Recall that $\hat{y_i}$ is also the activation of the last linear layer (say, $n$): $\hat{y} = a^j = w^j \times a^{j-1} + w^j$. Generally, *the input to the next layer is the activation of the current layer*. The formula we will derive shortly shows that we will need the output of the layer to calculate the gradient of the input to the layer (which happens to be the activation of the previous layer, hence required to calculate the graidnet of the input to the previous layer (which happens to be...)...).
+
+### Gradient of linear layer
+From
+$$
+a^j = w^j \times a^{j-1} + b^j, \\
+$$
+The gradients are:
+$$
+\frac{\partial J}{\partial w^j} = \frac{\partial J}{\partial a^j} \times \frac{\partial a^j}{\partial w^j} = \frac{\partial J}{\partial a^j} \times a^{j-1},
+$$
+$$
+\frac{\partial J}{\partial a^{j-1}} = \frac{\partial J}{\partial a^j} \times \frac{\partial a^j}{\partial a^{j-1}} = \frac{\partial J}{\partial a^j} \times w^{j},
+$$
+$$
+\frac{\partial J}{\partial b^{j}} = \frac{\partial J}{\partial a^j} \times \frac{\partial a^j}{\partial b^{j}} = \frac{\partial J}{\partial a^j}
+$$
+In Python, we will store the gradient as an attribute of the matrix itself. This is similar to PyTorch's behaviors. The attribute `grad` is taken, so let's use `g` instead.
+```{python}
+def lin_grad(inp, out, w, b):
+    # .g must have the same shape as the original matrix
+    # inp has shape (i, j), w has shape (j, k), so out has shape (i, k)
+    # to get back to (i, j) from (i, k), we need shape (k, j), so we transpose w
+    # This analysis based on shape is not correct as I obviously do not care
+    # about actual values here, but is often enought to get the correct answer 
+    inp.g = out.g @ w.t()
+    # For w.g, it is getting (j, k) from (i, j) and (i, k)
+    # Besides einsum, from broadcasting rule, we need to add a unit axis at the
+    # end of inp and at axis 1 (zero-indexing) of out, multiply to get (i, j, k),
+    # and sum along the first axis
+    # w.g = (inp.unsqueeze(-1) * out.g.unsqueeze(1)).sum(0)
+    w.g = torch.einsum('ij,ik->jk', inp, out.g)
+    # For b.g, the shape is just (k) because of broadcasting, so sum out.g along
+    # the first axis.
+    b.g = out.g.sum(0)
+
+def forward_and_backward(inp, targ):
+    # forward pass:
+    l1 = lin(inp, w1, b1)
+    l2 = relu(l1)
+    out = lin(l2, w2, b2)
+    diff = out[:,0]-targ
+    loss = diff.pow(2).mean()
+    
+    # backward pass:
+    out.g = 2.*diff[:,None] / inp.shape[0]
+    lin_grad(l2, out, w2, b2)
+    l1.g = (l1>0).float() * l2.g
+    lin_grad(inp, l1, w1, b1)
+
+forward_and_backward(x_train, y_train)
+```
+```{python}
+# Testing - from Jeremy
+from fastcore.test import test_close
+
+def get_grad(x): return x.g.clone()
+chks = w1,w2,b1,b2,x_train
+grads = w1g,w2g,b1g,b2g,ig = tuple(map(get_grad, chks))
+
+def mkgrad(x): return x.clone().requires_grad_(True)
+ptgrads = w12,w22,b12,b22,xt2 = tuple(map(mkgrad, chks))
+
+def forward(inp, targ):
+    l1 = lin(inp, w12, b12)
+    l2 = relu(l1)
+    out = lin(l2, w22, b22)
+    return mse(out, targ)
+
+loss = forward(xt2, y_train)
+loss.backward()
+
+for a,b in zip(grads, ptgrads): test_close(a, b.grad, eps=0.01)
+```
+No expeption was raised, which means that our codes worked correctly! We successfully created an MLP!
+
+
+
+*The formulae for the optimization problems were referenced from Chapra, & Canale, R. P. (2015). Numerical methods for engineers (Seventh edition.). McGraw-Hill Education*
