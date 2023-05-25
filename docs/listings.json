@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/codespace-setup/index.html",
       "/posts/fastai2-p1/index.html",
       "/posts/hackathon-report/index.html",
       "/posts/gan-p4-conditional/index.html",
