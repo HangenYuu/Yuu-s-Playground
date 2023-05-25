@@ -1,0 +1,18 @@
+---
+title: "Set up Quarto on the cloud with Github Codespace"
+subtitle: "Easy and convenient"
+author: "Pham Nguyen Hung"
+draft: false
+date: last-modified
+categories: [Fun]
+format:
+    html:
+        toc: true
+        code-fold: false
+jupyter:
+    kernelspec:
+        name: "cb0494"
+        language: "python"
+        display_name: "cb0494"
+---
+I wrote all my blog posts from my laptop. It works 
