@@ -1,6 +1,6 @@
 ---
-title: "Deep Learning from the ground up - From tensor to multi-layer perceptron"
-subtitle: "Lesson 9 - 14 of fast.ai course, part 2"
+title: "Deep Learning from the ground up - From tensor to multi-layer perceptron (1)"
+subtitle: "Lesson 9 - 14 of fast.ai course part 2"
 author: "Pham Nguyen Hung"
 draft: false
 date: last-modified

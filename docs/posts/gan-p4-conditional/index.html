@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.3.353">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -19,9 +19,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -48,43 +49,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -126,6 +97,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
@@ -141,44 +113,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <span class="navbar-title">H’s notes</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html">
+    <a class="nav-link" href="../../about.html" rel="" target="">
  <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../now.html">
+    <a class="nav-link" href="../../now.html" rel="" target="">
  <span class="menu-text">Now</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://h-notes-on-dsa.netlify.app/"><i class="bi bi-box-arrow-up-right" role="img">
+    <a class="nav-link" href="https://h-notes-on-dsa.netlify.app/" rel="" target=""><i class="bi bi-box-arrow-up-right" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/HangenYuu/"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/HangenYuu/" rel="" target=""><i class="bi bi-github" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/phnghung/"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/in/phnghung/" rel="" target=""><i class="bi bi-linkedin" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/HangenYuu"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/HangenYuu" rel="" target=""><i class="bi bi-twitter" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-              <div class="quarto-toggle-container">
-                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-              </div>
-              <div id="quarto-search" class="" title="Search"></div>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
@@ -1125,14 +1097,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="cookie 1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>You know it is cookie, but you have no idea what type is it</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>You know it is cookie, but you have no idea what type is it</em></figcaption>
 </figure>
 </div>
 <p>Now, if you love randomness and can tolerate the taste as well as the sugar, fine. But we usually want our model to be <em>controllable</em>, that is, we get to decide (to some extent) what will be included in the output.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="cookie 2.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>It’s much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>It’s much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on.</em></figcaption>
 </figure>
 </div>
 <p>With the objective set, let’s explore way to implement controllable GAN a.k.a way to make sure we have the correct cookie each day.</p>
@@ -1142,7 +1114,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="cookie 3.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>A matcha cookie junkie’s dream.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>A matcha cookie junkie’s dream.</em></figcaption>
 </figure>
 </div>
 <p>Obviously this solution is for when you want to generate examples of one class only. One example would be augmenting data for brain EMR of a certain disease at a certain region. The other <del>trolled</del> example is <a href="https://www.kaggle.com/datasets/andy8744/ganyu-genshin-impact-anime-faces-gan-training">GANyu</a>, a dataset and models fine-tuned on it for the task of generating faces of the Genshin Impact character Ganyu (Check out the <a href="https://www.kaggle.com/datasets/andy8744/rezero-rem-anime-faces-for-gan-training">GA(N)Rem</a> as well).</p>
@@ -1157,25 +1129,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="cgan 1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>An input vector to Generator now is made up of two components: noise inputs (to ensure that each generation will be unique) &amp; one-hot class vector (to ensure that the generate example will be of the class we want)</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>An input vector to Generator now is made up of two components: noise inputs (to ensure that each generation will be unique) &amp; one-hot class vector (to ensure that the generate example will be of the class we want)</em></figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="cgan 2.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Similarly, an input to the Discriminator now is an image together with the an one-hot class vector. For an example to be regarded as real, not only it needs to look realistic (reflected by a low binary corss-entropy or Wasserstein loss) but it also needs to look like real examples from the same class. Here, an original matcha cookie definitely looks like a matcha cookie.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Similarly, an input to the Discriminator now is an image together with the an one-hot class vector. For an example to be regarded as real, not only it needs to look realistic (reflected by a low binary corss-entropy or Wasserstein loss) but it also needs to look like real examples from the same class. Here, an original matcha cookie definitely looks like a matcha cookie.</em></figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="cgan 3.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Here is the earlier generated matcha cookie. Let’s say that our Discriminator is a bit better than the Generator. It means that it will detect this looks rather like a matcha cookie, but not too alike.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Here is the earlier generated matcha cookie. Let’s say that our Discriminator is a bit better than the Generator. It means that it will detect this looks rather like a matcha cookie, but not too alike.</em></figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="cgan 4.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Now suppose that the required class is black chocochip, but our Generator gives a matcha cookie. The Discriminator will recognize in this case and gives a low chance that the example is real.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Now suppose that the required class is black chocochip, but our Generator gives a matcha cookie. The Discriminator will recognize in this case and gives a low chance that the example is real.</em></figcaption>
 </figure>
 </div>
 <p>The question now is how do we go on implementing this? From the descriptions, it seems that we need to do 2 things: 1) figure a way to pass the additional information into our two models and 2) update the loss function. 2) is trivial, as the same loss function (binary cross-entropy) can be used and we just need to make sure that the class of the examples are included in the output as well. For 1), in the case of Generator, you just need to concatenate it with the noise vector above. For Discriminator, it is a bit trickier. We feed the images in by passing values of three channels, so the simplest way will be to create n channels more for n classes. This way works for dataset such as the good ol’ MNIST, whether we flatten out images before concatentating or we keep the same matrix and just call <code>torch.cat()</code> (which will create 10 more channels, each of size 28*28, with one of them full of 1 and the rest full of 0). For larger images or ones we do not want to flatten, this simple approach will create a huge memory issue. We will want to pass class information in differently, such as via a different head of input layer, but that is outside of this post scope. Here are the code snippets for the easy case.</p>
@@ -1309,27 +1281,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="genetic code.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em><a href="https://openstax.org/books/biology/pages/15-1-the-genetic-code#fig-ch15_01_04">“The genetic code”</a> by OpenStax College, Biology</em></figcaption><p></p>
+<figcaption class="figure-caption"><em><a href="https://openstax.org/books/biology/pages/15-1-the-genetic-code#fig-ch15_01_04">“The genetic code”</a> by OpenStax College, Biology</em></figcaption>
 </figure>
 </div>
 <p>In our KMNIST example, each image can be represented as a 28 by 28 matrix where each position stores the intensity of the pixel. It can be visualized as below.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="KMNIST eg.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>A certain Japanese letter</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>A certain Japanese letter</em></figcaption>
 </figure>
 </div>
 <p>In the noise vector above, we try to compress this information down to a vector of 64 numbers (recalling the <code>z_dim</code> above), hoping that this is sufficient to store the information to construct all 10 classes of handwritten kanji characters. But let’s fall back to our cookies for a more easily visualizable example.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="cgan 5.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Before, we have been generating random numbers in the noise vector. Let’s say that we have been able to decode that the second number in our noise vector encodes information for color of the cookie, with 2.1 signifies the green matcha color we wants.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Before, we have been generating random numbers in the noise vector. Let’s say that we have been able to decode that the second number in our noise vector encodes information for color of the cookie, with 2.1 signifies the green matcha color we wants.</em></figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="cgan 6.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Now, after training, we now know that 1.4 corresponds to the brown color of chochip cookies. We can now pass the number to get a brown cookie.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Now, after training, we now know that 1.4 corresponds to the brown color of chochip cookies. We can now pass the number to get a brown cookie.</em></figcaption>
 </figure>
 </div>
 <p>In reality, there are multiple things to note in implementation. One unfortunate thing was the DNA analogy extends to the noise space. A feature is often not influenced by a single value of the noise vector alone but depends on many ones. This is called <em>entanglement</em>, which mostly arises from having a noise vector with dimension smaller than the number of features we want to control. Entanglemnt affects our controllability: if two or more features’ values significantly depend on the same noise value, then changing it will shift all of them while we may want one to change. Therefore, we want to encourage <em>disentanglement</em> of features in two ways:</p>
@@ -1338,7 +1310,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>As a regularization.</li>
 </ol>
 <p>In practice, we will not learn the exact encoding (such as 2.1 for green or 1.4 for brown as above) but how the feature change with varying number (say, from green to brown by decreasing the <span class="math inline">\(2^{nd}\)</span> number of the noise vector). You do this with, well, a classifier and label. First, you freeze the weight of the Generator. Then you classify the generated examples based on whether they have the feature(s) or not. Afterwards, you <em>update the noise vector</em> based on the loss function with backpropagation. That is the most simple (and laziest) way to update the noise vector, making it the greatest way (for we always want to do the most work with the least effort). Of course, now we need a pre-trained classifier on the feature(s) that we are trying to detect. If we do not, then we will need to train one on our own i.e.&nbsp;more work to do. You can observe the gradual change in the demo video below for the famous paper on the subject <a href="https://arxiv.org/pdf/1907.10786.pdf">Interpreting the Latent Space of GANs for Semantic Face Editing</a>.</p>
-<div class="quarto-video ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/uoftpl3Bj6w" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/uoftpl3Bj6w" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
 <p>Here’s the implementation</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Again, this is not a full implementation</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The images we will work with now are RGB</span></span>
@@ -1587,9 +1559,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1654,6 +1640,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -1693,12 +1765,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<script src="https://giscus.app/client.js" data-repo="HangenYuu/h_notes" data-repo-id="R_kgDOIR-cmQ" data-category="General" data-category-id="DIC_kwDOIR-cmc4CTtCC" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+<script src="https://giscus.app/client.js" data-repo="HangenYuu/h_notes" data-repo-id="" data-category="General" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Blog made with <a href="https://quarto.org/">Quarto</a>, © Copyright 2022 Pham Nguyen Hung. License: <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3.0</a></div>   
+    <div class="nav-footer-left">Blog made with <a href="https://quarto.org/">Quarto</a>, © Copyright 2022-23 Pham Nguyen Hung. License: <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3.0</a></div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
 

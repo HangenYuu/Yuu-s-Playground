@@ -9,8 +9,8 @@
 <link>https://hangenyuu.github.io/h-notes/index.html</link>
 <atom:link href="https://hangenyuu.github.io/h-notes/index.xml" rel="self" type="application/rss+xml"/>
 <description>H&#39;s Notes on Deep Learning</description>
-<generator>quarto-1.3.340</generator>
-<lastBuildDate>Mon, 22 May 2023 09:24:18 GMT</lastBuildDate>
+<generator>quarto-1.3.353</generator>
+<lastBuildDate>Thu, 25 May 2023 05:47:55 GMT</lastBuildDate>
 <item>
   <title>Deep Learning from the ground up - From tensor to multi-layer perceptron</title>
   <dc:creator>Pham Nguyen Hung</dc:creator>
@@ -595,7 +595,7 @@ font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.02 s ± 10 ms per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>554 ms ± 1.08 ms per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 </section>
@@ -644,7 +644,7 @@ font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.67 ms ± 319 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>814 µs ± 129 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <p>Okay, now <code>torch.dot</code> is free:</p>
@@ -686,7 +686,7 @@ font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.27 ms ± 251 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>710 µs ± 89.8 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 </section>
@@ -809,7 +809,7 @@ font-style: inherit;">-</span>n <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span> matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>357 µs ± 141 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>125 µs ± 32.1 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <p>At this point, we basically arrive at matrix multiplication. However, let’s up the amp a bit and (re)introduce Einstein.</p>
@@ -884,8 +884,7 @@ font-style: inherit;">5</span> _<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The slowest run took 4.03 times longer than the fastest. This could mean that an intermediate result is being cached.
-51.5 µs ± 32.5 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>48.2 µs ± 25 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <p>Having come to this point, let’s introduce <code>torch</code> predefined operations:</p>
@@ -900,8 +899,8 @@ font-style: inherit;">5</span> _<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>torch.matmul(m1, m2)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The slowest run took 11.13 times longer than the fastest. This could mean that an intermediate result is being cached.
-16.5 µs ± 22.8 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>The slowest run took 5.76 times longer than the fastest. This could mean that an intermediate result is being cached.
+26.2 µs ± 25 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="25">
@@ -917,8 +916,7 @@ font-style: inherit;">=</span>m1<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">@</span>m2</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>The slowest run took 17.03 times longer than the fastest. This could mean that an intermediate result is being cached.
-31.6 µs ± 42.8 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
+<pre><code>25.3 µs ± 16.5 µs per loop (mean ± std. dev. of 7 runs, 5 loops each)</code></pre>
 </div>
 </div>
 </section>
@@ -1303,7 +1301,7 @@ font-style: inherit;">0.01</span>)</span></code></pre></div>
   <category>code</category>
   <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h-notes/posts/fastai2-p1/index.html</guid>
-  <pubDate>Mon, 22 May 2023 09:24:18 GMT</pubDate>
+  <pubDate>Thu, 25 May 2023 05:47:55 GMT</pubDate>
 </item>
 <item>
   <title>A micro AI tool</title>
@@ -3064,7 +3062,7 @@ font-style: inherit;">'limitations'</span>]</span></code></pre></div>
   <category>code</category>
   <category>Engineering/Hacking</category>
   <guid>https://hangenyuu.github.io/h-notes/posts/hackathon-report/index.html</guid>
-  <pubDate>Mon, 27 Feb 2023 16:00:00 GMT</pubDate>
+  <pubDate>Tue, 28 Feb 2023 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Conditional &amp; Controllable GAN</title>
@@ -3081,14 +3079,14 @@ font-style: inherit;">'limitations'</span>]</span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/cookie 1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>You know it is cookie, but you have no idea what type is it</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>You know it is cookie, but you have no idea what type is it</em></figcaption>
 </figure>
 </div>
 <p>Now, if you love randomness and can tolerate the taste as well as the sugar, fine. But we usually want our model to be <em>controllable</em>, that is, we get to decide (to some extent) what will be included in the output.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/cookie 2.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>It’s much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>It’s much nicer to control that you have matcha on Monday, chocochip on Tuesday, and so on.</em></figcaption>
 </figure>
 </div>
 <p>With the objective set, let’s explore way to implement controllable GAN a.k.a way to make sure we have the correct cookie each day.</p>
@@ -3098,7 +3096,7 @@ font-style: inherit;">'limitations'</span>]</span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/cookie 3.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>A matcha cookie junkie’s dream.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>A matcha cookie junkie’s dream.</em></figcaption>
 </figure>
 </div>
 <p>Obviously this solution is for when you want to generate examples of one class only. One example would be augmenting data for brain EMR of a certain disease at a certain region. The other <del>trolled</del> example is <a href="https://www.kaggle.com/datasets/andy8744/ganyu-genshin-impact-anime-faces-gan-training">GANyu</a>, a dataset and models fine-tuned on it for the task of generating faces of the Genshin Impact character Ganyu (Check out the <a href="https://www.kaggle.com/datasets/andy8744/rezero-rem-anime-faces-for-gan-training">GA(N)Rem</a> as well).</p>
@@ -3113,25 +3111,25 @@ font-style: inherit;">'limitations'</span>]</span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/cgan 1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>An input vector to Generator now is made up of two components: noise inputs (to ensure that each generation will be unique) &amp; one-hot class vector (to ensure that the generate example will be of the class we want)</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>An input vector to Generator now is made up of two components: noise inputs (to ensure that each generation will be unique) &amp; one-hot class vector (to ensure that the generate example will be of the class we want)</em></figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/cgan 2.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Similarly, an input to the Discriminator now is an image together with the an one-hot class vector. For an example to be regarded as real, not only it needs to look realistic (reflected by a low binary corss-entropy or Wasserstein loss) but it also needs to look like real examples from the same class. Here, an original matcha cookie definitely looks like a matcha cookie.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Similarly, an input to the Discriminator now is an image together with the an one-hot class vector. For an example to be regarded as real, not only it needs to look realistic (reflected by a low binary corss-entropy or Wasserstein loss) but it also needs to look like real examples from the same class. Here, an original matcha cookie definitely looks like a matcha cookie.</em></figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/cgan 3.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Here is the earlier generated matcha cookie. Let’s say that our Discriminator is a bit better than the Generator. It means that it will detect this looks rather like a matcha cookie, but not too alike.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Here is the earlier generated matcha cookie. Let’s say that our Discriminator is a bit better than the Generator. It means that it will detect this looks rather like a matcha cookie, but not too alike.</em></figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/cgan 4.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Now suppose that the required class is black chocochip, but our Generator gives a matcha cookie. The Discriminator will recognize in this case and gives a low chance that the example is real.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Now suppose that the required class is black chocochip, but our Generator gives a matcha cookie. The Discriminator will recognize in this case and gives a low chance that the example is real.</em></figcaption>
 </figure>
 </div>
 <p>The question now is how do we go on implementing this? From the descriptions, it seems that we need to do 2 things: 1) figure a way to pass the additional information into our two models and 2) update the loss function. 2) is trivial, as the same loss function (binary cross-entropy) can be used and we just need to make sure that the class of the examples are included in the output as well. For 1), in the case of Generator, you just need to concatenate it with the noise vector above. For Discriminator, it is a bit trickier. We feed the images in by passing values of three channels, so the simplest way will be to create n channels more for n classes. This way works for dataset such as the good ol’ MNIST, whether we flatten out images before concatentating or we keep the same matrix and just call <code>torch.cat()</code> (which will create 10 more channels, each of size 28*28, with one of them full of 1 and the rest full of 0). For larger images or ones we do not want to flatten, this simple approach will create a huge memory issue. We will want to pass class information in differently, such as via a different head of input layer, but that is outside of this post scope. Here are the code snippets for the easy case.</p>
@@ -3541,27 +3539,27 @@ font-style: inherit;">+=</span> [gen_loss.item()]</span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/genetic code.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em><a href="https://openstax.org/books/biology/pages/15-1-the-genetic-code#fig-ch15_01_04">“The genetic code”</a> by OpenStax College, Biology</em></figcaption><p></p>
+<figcaption class="figure-caption"><em><a href="https://openstax.org/books/biology/pages/15-1-the-genetic-code#fig-ch15_01_04">“The genetic code”</a> by OpenStax College, Biology</em></figcaption>
 </figure>
 </div>
 <p>In our KMNIST example, each image can be represented as a 28 by 28 matrix where each position stores the intensity of the pixel. It can be visualized as below.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/KMNIST eg.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>A certain Japanese letter</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>A certain Japanese letter</em></figcaption>
 </figure>
 </div>
 <p>In the noise vector above, we try to compress this information down to a vector of 64 numbers (recalling the <code>z_dim</code> above), hoping that this is sufficient to store the information to construct all 10 classes of handwritten kanji characters. But let’s fall back to our cookies for a more easily visualizable example.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/cgan 5.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Before, we have been generating random numbers in the noise vector. Let’s say that we have been able to decode that the second number in our noise vector encodes information for color of the cookie, with 2.1 signifies the green matcha color we wants.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Before, we have been generating random numbers in the noise vector. Let’s say that we have been able to decode that the second number in our noise vector encodes information for color of the cookie, with 2.1 signifies the green matcha color we wants.</em></figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/cgan 6.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Now, after training, we now know that 1.4 corresponds to the brown color of chochip cookies. We can now pass the number to get a brown cookie.</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Now, after training, we now know that 1.4 corresponds to the brown color of chochip cookies. We can now pass the number to get a brown cookie.</em></figcaption>
 </figure>
 </div>
 <p>In reality, there are multiple things to note in implementation. One unfortunate thing was the DNA analogy extends to the noise space. A feature is often not influenced by a single value of the noise vector alone but depends on many ones. This is called <em>entanglement</em>, which mostly arises from having a noise vector with dimension smaller than the number of features we want to control. Entanglemnt affects our controllability: if two or more features’ values significantly depend on the same noise value, then changing it will shift all of them while we may want one to change. Therefore, we want to encourage <em>disentanglement</em> of features in two ways:</p>
@@ -3570,7 +3568,7 @@ font-style: inherit;">+=</span> [gen_loss.item()]</span></code></pre></div>
 <li>As a regularization.</li>
 </ol>
 <p>In practice, we will not learn the exact encoding (such as 2.1 for green or 1.4 for brown as above) but how the feature change with varying number (say, from green to brown by decreasing the <img src="https://latex.codecogs.com/png.latex?2%5E%7Bnd%7D"> number of the noise vector). You do this with, well, a classifier and label. First, you freeze the weight of the Generator. Then you classify the generated examples based on whether they have the feature(s) or not. Afterwards, you <em>update the noise vector</em> based on the loss function with backpropagation. That is the most simple (and laziest) way to update the noise vector, making it the greatest way (for we always want to do the most work with the least effort). Of course, now we need a pre-trained classifier on the feature(s) that we are trying to detect. If we do not, then we will need to train one on our own i.e.&nbsp;more work to do. You can observe the gradual change in the demo video below for the famous paper on the subject <a href="https://arxiv.org/pdf/1907.10786.pdf">Interpreting the Latent Space of GANs for Semantic Face Editing</a>.</p>
-<div class="quarto-video ratio ratio-16x9"><iframe src="https://www.youtube.com/embed/uoftpl3Bj6w" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/uoftpl3Bj6w" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
 <p>Here’s the implementation</p>
 <div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -3965,7 +3963,7 @@ font-style: inherit;">/</span> grad_steps)</span></code></pre></div>
   <category>GAN</category>
   <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h-notes/posts/gan-p4-conditional/index.html</guid>
-  <pubDate>Tue, 21 Feb 2023 16:00:00 GMT</pubDate>
+  <pubDate>Wed, 22 Feb 2023 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>That Unstable GAN</title>
@@ -3980,7 +3978,7 @@ font-style: inherit;">/</span> grad_steps)</span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p3/test 17.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>I tried to find an xkcd comic for training GANs, but found none. Instead I found this <a href="https://github.com/generic-github-user/xkcd-Generator/">repo</a> about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference between THIS and an <a href="https://xkcd.com/1838/">xkcd comic</a> is obvious</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>I tried to find an xkcd comic for training GANs, but found none. Instead I found this <a href="https://github.com/generic-github-user/xkcd-Generator/">repo</a> about using GANs to generate xkcd comic. It is not even close for a substitute, but you can defintely see that training has broken down: the loss of Generator is way much more than the loss of the Discriminator, and the difference between THIS and an <a href="https://xkcd.com/1838/">xkcd comic</a> is obvious</em></figcaption>
 </figure>
 </div>
 <section id="general-methods" class="level1">
@@ -4117,7 +4115,7 @@ font-style: inherit;">'o--'</span>)</span>
 <div id="fig-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p3/index_files/figure-html/fig-1-output-1.png" width="707" height="259" class="figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: Stacking linear functions on top of each other is just a linear function. Meanwhile, stacking ReLU functions on top of each other create a piecemeal linear function that approximates a curve.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Stacking linear functions on top of each other is just a linear function. Meanwhile, stacking ReLU functions on top of each other create a piecemeal linear function that approximates a curve.</figcaption>
 </figure>
 </div>
 </div>
@@ -4126,7 +4124,7 @@ font-style: inherit;">'o--'</span>)</span>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p3/1 KKjPz4KaEERCpvI04D6Bng.webp" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Each neural network had three hidden layers with three units in each one. The only difference was the activation function. Learning rate: 0.03, regularization: L2. <a href="https://towardsdatascience.com/if-rectified-linear-units-are-linear-how-do-they-add-nonlinearity-40247d3e4792">Source</a></em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Each neural network had three hidden layers with three units in each one. The only difference was the activation function. Learning rate: 0.03, regularization: L2. <a href="https://towardsdatascience.com/if-rectified-linear-units-are-linear-how-do-they-add-nonlinearity-40247d3e4792">Source</a></em></figcaption>
 </figure>
 </div>
 <p>However, the joy ReLU brought came to halt when “dying ReLU” problem was reported. Suppose we have an output smaller or equal 0, then our derivative will be 0. The 0 derivative on the node means that it will not get updated, and that’s the end for it. Worse, the previous components connected to the node are affected as well, so the whole structure of our neural network will be “dead”. To fix, we have the variation: LeakyReLU. For LeakyReLU, the output value below 0 is not set at 0, but is multiplied by a constant (such as 0.2). Gradient for such value will still be non-zero, provide information to update the weights.</p>
@@ -4174,7 +4172,7 @@ font-style: inherit;">'o--'</span>)</span>
 <div id="fig-2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p3/index_files/figure-html/fig-2-output-1.png" width="719" height="259" class="figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2: LeakyReLU and GELU</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;2: LeakyReLU and GELU</figcaption>
 </figure>
 </div>
 </div>
@@ -4187,14 +4185,14 @@ font-style: inherit;">'o--'</span>)</span>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p3/Screenshot 2023-01-24 205502.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>The curve at the bottom that may remind you of a bell curve is the curve for the distribution of pixel values a.k.a colors</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>The curve at the bottom that may remind you of a bell curve is the curve for the distribution of pixel values a.k.a colors</em></figcaption>
 </figure>
 </div>
 <p>Now, we train a neural network on data having similar color distribution such as this image, possibly for the task of recognizing grass. The model was trained well. Alas, the testing image contains one such as this</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p3/Screenshot 2023-01-24 205554.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>This was the exact same image, but compressed at a differen color distribution (shifted to the right)</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>This was the exact same image, but compressed at a differen color distribution (shifted to the right)</em></figcaption>
 </figure>
 </div>
 <p>Here we say that the data distribution <em>has shifted between training data and testing data</em>. This generally will cause model problems (decrease accuracy, etc.). Data distribution shift (or covariate shift) can also happen between batches of training data, leading to slow convergence (imagine the model has to take a zig-zag path instead of a straight one). This can be dealt with by <em>normalization</em>, where make sure that the distributions of the training set and the testing set are similar e.g.&nbsp;centered around a mean of 0 and a standard deviation of 1. This could be done by taking the mean and standard deviation for each training batch of image and normalize the inputs of each training batch, then take the accumulated statistics to normalize the testing set during testing. This will smooth out the cost function and increases model performance (you might not need to do this if your training set and testing set are already similar to each other).</p>
@@ -4263,7 +4261,7 @@ font-style: inherit;">=</span> np.hstack((sample1, sample2))</span>
 <div id="fig-3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p3/index_files/figure-html/fig-3-output-1.png" width="606" height="404" class="figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3: A bimodal distribution created by merging two normal distributions</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;3: A bimodal distribution created by merging two normal distributions</figcaption>
 </figure>
 </div>
 </div>
@@ -4272,14 +4270,14 @@ font-style: inherit;">=</span> np.hstack((sample1, sample2))</span>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p3/Copy of GAN-p2.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>Initial output distribution</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>Initial output distribution</em></figcaption>
 </figure>
 </div>
 <p>We want to change the output to this kind of distribution</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hangenyuu.github.io/h-notes/posts/gan-p3/Copy of GAN-p3.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption"><em>We want to shift from the circle to just 10 peaks i.e.&nbsp;just outputting 1 from 10 classes at a time</em></figcaption><p></p>
+<figcaption class="figure-caption"><em>We want to shift from the circle to just 10 peaks i.e.&nbsp;just outputting 1 from 10 classes at a time</em></figcaption>
 </figure>
 </div>
 <p>In the ideal scenario, our model will be guided by the loss function to make the right shift. However, notice a lack in the BCE loss: it only promotes the model generating images close to real images, regardless of the class of the image. This means that there exists a quick n’ dirty way for the Generator to reduce the loss by <em>only generating images from 1 class that the Discriminator is most fooled by</em>. So there exists a case where we end up with a Generator that outputs very realistic kanji character, only that it generates <em>kanji character</em>, say, only “tsu”. That’s boring.</p>
@@ -4300,7 +4298,7 @@ font-style: inherit;">=</span> np.hstack((sample1, sample2))</span>
   <category>GAN</category>
   <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h-notes/posts/gan-p3/index.html</guid>
-  <pubDate>Mon, 23 Jan 2023 16:00:00 GMT</pubDate>
+  <pubDate>Tue, 24 Jan 2023 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Building a simple GAN</title>
@@ -5268,7 +5266,7 @@ font-style: inherit;">1</span></span></code></pre></div>
   <category>GAN</category>
   <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h-notes/posts/gan-p2/index.html</guid>
-  <pubDate>Sun, 22 Jan 2023 16:00:00 GMT</pubDate>
+  <pubDate>Mon, 23 Jan 2023 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>A Primer on Generative Adversarial Networks (GANs)</title>
@@ -5491,7 +5489,7 @@ font-style: inherit;">23</span>)</span>
   <category>GAN</category>
   <category>From scratch</category>
   <guid>https://hangenyuu.github.io/h-notes/posts/gan-p1/index.html</guid>
-  <pubDate>Fri, 20 Jan 2023 16:00:00 GMT</pubDate>
+  <pubDate>Sat, 21 Jan 2023 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Hello World</title>
@@ -5525,7 +5523,7 @@ font-style: inherit;">"Hello World!"</span>)</span></code></pre></div>
   <category>new</category>
   <category>code</category>
   <guid>https://hangenyuu.github.io/h-notes/posts/hello_world/index.html</guid>
-  <pubDate>Fri, 21 Oct 2022 16:00:00 GMT</pubDate>
+  <pubDate>Sat, 22 Oct 2022 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
