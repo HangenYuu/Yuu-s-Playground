@@ -23,7 +23,7 @@ website:
 comments:
   giscus: 
     repo: HangenYuu/h_notes
-highlight-style: breezedark
+highlight-style: github-dark
 format:
   html:
     theme:
