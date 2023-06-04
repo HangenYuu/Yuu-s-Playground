@@ -2,7 +2,7 @@
 title: "Deep Learning from the ground up - From tensor to multi-layer perceptron (1)"
 subtitle: "Lesson 9 - 14 of fast.ai course part 2"
 author: "Pham Nguyen Hung"
-draft: false
+draft: true
 date: last-modified
 categories: [code, From scratch]
 format:
@@ -15,3 +15,8 @@ jupyter:
         language: "python"
         display_name: "cb0494"
 ---
+In the [first post](https://hangenyuu.github.io/h-notes/posts/fastai2-p1/), I finished backpropagation and the simple maths behind it. Now let's talk about the design of PyTorch...
+
+> Actually I am not including it in my post. You can read about it [here](https://pytorch.org/docs/stable/community/design.html). To feel the need for PyTorch or Keras (and then TensorFlow 2.x), check out this [script](https://github.com/jsyoon0823/TimeGAN/blob/master/timegan.py). **Warning:** the author defined four models as *functions* and *updated them together* in TensorFlow 1.x.
+
+... which leads to our need to refactor the layers into *objects*, instead of *functions*. On defining them as class.

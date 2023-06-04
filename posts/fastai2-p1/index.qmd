@@ -15,7 +15,9 @@ jupyter:
         language: "python"
         display_name: "cb0494"
 ---
-I have finished and fallen in love with fast.ai course 1. It has been very informative. It showed me the rope about PyTorch and two important building blocks of deep learning: Embedding and Convolution. I was excited to learn that there was a part 2. In this part, Jeremy will dive deeper into the design of a deep learning framework, and implement one from the scratch the way PyTorch was designed. Here were my (verbose) writtent version for it.
+I have finished and fallen in love with fast.ai course 1. I was excited to learn that there was a part 2 and started learning the moment it was released. In this part, Jeremy will dive deeper into the design of a deep learning framework, and implement one from the scratch the way PyTorch was designed to do Stable Diffusion with it. After the first 10 hours, he succeeded in creating the first scaffold, and create a package with `nbdev` from the notebooks. I documented these first 10 hours down from his lectures and notebooks, and then published my notes here on my blog. Anyone is free to use the posts for references, but doesn't forget to study the actual course at [fast.ai](https://course.fast.ai/Lessons/part2.html).
+
+I intended to split the notes into 3 parts: The first part covers everything up to backpropagation, the second part covers refactoring the layers to classes and finishes the training loop, the final part explores `nbdev` as a library to modularize notebooks.
 
 # Rules
 
