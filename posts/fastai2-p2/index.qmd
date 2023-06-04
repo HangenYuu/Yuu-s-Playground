@@ -24,23 +24,83 @@ In the [first post](https://hangenyuu.github.io/h-notes/posts/fastai2-p1/), I fi
 # Setup
 ```{python}
 # Follow the previous post
+# Bad practice - split into several cells at # --- is recommended
 import pickle,gzip,math,os,time,shutil,torch,matplotlib as mpl,numpy as np,matplotlib.pyplot as plt
 from pathlib import Path
 from torch import tensor,nn
 import torch.nn.functional as F
 from fastcore.test import test_close
-
+# ---
 torch.set_printoptions(precision=2, linewidth=140, sci_mode=False)
 torch.manual_seed(1)
 mpl.rcParams['image.cmap'] = 'gray'
-
+%matplotlib inline
+%config InlineBackend.figure_format = 'retina'
+# ---
 path_data = Path('data')
 path_gz = path_data/'mnist.pkl.gz'
 with gzip.open(path_gz, 'rb') as f: ((x_train, y_train), (x_valid, y_valid), _) = pickle.load(f, encoding='latin-1')
 x_train, y_train, x_valid, y_valid = map(tensor, [x_train, y_train, x_valid, y_valid])
-```
-```{python}
+
 batch_size, feature = x_train.shape
 classes = y_train.max() + 1
-num_hidden = 50 
+num_hidden = 50
+
+# Save for testing against later
+def get_grad(x): return x.g.clone()
+chks = w1,w2,b1,b2,x_train
+grads = w1g,w2g,b1g,b2g,ig = tuple(map(get_grad, chks))
+```
+# Refactor model
+```{python}
+class Relu():
+    def __call__(self, inp):
+        self.inp = inp
+        self.out = inp.clamp_min(0.)
+        return self.out
+    
+    def backward(self): self.inp.g = (self.inp>0).float() * self.out.g
+```
+```{python}
+class Lin():
+    def __init__(self, w, b): self.w,self.b = w,b
+
+    def __call__(self, inp):
+        self.inp = inp
+        self.out = lin(inp, self.w, self.b)
+        return self.out
+
+    def backward(self):
+        self.inp.g = self.out.g @ self.w.t()
+        self.w.g = self.inp.t() @ self.out.g
+        self.b.g = self.out.g.sum(0)
+```
+```{python}
+class Mse():
+    def __call__(self, inp, targ):
+        self.inp,self.targ = inp,targ
+        self.out = mse(inp, targ)
+        return self.out
+    
+    def backward(self):
+        self.inp.g = 2. * (self.inp.squeeze() - self.targ).unsqueeze(-1) / self.targ.shape[0]
+```
+```{python}
+class Model():
+    def __init__(self, w1, b1, w2, b2):
+        self.layers = [Lin(w1,b1), Relu(), Lin(w2,b2)]
+        self.loss = Mse()
+        
+    def __call__(self, x, targ):
+        for l in self.layers: x = l(x)
+        return self.loss(x, targ)
+    
+    def backward(self):
+        self.loss.backward()
+        for l in reversed(self.layers): l.backward()
+```
+Here, I learnt about the dunder methods. They define the intrinsic appearance of a class. `__init__()` defines the parameters is expect you to pass into when you define a new instance of that class. `__call__` defines what happens when you use an instance as a function. Here, `__call__()` is used to define the forward pass of the class. For the general `Model()` class, Jeremy suggested that the loss is returned. As this is an image classification problem, I think that a metric such as accuracy can be calculated and returned here as well.
+```{python}
+model = Model(w1, b1, w2, b2)
+loss = model(x_train, y_train)
 ```
