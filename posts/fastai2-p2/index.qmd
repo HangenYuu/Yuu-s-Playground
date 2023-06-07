@@ -24,7 +24,6 @@ In the [first post](https://hangenyuu.github.io/h-notes/posts/fastai2-p1/), I fi
 # Setup
 ```{python}
 # Follow the previous post
-# Bad practice - split into several cells at # --- is recommended
 import pickle,gzip,math,os,time,shutil,torch,matplotlib as mpl,numpy as np,matplotlib.pyplot as plt
 from pathlib import Path
 from torch import tensor,nn
@@ -42,9 +41,42 @@ path_gz = path_data/'mnist.pkl.gz'
 with gzip.open(path_gz, 'rb') as f: ((x_train, y_train), (x_valid, y_valid), _) = pickle.load(f, encoding='latin-1')
 x_train, y_train, x_valid, y_valid = map(tensor, [x_train, y_train, x_valid, y_valid])
 
-batch_size, feature = x_train.shape
+num_data, feature = x_train.shape
 classes = y_train.max() + 1
 num_hidden = 50
+
+w1 = torch.randn(feature,num_hidden)
+b1 = torch.zeros(num_hidden)
+w2 = torch.randn(num_hidden,1)
+b2 = torch.zeros(1)
+
+def lin(x, w, b): return x@w + b
+
+def relu(x): return x.clamp_min(0.)
+
+def mse(output, targ): return (output[:,0]-targ).pow(2).mean()
+
+def lin_grad(inp, out, w, b):
+    # grad of matmul with respect to input
+    inp.g = out.g @ w.t()
+    w.g = (inp.unsqueeze(-1) * out.g.unsqueeze(1)).sum(0)
+    b.g = out.g.sum(0)
+
+def forward_and_backward(inp, targ):
+    # forward pass:
+    l1 = lin(inp, w1, b1)
+    l2 = relu(l1)
+    out = lin(l2, w2, b2)
+    diff = out[:,0]-targ
+    loss = diff.pow(2).mean()
+    
+    # backward pass:
+    out.g = 2.*diff[:,None] / inp.shape[0]
+    lin_grad(l2, out, w2, b2)
+    l1.g = (l1>0).float() * l2.g
+    lin_grad(inp, l1, w1, b1)
+
+forward_and_backward(x_train, y_train)
 
 # Save for testing against later
 def get_grad(x): return x.g.clone()
@@ -52,6 +84,8 @@ chks = w1,w2,b1,b2,x_train
 grads = w1g,w2g,b1g,b2g,ig = tuple(map(get_grad, chks))
 ```
 # Refactor model
+
+## First attempt
 ```{python}
 class Relu():
     def __call__(self, inp):
@@ -101,6 +135,206 @@ class Model():
 ```
 Here, I learnt about the dunder methods. They define the intrinsic appearance of a class. `__init__()` defines the parameters is expect you to pass into when you define a new instance of that class. `__call__` defines what happens when you use an instance as a function. Here, `__call__()` is used to define the forward pass of the class. For the general `Model()` class, Jeremy suggested that the loss is returned. As this is an image classification problem, I think that a metric such as accuracy can be calculated and returned here as well.
 ```{python}
-model = Model(w1, b1, w2, b2)
-loss = model(x_train, y_train)
+def test_grad(inp, targ):
+    model = Model(w1, b1, w2, b2)
+    loss = model(inp, targ)
+    model.backward()
+
+    try:
+        test_close(w2g, w2.g, eps=0.01)
+        test_close(b2g, b2.g, eps=0.01)
+        test_close(w1g, w1.g, eps=0.01)
+        test_close(b1g, b1.g, eps=0.01)
+        test_close(ig, x_train.g, eps=0.01)
+        print("Test passed")
+    except AssertionError as e:
+        print(f"Test failed on line {e.__traceback__.tb_lineno}")
+        print(f"{e.args[0]} is different from {e.args[1]}. Please check the implementation associated with the particular weight again.")
+        raise Exception
 ```
+```{python}
+test_grad(x_train, y_train)
+```
+Perfect - no error! This is means that the gradient is calculated correctly.
+
+However, in practice, if I am a programmer, I would rather you do not modify dunder methods if necessary. In PyTorch this is avoided by creating a base class (maybe called `Module` or `nn.Module`) having `__call__()` calling a `forward()` method instead. In subsequent inherited class, whether the official `nn.Linear` or a newly designed layer such as `nn.MultiHeadAttention`, the user only needs to modify the public method `forward()`.
+
+## `Module.forward()`
+```{python}
+class Module():
+    def __call__(self, *args):
+        self.args = args
+        self.out = self.forward(*args)
+        return self.out
+
+    def forward(self): raise Exception('not implemented')
+    def backward(self): self.bwd(self.out, *self.args)
+    def bwd(self): raise Exception('not implemented')
+```
+
+```{python}
+class Relu(Module):
+    def forward(self, inp): return inp.clamp_min(0.)
+    def bwd(self, out, inp): inp.g = (inp>0).float() * out.g
+```
+```{python}
+class Lin(Module):
+    def __init__(self, w, b): self.w,self.b = w,b
+    def forward(self, inp): return inp@self.w + self.b
+    def bwd(self, out, inp):
+        inp.g = self.out.g @ self.w.t()
+        self.w.g = inp.t() @ self.out.g
+        self.b.g = self.out.g.sum(0)
+```
+```{python}
+class Mse(Module):
+    def forward (self, inp, targ): return (inp.squeeze() - targ).pow(2).mean()
+    def bwd(self, out, inp, targ): inp.g = 2*(inp.squeeze()-targ).unsqueeze(-1) / targ.shape[0]
+```
+```{python}
+test_grad(x_train, y_train)
+```
+## PyTorch-ic `Model`
+```{python}
+class Model(nn.Module):
+    def __init__(self, n_in, n_hidden, n_out):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(n_in, n_hidden),
+            nn.ReLU(),
+            nn.Linear(n_hidden, n_out))
+    
+    def forward(self, x, target):
+        x = self.layers(x)
+        return F.mse_loss(x, target[:, None])
+```
+```{python}
+model = Model(feature, num_hidden, 1)
+loss = model(x_train, y_train.float())
+loss.backward()
+```
+```{python}
+l0 = model.layers[0]
+l0.bias.grad
+```
+# Cross-entropy loss
+
+At the moment, the output is directly passed into the loss function as it is just a single output. However, this is a poor choice to optimize the parameters.
+
+> The simplest explanation is the current loss measures the relative distance between class. For example, if the true class is 5 and our model outputs 6, it is worse than 7 but only as good as 4. The model may still be able to learn correctly, but there is better option.  
+
+The output should be passed into a *softmax function*. The loss function should be *cross-entropy loss* instead of MSE loss. Let's unpack these. First, softmax functions:
+$$\hbox{softmax(x)}_{i} = \frac{e^{x_{i}}}{e^{x_{0}} + e^{x_{1}} + \cdots + e^{x_{n-1}}}$$
+or more concisely:
+$$\hbox{softmax(x)}_{i} = \frac{e^{x_{i}}}{\sum\limits_{0 \leq j \lt n} e^{x_{j}}}$$
+
+Second, cross-entropy loss:
+$$ -\sum x\, \log p(x) $$
+where $x$ is the true class and $p(x)$ is the predicted probability of the true class. For $x$ one-hot encoded, the formula is reduced to $-\log(p_{i})$ with $i$ the index of the desired target.
+
+The softmax function is used to convert the output into a probability. You can see that it is just a way to calculate the proportion of something in a whole, though more sophisticated than simply $ \frac{x_{i}}{x_{0} + x_{1} + \cdots + x_{n-1}} $. The reason for the exponential is to make sure that the output is positive plus amplify the difference between classes.
+
+The cross entropy loss effectively measures the distance between the true probability distribution and the predicted probability distribution. The true probability distribution is one-hot encoded, while the predicted one has one value for each class at each example, altogether summed to 1. The loss is the negative log of the predicted probability of the true class. If the model predicts a low probability i.e. close to 0, the loss will be very large, towards infinity (but not beyond). If the model appropriately predicts a high probability i.e. close to 1, the loss will be very small, towards 0. Just, finding the parameters to minimize the loss will have the effect of maximizing the probability of the true class.
+```{python}
+class Model(nn.Module):
+    def __init__(self, n_in, n_hidden, n_out):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(n_in, n_hidden),
+            nn.ReLU(),
+            nn.Linear(n_hidden, n_out))
+    
+    def forward(self, x):
+        return self.layers(x)
+```
+```{python}
+model = Model(feature, num_hidden, 10)
+pred = model(x_train)
+pred.shape
+```
+```{python}
+ def log_softmax(x): return (x.exp()/(x.exp().sum(-1,keepdim=True))).log()
+```
+```{python}
+log_softmax(pred)
+```
+The log of softmax can be more reliably calculated with the [LogSumExp trick](https://en.wikipedia.org/wiki/LogSumExp)
+
+$$\log \left ( \sum_{j=1}^{n} e^{x_{j}} \right ) = \log \left ( e^{a} \sum_{j=1}^{n} e^{x_{j}-a} \right ) = a + \log \left ( \sum_{j=1}^{n} e^{x_{j}-a} \right )$$
+where a is the maximum of the $x_{j}$. (This is already implemented in PyTorch.)
+```{python}
+def logsumexp(x):
+    m = x.max(-1)[0]
+    return m + (x-m[:,None]).exp().sum(-1).log()
+
+def log_softmax(x): return x - x.logsumexp(-1,keepdim=True)
+```
+```{python}
+test_close(logsumexp(pred), pred.logsumexp(-1))
+```
+```{python}
+sm_pred = log_softmax(pred)
+sm_pred
+```
+From the simplified formula above, to calculate the loss, only the softmax activation at that index is required. The value can be accessed with [integer array indexing](https://numpy.org/doc/stable/user/basics.indexing.html#integer-array-indexing), which is the same as in NumPy or PyTorch.
+```{python}
+print("This is the first 3 true classes: \n", y_train[:3])
+print("This is the first 3 log softmax predictions for all classes: \n", sm_pred[:3,:])
+print("This is the WRONG first 3 log softmax predictions for just the first 3 true classes: \n", sm_pred[:3,y_train[:3]])
+print("This is the CORRECT first 3 log softmax predictions for just the first 3 true classes: \n", sm_pred[[0, 1, 2],y_train[:3]])
+```
+Note that integer array indexing requires an array (Python list, NumPy/PyTorch array) passed in. Using normal slicing will broadcast the result instead.
+```{python}
+def nll(input, target): return -input[range(target.shape[0]), target].mean()
+
+loss = nll(sm_pred, y_train)
+loss
+# Test against PyTorch implementation
+test_close(F.nll_loss(F.log_softmax(pred, -1), y_train), loss, 1e-3)
+```
+In PyTorch, the two steps `F.log_softmax` and `F.nll_loss` are combined into `F.cross_entropy` so the logits from the model is enough. (This has something to do with better precision, which matters more as dataset size grows.)
+
+# Training loop
+
+The basic training loop is contained within [a nursery rhyme](https://youtu.be/Nutpusq_AFw)
+
+{{< tweet mrdbourke 1450977868406673410 >}}
+
+Basically, there are 4 steps in each batch:
+
+- Get model's predictions on a batch of inputs.
+- Compute the loss of the current batch.
+- Calculate the gradients of the loss with respect to every parameter of the model
+- Update parameters with those gradients, one small step (or large, as in [Super-Convergence](https://arxiv.org/abs/1708.07120) large) at a time to improve predictions.
+```{python}
+# Hyperparameters
+batch_size = 50
+lr = 0.5   # learning rate
+epochs = 3
+loss_func = F.cross_entropy
+
+# Helper functions
+def accuracy(out, yb): return (out.argmax(dim=1)==yb).float().mean()
+def report(loss, preds, yb): print(f'{loss:.2f}, {accuracy(preds, yb):.2f}')
+```
+```{python}
+for epoch in range(epochs):
+    for i in range(0, num_data, batch_size):
+        s = slice(i, min(num_data,i+batch_size))
+        xb,yb = x_train[s], y_train[s]
+        preds = model(xb)
+        loss = loss_func(preds, yb)
+        loss.backward()
+        with torch.no_grad():
+            for l in model.layers:
+                if hasattr(l, 'weight'):
+                    l.weight -= l.weight.grad * lr
+                    l.bias   -= l.bias.grad   * lr
+                    l.weight.grad.zero_()
+                    l.bias  .grad.zero_()
+    report(loss, preds, yb)
+```
+
+# Training loop with `parameters` and `optim`
+
+In a PyTorch module, the layers are stored inside `named_children()` attribute and the parameters are stored inside `parameters()` attribute.

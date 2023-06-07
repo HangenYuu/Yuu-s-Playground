@@ -79,5 +79,11 @@
   },
   "posts/codespace-setup/index.qmd": {
     "index.html": "cd6ec14a"
+  },
+  "posts/fastai2-p2/index.qmd": {
+    "index.html": "5b720c0c"
+  },
+  "notes.md": {
+    "notes.html": "55f5a85c"
   }
 }
