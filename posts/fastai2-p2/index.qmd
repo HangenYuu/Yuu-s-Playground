@@ -2,7 +2,7 @@
 title: "Deep Learning from the ground up - From tensor to multi-layer perceptron (1)"
 subtitle: "Lesson 9 - 14 of fast.ai course part 2"
 author: "Pham Nguyen Hung"
-draft: true
+draft: false
 date: last-modified
 categories: [code, From scratch]
 format:
@@ -335,6 +335,303 @@ for epoch in range(epochs):
     report(loss, preds, yb)
 ```
 
-# Training loop with `parameters` and `optim`
+# Training loop with `parameters`, `optim`, `Dataset`, and `Dataloader`
 
-In a PyTorch module, the layers are stored inside `named_children()` attribute and the parameters are stored inside `parameters()` attribute.
+## Parameters
+
+> Refactoring is about writing less code to do the same work - Jeremy Howard
+
+Which essentially means designing with *reusability* in mind.
+
+Because the training loop is central to deep learning, PyTorch designers have defined two important pieces: `model.parameters()` and `optim` submodule.
+
+In a PyTorch module, the layers are stored inside `named_children()` attribute and the parameters are stored inside `parameters()`, which give you a generator object when you call it.
+
+```{python}
+class MLP(nn.Module):
+    def __init__(self, n_in, n_hidden, n_out):
+        super().__init__()
+        self.l1 = nn.Linear(n_in,n_hidden)
+        self.l2 = nn.Linear(n_hidden,n_out)
+        self.relu = nn.ReLU()
+        
+    def forward(self, x): return self.l2(self.relu(self.l1(x)))
+```
+```{python}
+model = MLP(feature, num_hidden, 10)
+model
+```
+```{python}
+print('Generator object: ', model.named_children())
+for name, layer in model.named_children():
+    print(f"{name}: {layer}")
+```
+So the information prints out when I called `model` is stored inside `model.named_children()`. As it is a Generator, I have to iterate through it to see the information.
+```{python}
+# Similarly for parameters
+print(model.parameters())
+list(model.parameters())
+```
+Now let's define a function for training the model using the `.parameters()` method.
+```{python}
+def fit():
+    for epoch in range(epochs):
+        for i in range(0, num_data, batch_size):
+            s = slice(i, min(num_data,i+batch_size))
+            xb,yb = x_train[s],y_train[s]
+            preds = model(xb)
+            loss = loss_func(preds, yb)
+            loss.backward()
+            with torch.no_grad():
+                for p in model.parameters(): p -= p.grad * lr
+                model.zero_grad()
+        report(loss, preds, yb)
+```
+```{python}
+fit()
+```
+Behind the scene, PyTorch overrides the `__setattr__()` method in `nn.Module` to properly register the parameters. The code is equivalent to
+```{.python}
+# Taken straight from Jeremy Howard
+
+class MyModule:
+    def __init__(self, n_in, nh, n_out):
+        self._modules = {}
+        self.l1 = nn.Linear(n_in,nh)
+        self.l2 = nn.Linear(nh,n_out)
+
+    def __setattr__(self,k,v):
+        if not k.startswith("_"): self._modules[k] = v
+        super().__setattr__(k,v)
+
+    def __repr__(self): return f'{self._modules}'
+    
+    def parameters(self):
+        for l in self._modules.values(): yield from l.parameters()
+```
+The layers are registered as attributes of the new instance. A *private* (with leading underscore) dictionary is initialized and used to keep track of the *public* attributes of the instance. `__setattr__()` is called when a new instance is initialized. All public attributes are written into the dictionary, and `super().__setattr__(k,v)` is calling the `__setattr__()` of the parent `object` class to properly register the attributes in the new instance. To output the nice summary when the instance is called, `__repr__()` must be defined. Lastly, to mimic the effect of calling `.parameters()`, a `.parameters()` method is defined, but instead of `return`, it `yield` the parameters of the layers, one parameter at a time, one layer at a time.
+
+Next, you might want to pass in a list of layers instead of specifying the hyperparameters. In PyTorch, there is `nn.ModuleList`, which is equivalent to calling `nn.Module.add_module()` method iteratively on a list. One step forward and there is `nn.Sequential()`, which I excuse myself using earlier. I will skip this here, but will dwell on an interesting piece: the use of `functools.reduce()`.
+
+In forward, if I use `nn.Sequential()`, I can just call `self.layers(x)`. But under the hood, something similar to a loop
+```python
+def forward(self, x):
+    for l in self.layers: x = l(x)
+    return x
+```
+In Python, this can be reduced (pun not intended) to
+```python
+def forward(self, x):
+    return reduce(lambda val, layer: layer(val), self.layers, x)
+```
+This was implemented in Python "by some Lisp hacker". The idea is to iterative call a function (the `lambda` one) that takes in two arguments, one or both can be from an iterable (`self.layers`) and one from an optional initial value (`x`) and produce an intermediate value, which is then used to call the function together with the next value of the iterable, until there is only one answer left. That's too hand-wavy even for me, so let's consider this example demonstrating how to calculate the sum of an array
+```python
+def sum(array):
+    return reduce(lambda a, b: a + b, array)
+```
+Anywho, having dealt with the parameters, the update loop is still verbose. The whole circle of updating the parameters and then zeroing the grads is implemented within `optim` for reusability. Let's implement that.
+
+## Optimizer
+```{python}
+class Optimizer():
+    def __init__(self, params, lr=0.5):
+        self.params = list(params)
+        self.lr     = lr
+
+    def step(self):
+        with torch.no_grad():
+            for p in self.params: p -= p.grad * self.lr
+
+    def zero_grad(self):
+        for p in self.params: p.grad.data.zero_()
+```
+```{python}
+model = nn.Sequential(nn.Linear(feature, num_hidden), nn.ReLU(), nn.Linear(num_hidden,10))
+opt = Optimizer(model.parameters())
+```
+```{python}
+for epoch in range(epochs):
+    for i in range(0, num_data, batch_size):
+        s = slice(i, min(num_data,i+batch_size))
+        xb,yb = x_train[s],y_train[s]
+        preds = model(xb)
+        loss = loss_func(preds, yb)
+        loss.backward()
+        opt.step()
+        opt.zero_grad()
+    report(loss, preds, yb)
+```
+Now `torch.optim` is unlocked!
+```{python}
+from torch import optim
+def get_model():
+    model = nn.Sequential(nn.Linear(feature, num_hidden), nn.ReLU(), nn.Linear(num_hidden,10))
+    return model, optim.SGD(model.parameters(), lr=lr)
+model,opt = get_model()
+```
+```{python}
+for epoch in range(epochs):
+    for i in range(0, num_data, batch_size):
+        s = slice(i, min(num_data,i+batch_size))
+        xb,yb = x_train[s],y_train[s]
+        preds = model(xb)
+        loss = loss_func(preds, yb)
+        loss.backward()
+        opt.step()
+        opt.zero_grad()
+    report(loss, preds, yb)
+```
+> Some may think that passing the generator `params` to `self.params` would work. It doesn't. The parameters need to be unpacked into a list storing inside the Optimizer. It is also the case in the [implementation](https://github.com/pytorch/pytorch/blob/main/torch/optim/optimizer.py#LL178C5-L206C57) of PyTorch.
+
+## Dataset and Dataloader
+
+For organization, it is better to have the data processing codes grouped in one place and decoupled from the training loop. Thus, PyTorch comes prepared with `torch.utils.data.DataLoader` and `torch.utils.data.Dataset` to achieve this goal.
+
+The `Dataset` class should store the data with its label. A minimal implementation will be
+```{python}
+class Dataset():
+    def __init__(self, x, y): self.x,self.y = x,y
+    def __len__(self): return len(self.x)
+    def __getitem__(self, i): return self.x[i], self.y[i]
+```
+The dunder method `__getitem__()` needs implementing to support square bracket indexing.
+```{python}
+def test_Dataset(x_train, y_train, x_valid, y_valid):
+    try:
+        train_ds, valid_ds = Dataset(x_train, y_train), Dataset(x_valid, y_valid)
+        assert len(train_ds)==len(x_train), "train_ds length does not match x_train length"
+        assert len(valid_ds)==len(x_valid), "valid_ds length does not match x_valid length"
+        xb,yb = train_ds[0:5]
+        assert xb.shape==(5,28*28), "xb shape is incorrect"
+        assert yb.shape==(5,), "yb shape is incorrect"
+        print('All tests passed')
+    except AssertionError as e:
+        print("AssertionError:", e)
+```
+```{python}
+test_Dataset(x_train, y_train, x_valid, y_valid)
+```
+```{python}
+train_ds, valid_ds = Dataset(x_train, y_train), Dataset(x_valid, y_valid)
+model, opt = get_model()
+for epoch in range(epochs):
+    for i in range(0, num_data, batch_size):
+        xb,yb = train_ds[i:min(num_data, i+batch_size)]
+        preds = model(xb)
+        loss = loss_func(preds, yb)
+        loss.backward()
+        opt.step()
+        opt.zero_grad()
+    report(loss, preds, yb)
+```
+`DataLoader` is designed as an iterator wrapper for `Dataset`. It can be minimally constructed as
+```{python}
+class DataLoader():
+    def __init__(self, dataset, batch_size): self.dataset,self.batch_size = dataset,batch_size
+    def __iter__(self):
+        for i in range(0, len(self.dataset), self.batch_size): yield self.dataset[i:i+self.batch_size]
+```
+To give the object iterator's functionalities, the dunder method `__iter__()` needs implementing.
+```{python}
+train_dl = DataLoader(train_ds, batch_size)
+valid_dl = DataLoader(valid_ds, batch_size)
+```
+```{python}
+xb,yb = next(iter(valid_dl))
+print(xb.shape)
+plt.imshow(xb[0].view(28,28))
+print(yb[0])
+```
+```{python}
+model,opt = get_model()
+```
+```{python}
+def fit():
+    for epoch in range(epochs):
+        for xb,yb in train_dl:
+            preds = model(xb)
+            loss = loss_func(preds, yb)
+            loss.backward()
+            opt.step()
+            opt.zero_grad()
+        report(loss, preds, yb)
+fit()
+```
+## Random Sampler
+
+It is usually the case that training data is randomized for each batch. For that, I need a `Sampler`, which can be constructed from Python `random` module.
+```{python}
+import random
+import fastcore.all as fc
+
+class Sampler():
+    def __init__(self, dataset, shuffle=False): self.n,self.shuffle = len(dataset),shuffle
+    def __iter__(self):
+        res = list(range(self.n))
+        if self.shuffle: random.shuffle(res)
+        return iter(res)
+
+class BatchSampler():
+    def __init__(self, sampler, batch_size, drop_last=False): fc.store_attr()
+    def __iter__(self): yield from fc.chunked(iter(self.sampler), self.batch_size, drop_last=self.drop_last)
+```
+Let's unpack the codes. In `Sampler()`, the logic of `__iter__()` means it will return the indices of the data, randomly shuffled if `shuffle = True`. In `BatchSampler()`, it takes the indices (can be from `Sampler()` or not) and then chunk them into an iterator that returns only 1 batch at a time. These randomized, batchified indices are then passed into the DataLoader to pull the data one batch at a time.
+```{python}
+def collate(b):
+    xs,ys = zip(*b)
+    return torch.stack(xs),torch.stack(ys)
+
+class DataLoader():
+    def __init__(self, dataset, batchs, collate_fn=collate): fc.store_attr()
+    def __iter__(self): yield from (self.collate_fn(self.dataset[i] for i in b) for b in self.batchs)
+```
+```{python}
+train_samp = BatchSampler(Sampler(train_ds, shuffle=True ), batch_size)
+valid_samp = BatchSampler(Sampler(valid_ds, shuffle=False), batch_size)
+train_dl = DataLoader(train_ds, batchs=train_samp)
+valid_dl = DataLoader(valid_ds, batchs=valid_samp)
+xb,yb = next(iter(valid_dl))
+plt.imshow(xb[0].view(28,28))
+yb[0]
+```
+```{python}
+model,opt = get_model()
+fit()
+```
+In PyTorch, these are all built-in - one just need to specify `shuffle` option inside `DataLoader`.
+
+# Final loop
+```{python}
+from torch.utils.data import DataLoader
+def get_dls(train_ds, valid_ds, batch_size, **kwargs):
+    return (DataLoader(train_ds, batch_size=batch_size, shuffle=True, **kwargs),
+            DataLoader(valid_ds, batch_size=batch_size*2, **kwargs))
+
+def fit(epochs, model, loss_func, opt, train_dl, valid_dl):
+    for epoch in range(epochs):
+        model.train()
+        for xb,yb in train_dl:
+            loss = loss_func(model(xb), yb)
+            loss.backward()
+            opt.step()
+            opt.zero_grad()
+
+        model.eval()
+        with torch.no_grad():
+            tot_loss,tot_acc,count = 0.,0.,0
+            for xb,yb in valid_dl:
+                pred = model(xb)
+                n = len(xb)
+                count += n
+                tot_loss += loss_func(pred,yb).item()*n
+                tot_acc  += accuracy (pred,yb).item()*n
+        print(epoch, tot_loss/count, tot_acc/count)
+    return tot_loss/count, tot_acc/count
+```
+```{python}
+train_dl,valid_dl = get_dls(train_ds, valid_ds, batch_size)
+model,opt = get_model()
+%time loss,acc = fit(5, model, loss_func, opt, train_dl, valid_dl)
+```
+# Conclusion
+That concludes everything. Next time, let's talk about using `nbdev` to export the most useful codes from notebooks into a module or a Python script.

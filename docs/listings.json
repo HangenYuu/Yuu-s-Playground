@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/fastai2-p2/index.html",
       "/posts/fastai2-p1/index.html",
       "/posts/codespace-setup/index.html",
       "/posts/hackathon-report/index.html",

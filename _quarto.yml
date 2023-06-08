@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: docs
+  preview:
+    browser: true
+    
 website:
   title: "H's notes"
   site-url: https://hangenyuu.github.io/h-notes/
