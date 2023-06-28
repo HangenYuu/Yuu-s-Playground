@@ -6,6 +6,7 @@ project:
     
 website:
   title: "H's notes"
+  favicon: logo.png
   site-url: https://hangenyuu.github.io/h-notes/
   description: H's Notes on Deep Learning
   margin-header: subscribe.html

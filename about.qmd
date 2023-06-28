@@ -17,3 +17,5 @@ about:
 
 # About this blog
 Hello, my name is Pham Nguyen Hung. I am a Deep Learning Practitioner. The stage I am at is bound to change over the years, so it is better to view the `Now` tab for my current status. I have a knack for numbers and complex concepts, and love learning them. Outside that, I have an interest in books of all types plus arts (music, drawing).
+
+*The favicon was taken from [freepik](https://www.freepik.com/icon/letter-n_8420526) and created by frelayasia*
